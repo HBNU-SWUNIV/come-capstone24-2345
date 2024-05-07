@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.main {
+  min-width: 375px;
+  max-width: 480px;
+  /* height: 100vh; */
+  text-align: center;
+  background-color: white;
+  margin: auto;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  background-image: linear-gradient(
+      224deg,
+      transparent 0%,
+      transparent 30%,
+      rgba(249, 249, 249, 0.02) 30%,
+      rgba(249, 249, 249, 0.02) 36%,
+      transparent 36%,
+      transparent 100%
+    ),
+    linear-gradient(
+      345deg,
+      transparent 0%,
+      transparent 53%,
+      rgb(247, 237, 255) 53%,
+      rgb(247, 237, 255) 63%,
+      transparent 63%,
+      transparent 100%
+    ),
+    linear-gradient(
+      284deg,
+      transparent 0%,
+      transparent 28%,
+      rgb(246, 236, 255) 28%,
+      rgb(246, 236, 255) 38%,
+      transparent 38%,
+      transparent 100%
+    ),
+    linear-gradient(90deg, rgb(251, 246, 255), rgb(251, 246, 255));
+}
+
+.card-light {
+  box-shadow: 0 4px 15px rgba(31, 38, 135, 0.2);
+  background-color: rgba(255, 255, 255, 0.7);
+}
