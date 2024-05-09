@@ -9,12 +9,13 @@
         <img src="https://img.shields.io/badge/html5-E34F26?style=flat&logo=html5&logoColor=white">
         <img src="https://img.shields.io/badge/css-1572B6?style=flat&logo=css3&logoColor=white">
         <img src="https://img.shields.io/badge/javascript-F7DF1E?style=flat&logo=javascript&logoColor=black">
-        <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white">
-        <img src="https://img.shields.io/badge/styled--components-DB7093?style=flat&logo=styled-components&logoColor=white">
+        <img src="https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white">
+        <img src="https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white">
   - 💾 Back-End : 
         <img src="https://img.shields.io/badge/Node.js-43853D?style=flate&logo=node.js&logoColor=white">
         <img src="https://img.shields.io/badge/express.js-000000?style=flat&logo=express&logoColor=white">
         <img src="https://img.shields.io/badge/mongoDB-47A248?style=flat&logo=MongoDB&logoColor=white">
+        <img src="https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white">
 
 ## 📈 프로젝트 개요
 - ### 배경
