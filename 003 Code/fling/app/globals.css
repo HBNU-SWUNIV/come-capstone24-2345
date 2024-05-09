@@ -84,6 +84,19 @@ body {
   position: relative;
   background: var(--card-color);
   border-radius: 20px;
+  animation-name: moveUpDown;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+}
+
+.matching {
+  animation-delay: 1s;
+}
+.mbti {
+  animation-delay: 0.5s;
+}
+.hobby {
+  animation-delay: 1.5s;
 }
 
 .mbti:after {
@@ -145,4 +158,16 @@ body {
   border-left: 0;
   margin-left: -10px;
   margin-top: -20px;
+}
+
+@keyframes moveUpDown {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }

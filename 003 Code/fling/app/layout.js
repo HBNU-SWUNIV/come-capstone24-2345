@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
       {/* <body className={inter.className}> */}
       <body>
         <div className='w-screen h-screen bg-[#ffffff]'>
-          <div className='main flex flex-col h-screen pt-[100px]'>
+          <div className='main flex flex-col h-screen pt-[100px] overflow-x-hidden'>
             {/* <header className='h-[100px] max-w-[440px] left-0 right-0 m-auto z-50 fixed bg-indigo-300'>
               헤더임
             </header>
