@@ -18,15 +18,26 @@ export default function RootLayout({ children }) {
       {/* <body className={inter.className}> */}
       <body>
         <div className='w-screen h-screen bg-[#ffffff]'>
-          <div className='main flex flex-col h-screen'>
-            <div className='box-content w-full h-[100px]'>
-              {/* border-solid border-2 border-black */}
-              {/* <div>헤더임</div> */}
+          <div className='main flex flex-col h-screen pt-[100px]'>
+            {/* <header className='h-[100px] max-w-[440px] left-0 right-0 m-auto z-50 fixed bg-indigo-300'>
+              헤더임
+            </header>
+            <div className='px-[20px] mt-[100px] flex-grow flex'>
+              <div className='w-full z-10'>{children}</div>
             </div>
-            <div className='mx-[20px] flex-grow flex'>
-              <div className='w-full'>{children}</div>
-            </div>
+            <nav className='h-[80px] max-w-[440px] bottom-0 left-0 right-0 m-auto z-50 fixed bg-indigo-100'>
+              nav바임
+            </nav> */}
+            {children}
           </div>
+          {/* <div className='main h-full max-h-[953.67px] flex flex-col'>
+            <header className='h-[100px] w-full fixed top-0 left-0 right-0 z-50 max-w-[440px] m-auto bg-indigo-300/20'></header>
+            <main className='mt-[100px] w-full h-auto flex-grow relative'>
+              <div className='w-full h-full absolute p-[20px]'>{children}</div>
+              <img className='w-full' src='/park.svg'></img>
+              <nav className='h-[100px] w-full fixed bottom-0 left-0 right-0 z-50 max-w-[440px] m-auto bg-indigo-300/20'></nav>
+            </main>
+          </div> */}
         </div>
       </body>
     </html>

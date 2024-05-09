@@ -25,7 +25,7 @@ export default function Start() {
       <div className='w-full h-[15%] flex flex-col items-center box-content pb-[80px]'>
         <div className='flex mb-[16px]'>
           <div
-            className='card-light w-[160px] h-[50px] flex justify-center items-center rounded-full content-center mb-[20px]'
+            className='card w-[160px] h-[50px] flex justify-center items-center rounded-full content-center mb-[20px]'
             style={{
               fontSize: '14px',
               fontWeight: '800',
@@ -46,7 +46,7 @@ export default function Start() {
       {/* <div className='w-full h-[15%] flex flex-col items-center box-content pb-[80px]'>
         <div className='translate-y-[-20px]'>
           <div
-            className='card-light w-[150px] h-[40px] flex justify-center items-center rounded-full content-center mb-[20px]'
+            className='card w-[150px] h-[40px] flex justify-center items-center rounded-full content-center mb-[20px]'
             style={{
               fontSize: '12px',
             }}
@@ -70,7 +70,7 @@ export default function Start() {
   /* <div className='w-full h-[25%] flex flex-col justify-center items-center'>
   <div className='translate-y-[-30px]'>
     <div
-      className='card-light w-[150px] h-[40px] flex justify-center items-center rounded-full content-center mb-[20px]'
+      className='card w-[150px] h-[40px] flex justify-center items-center rounded-full content-center mb-[20px]'
       style={{
         fontSize: '12px',
       }}

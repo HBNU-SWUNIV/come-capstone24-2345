@@ -2,15 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --main-pink: rgba(220, 170, 255, 1);
+  --main-pink-70: rgba(220, 170, 255, 0.7);
+  --main-pink-50: rgba(220, 170, 255, 0.5);
+  --main-puple: rgba(112, 0, 255, 1);
+  --main-puple-70: rgba(112, 0, 255, 0.7);
+  --main-puple-50: rgba(112, 0, 255, 0.5);
+  --card-color: rgba(255, 255, 255, 0.9);
+}
+
+body {
+  min-height: 100vh;
+}
+
 .main {
-  min-width: 375px;
-  max-width: 480px;
-  /* height: 100vh; */
+  /* min-width: 375px; */
+  max-width: 440px;
+  width: 100vw;
   text-align: center;
-  background-color: white;
   margin: auto;
   box-sizing: border-box;
-  overflow-x: hidden;
   background-image: linear-gradient(
       224deg,
       transparent 0%,
@@ -41,7 +53,96 @@
     linear-gradient(90deg, rgb(251, 246, 255), rgb(251, 246, 255));
 }
 
-.card-light {
-  box-shadow: 0 4px 15px rgba(31, 38, 135, 0.2);
-  background-color: rgba(255, 255, 255, 0.7);
+.bg-img {
+  background-image: url('/park.svg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-x: center;
+  background-position-y: top;
+}
+
+.card {
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(31, 38, 135, 0.25);
+  /* box-shadow: 0 2px 0px rgba(31, 38, 135, 0.3); */
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.btn {
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(31, 38, 135, 0.25);
+  /* box-shadow: 0 2px 0px rgba(31, 38, 135, 0.3); */
+  background-color: var(--main-puple-50);
+  color: white;
+}
+
+.matching,
+.mbti,
+.hobby,
+.review,
+.personality {
+  position: relative;
+  background: var(--card-color);
+  border-radius: 20px;
+}
+
+.mbti:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-top-color: var(--card-color);
+  border-bottom: 0;
+  border-left: 0;
+  margin-left: -10px;
+  margin-bottom: -20px;
+}
+
+.matching:after,
+.personality:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-top-color: var(--card-color);
+  border-bottom: 0;
+  border-right: 0;
+  margin-left: -10px;
+  margin-bottom: -20px;
+}
+
+.hobby:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-bottom-color: var(--card-color);
+  border-top: 0;
+  border-right: 0;
+  margin-left: -10px;
+  margin-top: -20px;
+}
+
+.review:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-bottom-color: var(--card-color);
+  border-top: 0;
+  border-left: 0;
+  margin-left: -10px;
+  margin-top: -20px;
 }
