@@ -1,0 +1,23 @@
+header, nav {
+    background-color: #fff;
+    color: #333;
+  }
+  
+  .nav-link {
+    padding: 10px;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .active {
+    color: #4A90E2;
+  }
+  
+  header {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  nav {
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+  }
+  
