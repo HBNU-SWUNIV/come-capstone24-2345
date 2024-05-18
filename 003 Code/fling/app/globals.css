@@ -18,11 +18,6 @@ body {
 
 .main {
   /* min-width: 375px; */
-  max-width: 440px;
-  width: 100vw;
-  text-align: center;
-  margin: auto;
-  box-sizing: border-box;
   background-image: linear-gradient(
       224deg,
       transparent 0%,

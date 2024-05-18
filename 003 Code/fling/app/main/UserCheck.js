@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-const UserCheck = () => {
+const UserCheck = (props) => {
   let [content, setContent] = useState([
     {
       key: 'personality',
@@ -25,7 +25,8 @@ const UserCheck = () => {
   ]);
 
   const clickHandler = (key) => {
-    alert(key);
+    const data = content.find((item) => item.key === key);
+    props.handleUserCheck(data);
   };
 
   return (

@@ -1,6 +1,6 @@
 export default function Start() {
   return (
-    <div className='flex flex-col size-full items-center'>
+    <div className='flex flex-col size-full items-center pt-[100px]'>
       <div className='w-full h-[20%]'>
         <div
           className='w-full h-[20%] text-end font-thin'
@@ -24,16 +24,18 @@ export default function Start() {
 
       <div className='w-full h-[15%] flex flex-col items-center box-content pb-[80px]'>
         <div className='flex mb-[16px]'>
-          <div
+          <button
             className='card w-[160px] h-[50px] flex justify-center items-center rounded-full content-center mb-[20px]'
             style={{
               fontSize: '14px',
               fontWeight: '800',
             }}
           >
-            <p className='mr-[8px]'>시작하기</p>
+            <a className='mr-[8px]' href='/register'>
+              시작하기
+            </a>
             <p>-&gt;</p>
-          </div>
+          </button>
         </div>
         <div style={{ fontSize: '12px' }}>
           <span>이미 계정이 있으신가요?</span>

@@ -1,7 +1,10 @@
-const Fifth = () => {
+const Fifth = (props) => {
+  const clickBtn = () => {
+    props.handlePage(props.page + 1);
+  };
   return (
     <>
-      <div className='w-full flex flex-col'>
+      <div className='size-full flex flex-col bg-yellow-400 pt-[20px]'>
         <div className='flex justify-between mb-[20px]'>
           <div className='w-[46%]'>
             <span style={{ fontSize: '18px' }}>프로필 사진</span>
@@ -32,7 +35,7 @@ const Fifth = () => {
           </div>
         </div>
 
-        <button className='btn p-[20px] mb-[20px]' onClick={() => {}}>
+        <button className='btn p-[20px] mb-[20px]' onClick={clickBtn}>
           제출
         </button>
       </div>

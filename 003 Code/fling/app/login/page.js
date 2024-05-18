@@ -1,6 +1,6 @@
 export default function Login() {
   return (
-    <div className='flex flex-col size-full items-center'>
+    <div className='flex flex-col size-full items-center pt-[100px]'>
       <div className='w-full h-[20%]'>
         <div
           className='w-full h-[20%] text-end font-thin'
@@ -44,7 +44,7 @@ export default function Login() {
             type='submit'
             style={{ fontSize: '12px' }}
           >
-            <a href='/main2'>-&gt;</a>
+            <a href='/main'>-&gt;</a>
           </button>
         </form>
         <div style={{ fontSize: '10px' }}>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const Fourth = () => {
+const Fourth = (props) => {
   let [clickDup, setClickDup] = useState(false);
   let [checkDup, setCheckDup] = useState(false);
 
@@ -14,9 +14,13 @@ const Fourth = () => {
     }
   }, [clickDup]);
 
+  const clickBtn = () => {
+    props.handlePage(props.page + 1);
+  };
+
   return (
     <>
-      <div className='w-full flex flex-col'>
+      <div className='size-full flex flex-col bg-yellow-500 pt-[20px]'>
         <div className='flex flex-col p-[20px] card rounded-[20px] mb-[20px]'>
           <span className='text-start mb-[16px]' style={{ fontSize: '14px' }}>
             닉네임
@@ -107,7 +111,7 @@ const Fourth = () => {
                 type='password'
               />
             </div>
-            <button className='btn p-[20px] mb-[20px]' onClick={() => {}}>
+            <button className='btn p-[20px] mb-[20px]' onClick={clickBtn}>
               확인
             </button>
           </>
