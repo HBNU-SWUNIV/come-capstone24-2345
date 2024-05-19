@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-const NavigationBar = () => {
+const Nav = () => {
   return (
     <nav className='fixed bottom-0 left-0 right-0 flex justify-around items-center p-4 bg-white shadow-lg'>
       <NavLink to='/' exact className='nav-link' activeClassName='active'>
@@ -20,4 +20,4 @@ const NavigationBar = () => {
   );
 };
 
-export default NavigationBar;
+export default Nav;
