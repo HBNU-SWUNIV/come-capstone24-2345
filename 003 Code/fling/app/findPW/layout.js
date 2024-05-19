@@ -1,14 +1,14 @@
 const MainLayout = ({ children }) => {
   return (
-    <div className='h-full flex flex-col'>
-      <header className='h-[100px] w-full z-50 max-w-[440px] m-auto bg-red-700/40'>
-        header바
+    <div className='w-full bg-yellow-500/20 relative'>
+      <header className='max-w-[440px] w-full mx-auto h-[100px] bg-black/50 fixed top-0'>
+        header
       </header>
-      <main className='w-full h-full flex-grow flex flex-col items-center overflow-y-scroll pb-[100px]'>
-        {children}
+      <main className='w-full h-auto py-[100px]'>
+        <div className='flex flex-col items-center'>{children}</div>
       </main>
-      {/* <nav className='h-[100px] w-full fixed bottom-0 z-50 max-w-[440px] m-auto bg-yellow-700/40'>
-        nav바
+      {/* <nav className='max-w-[440px] w-full mx-auto h-[100px] bg-black/50 fixed bottom-0'>
+        nav
       </nav> */}
     </div>
   );

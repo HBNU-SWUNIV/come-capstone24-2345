@@ -44,7 +44,7 @@ export default function Login() {
             type='submit'
             style={{ fontSize: '12px' }}
           >
-            <a href='/main'>-&gt;</a>
+            <a href='/main'>&gt;</a>
           </button>
         </form>
         <div style={{ fontSize: '10px' }}>

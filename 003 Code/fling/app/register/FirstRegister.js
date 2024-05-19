@@ -3,7 +3,7 @@ const First = (props) => {
     props.handlePage(props.page + 1);
   };
   return (
-    <div className='size-full flex flex-col justify-center items-center'>
+    <div className='w-full h-[calc(100vh_-_200px)] flex flex-col justify-center items-center'>
       <div className='w-full flex justify-center mb-[40px]'>
         <img
           className='w-[200px] h-[200px] translate-x-[20px]'
@@ -24,7 +24,7 @@ const First = (props) => {
         onClick={clickBtn}
       >
         <p className='mr-[8px]'>본인인증</p>
-        <p>-&gt;</p>
+        <p>&gt;</p>
       </button>
     </div>
   );

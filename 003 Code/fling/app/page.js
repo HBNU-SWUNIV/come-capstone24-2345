@@ -34,7 +34,7 @@ export default function Start() {
             <a className='mr-[8px]' href='/register'>
               시작하기
             </a>
-            <p>-&gt;</p>
+            <p>&gt;</p>
           </button>
         </div>
         <div style={{ fontSize: '12px' }}>
@@ -44,48 +44,6 @@ export default function Start() {
           </a>
         </div>
       </div>
-
-      {/* <div className='w-full h-[15%] flex flex-col items-center box-content pb-[80px]'>
-        <div className='translate-y-[-20px]'>
-          <div
-            className='card w-[150px] h-[40px] flex justify-center items-center rounded-full content-center mb-[20px]'
-            style={{
-              fontSize: '12px',
-            }}
-          >
-            <p className='mr-[8px]'>시작하기</p>
-            <p>-&gt;</p>
-          </div>
-          <div style={{ fontSize: '10px' }}>
-            <span>이미 계정이 있으신가요?</span>
-            <a className='ml-[10px] underline' href='/login'>
-              로그인하기
-            </a>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
-}
-
-{
-  /* <div className='w-full h-[25%] flex flex-col justify-center items-center'>
-  <div className='translate-y-[-30px]'>
-    <div
-      className='card w-[150px] h-[40px] flex justify-center items-center rounded-full content-center mb-[20px]'
-      style={{
-        fontSize: '12px',
-      }}
-    >
-      <p className='mr-[8px]'>시작하기</p>
-      <p>-&gt;</p>
-    </div>
-    <div style={{ fontSize: '10px' }}>
-      <span>이미 계정이 있으신가요?</span>
-      <a className='ml-[10px] underline' href='/login'>
-        로그인하기
-      </a>
-    </div>
-  </div>
-</div>; */
 }

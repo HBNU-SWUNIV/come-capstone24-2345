@@ -20,7 +20,7 @@ const Fourth = (props) => {
 
   return (
     <>
-      <div className='size-full flex flex-col bg-yellow-500 pt-[20px]'>
+      <div className='size-full flex flex-col p-[20px]'>
         <div className='flex flex-col p-[20px] card rounded-[20px] mb-[20px]'>
           <span className='text-start mb-[16px]' style={{ fontSize: '14px' }}>
             닉네임

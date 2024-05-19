@@ -4,7 +4,7 @@ const Fifth = (props) => {
   };
   return (
     <>
-      <div className='size-full flex flex-col bg-yellow-400 pt-[20px]'>
+      <div className='size-full flex flex-col p-[20px]'>
         <div className='flex justify-between mb-[20px]'>
           <div className='w-[46%]'>
             <span style={{ fontSize: '18px' }}>프로필 사진</span>
@@ -12,7 +12,7 @@ const Fifth = (props) => {
               +
             </div>
             <div
-              className='flex flex-col text-start pl-[20px]'
+              className='flex flex-col text-start pl-[8px]'
               style={{ fontSize: '12px' }}
             >
               <span className='mb-[8px]'>본인확인이 가능한 정면사진</span>
@@ -26,7 +26,7 @@ const Fifth = (props) => {
               +
             </div>
             <div
-              className='flex flex-col text-start pl-[20px]'
+              className='flex flex-col text-start pl-[8px]'
               style={{ fontSize: '12px' }}
             >
               <span className='mb-[8px]'>모바일, 실물 학생증만 가능</span>

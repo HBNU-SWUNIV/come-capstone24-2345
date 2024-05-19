@@ -6,27 +6,36 @@ const ChatTrue = () => {
         <div className='w-full flex justify-between my-[20px]'>
           <div className='w-[47%] aspect-square bg-[#FF006B] rounded-[20px]'></div>
           <div className='w-[47%] flex flex-col justify-between'>
-            <div className='w-full card flex items-center px-[20px] py-[16px]'>
+            <div className='w-full card flex items-center px-[20px] py-[14px]'>
               <span className='w-[45%]' style={{ fontSize: '12px' }}>
                 키
               </span>
-              <span className='w-[70%] pl-[8px] border-l border-black/20 border-solid'>
+              <span
+                className='w-[50%] pl-[8px] border-l border-black/20 border-solid'
+                style={{ fontSize: '13px' }}
+              >
                 165cm
               </span>
             </div>
-            <div className='w-full card flex items-center px-[20px] py-[16px]'>
+            <div className='w-full card flex items-center px-[20px] py-[14px]'>
               <span className='w-[45%]' style={{ fontSize: '12px' }}>
                 주량
               </span>
-              <span className='w-[70%] pl-[8px] border-l border-black/20 border-solid'>
+              <span
+                className='w-[50%] pl-[8px] border-l border-black/20 border-solid'
+                style={{ fontSize: '13px' }}
+              >
                 1.5병
               </span>
             </div>
-            <div className='w-full card flex items-center px-[20px] py-[16px]'>
+            <div className='w-full card flex items-center px-[20px] py-[14px]'>
               <span className='w-[45%]' style={{ fontSize: '12px' }}>
                 흡연여부
               </span>
-              <span className='w-[70%] pl-[8px] border-l border-black/20 border-solid'>
+              <span
+                className='w-[50%] pl-[8px] border-l border-black/20 border-solid'
+                style={{ fontSize: '13px' }}
+              >
                 비흡연
               </span>
             </div>

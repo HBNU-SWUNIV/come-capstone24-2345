@@ -11,10 +11,10 @@ const Modal = (props) => {
   }, [props]);
 
   return (
-    <div className='size-full bg-black/50 absolute top-0 flex justify-center items-center z-50'>
-      <div className='w-[90%] h-[65%] relative'>
+    <div className='size-full max-w-[440px] bg-black/30 fixed top-0 flex justify-center items-center z-50'>
+      <div className='w-[90%] h-[65%] card relative'>
         <img
-          className='w-[35px] h-[35px] absolute top-[-40px] right-0'
+          className='w-[35px] h-[35px] absolute top-[-40px] right-0 cursor-pointer'
           src='/close.svg'
           onClick={clickClose}
         />
