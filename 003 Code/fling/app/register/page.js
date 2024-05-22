@@ -1,42 +1,37 @@
 'use client';
 
-import { useState } from 'react';
-import Fifth from './FifthRegister';
-import First from './FirstRegister';
-import Fourth from './FourthRegister';
-import Last from './LastRegister';
-import Second from './SecondRegister';
-import Third from './ThirdRegister';
+import { useRouter } from 'next/navigation';
 
 const Register = () => {
-  let [page, setPage] = useState(1);
-
-  const result = () => {
-    switch (page) {
-      case 1:
-        return <First handlePage={handlePage} page={page} />;
-      case 2:
-        return <Second handlePage={handlePage} page={page} />;
-      case 3:
-        return <Third handlePage={handlePage} page={page} />;
-      case 4:
-        return <Fourth handlePage={handlePage} page={page} />;
-      case 5:
-        return <Fifth handlePage={handlePage} page={page} />;
-      case 6:
-        return <Last handlePage={handlePage} page={page} />;
-      default:
-        return <First handlePage={handlePage} page={page} />;
-    }
-  };
-
-  const handlePage = (pages) => {
-    setPage(pages);
-  };
+  const router = useRouter();
   return (
     <>
-      {/* <div className='size-full pb-[100px] bg-indigo-600/30 overflow-y-scroll'> */}
-      {result()}
+      <div className='w-full h-[calc(100vh_-_200px)] flex flex-col justify-center items-center'>
+        <div className='w-full flex justify-center mb-[40px]'>
+          <img
+            className='w-[200px] h-[200px] translate-x-[20px]'
+            src='/email-auth.svg'
+          />
+        </div>
+
+        <div className='flex flex-col mb-[20px]'>
+          <span className='mb-[8px]'>회원가입에 앞서 대학인증을 위해</span>
+          <span>회원님의 학교 이메일과 학생증이 필요해요</span>
+        </div>
+
+        <button
+          className='card w-[160px] h-[50px] flex justify-center items-center rounded-full content-center mb-[20px]'
+          style={{
+            fontSize: '14px',
+          }}
+          onClick={() => {
+            router.push('/register/user');
+          }}
+        >
+          <p className='mr-[8px]'>본인인증</p>
+          <p>&gt;</p>
+        </button>
+      </div>
     </>
   );
 };

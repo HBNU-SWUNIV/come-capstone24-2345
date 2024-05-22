@@ -12,13 +12,24 @@
   --card-color: rgba(255, 255, 255, 0.9);
 }
 
+html {
+  min-height: calc(100% + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overscroll-behavior: none;
+}
+
 body {
   min-height: 100vh;
 }
 
 .main {
   /* min-width: 375px; */
-  background-image: linear-gradient(
+  /* background-image: linear-gradient(
       224deg,
       transparent 0%,
       transparent 30%,
@@ -45,7 +56,13 @@ body {
       transparent 38%,
       transparent 100%
     ),
-    linear-gradient(90deg, rgb(251, 246, 255), rgb(251, 246, 255));
+    linear-gradient(90deg, rgb(251, 246, 255), rgb(251, 246, 255)); */
+
+  background-image: linear-gradient(
+    180deg,
+    rgba(220, 170, 255, 0.2) 0%,
+    rgba(112, 0, 255, 0.2) 100%
+  );
 }
 
 .bg-img {
@@ -57,7 +74,6 @@ body {
 }
 
 .card {
-  border-radius: 20px;
   box-shadow: 0 4px 15px rgba(31, 38, 135, 0.25);
   /* box-shadow: 0 2px 0px rgba(31, 38, 135, 0.3); */
   background-color: rgba(255, 255, 255, 0.9);
@@ -153,6 +169,29 @@ body {
   border-left: 0;
   margin-left: -10px;
   margin-top: -20px;
+}
+
+progress {
+  appearance: none;
+}
+progress::-webkit-progress-bar {
+  /* background: #f0f0f0;
+  border-radius: 10px;
+  box-shadow: inset 3px 3px 10px #ccc; */
+  /* box-shadow: 0 4px 15px rgba(31, 38, 135, 0.25); */
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+progress::-webkit-progress-value {
+  border-radius: 10px;
+  background: var(--main-puple);
+  background: -webkit-linear-gradient(
+    to right,
+    var(--main-puple-50),
+    var(--main-puple)
+  );
+  /* background: linear-gradient(to right, #93f9b9, #1d976c); */
+  background: linear-gradient(to right, var(--main-pink), var(--main-puple));
 }
 
 @keyframes moveUpDown {

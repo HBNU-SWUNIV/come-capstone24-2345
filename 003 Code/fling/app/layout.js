@@ -1,8 +1,13 @@
-import { Inter } from 'next/font/google';
 import './globals.css';
 import './reset.css';
+import './login.css';
+import localfont from 'next/font/local';
+import Head from 'next/head';
 
-const inter = Inter({ subsets: ['latin'] });
+const hanbit = localfont({
+  src: '../public/fonts/KCC-Hanbit.woff2',
+  weight: 'normal',
+});
 
 export const metadata = {
   title: '플링',
@@ -10,15 +15,27 @@ export const metadata = {
   icons: {
     icon: 'icons/pwa-icons/icon-512x512.png',
   },
+  appleWebApp: {
+    title: '플링',
+    statusBarStyle: 'black-translucent',
+    startupImage: [
+      '/assets/startup/apple-touch-startup-image-768x1004.png',
+      {
+        url: '/assets/startup/apple-touch-startup-image-1536x2008.png',
+        media: '(device-width: 768px) and (device-height: 1024px)',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang='en'>
+    <html lang='ko'>
       {/* <body className={inter.className}> */}
-      <body>
-        <div className='w-screen h-screen  bg-blue-500/30 flex'>
-          <div className='main w-full max-w-[440px] max-h-[940px] min-w-[330px] min-h-[568px] text-center m-auto box-border flex flex-col h-screen overflow-x-hidden'>
+      <body className={hanbit.className}>
+        <div className='w-screen h-screen flex'>
+          {/* max-h-[940px] */}
+          <div className='main w-full max-w-[440px] min-w-[330px] min-h-[568px] text-center m-auto box-border flex flex-col h-screen overflow-x-hidden'>
             {children}
           </div>
         </div>

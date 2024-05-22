@@ -6,19 +6,19 @@ import NavigationBar from './NavigationBar';
 function App() {
   return (
     <Router>
-      <div className="App">
+      <div className='App'>
         <Header />
         <Switch>
-          <Route path="/" exact>
+          <Route path='/' exact>
             <Home />
           </Route>
-          <Route path="/search">
+          <Route path='/search'>
             <Search />
           </Route>
-          <Route path="/messages">
+          <Route path='/messages'>
             <Messages />
           </Route>
-          <Route path="/profile">
+          <Route path='/profile'>
             <Profile />
           </Route>
         </Switch>

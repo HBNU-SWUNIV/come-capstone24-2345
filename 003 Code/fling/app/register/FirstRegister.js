@@ -12,8 +12,8 @@ const First = (props) => {
       </div>
 
       <div className='flex flex-col mb-[20px]'>
-        <span className='mb-[8px]'>본인인증을 위해</span>
-        <span>회원님의 학교이메일과 학생증이 필요해요</span>
+        <span className='mb-[8px]'>회원가입에 앞서 대학인증을 위해</span>
+        <span>회원님의 학교 이메일과 학생증이 필요해요</span>
       </div>
 
       <button

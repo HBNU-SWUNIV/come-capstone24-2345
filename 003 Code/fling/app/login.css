@@ -1,0 +1,6 @@
+.floating-label-input:focus ~ .floating-label,
+.floating-label-input:not(:placeholder-shown) ~ .floating-label {
+  transform: translateY(-2rem);
+  font-size: 0.75rem;
+  opacity: 1;
+}

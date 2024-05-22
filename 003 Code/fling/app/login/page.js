@@ -1,9 +1,9 @@
 export default function Login() {
   return (
     <div className='flex flex-col size-full items-center pt-[100px]'>
-      <div className='w-full h-[20%]'>
+      <div className='w-full'>
         <div
-          className='w-full h-[20%] text-end font-thin'
+          className='w-full h-[20%] text-end font-thin px-[20px]'
           style={{ fontSize: '30px', lineHeight: '50px' }}
         >
           <p>터치 단 한 번으로</p>
@@ -15,45 +15,42 @@ export default function Login() {
         </div>
       </div>
 
-      <div className='w-[120%] h-[65%] flex relative items-center'>
+      {/* <div className='w-[120%] h-[65%] flex relative items-center'>
         <img
           className='w-[100%] h-[100%] absolute left-[-7%]'
           src='/login.svg'
         />
-      </div>
+      </div> */}
 
-      <div className='w-full h-[15%] flex flex-col items-center box-content pb-[80px]'>
-        <form className='flex mb-[16px]'>
-          <div className='flex flex-col gap-y-[8px]'>
-            <input
-              className='card-light w-[200px] h-[40px] rounded-full px-[16px]'
-              placeholder='이메일'
-              type='email'
-              style={{ fontSize: '12px' }}
-            />
-
-            <input
-              className='card-light w-[200px] h-[40px] rounded-full box-border px-[16px]'
-              placeholder='비밀번호'
-              type='password'
-              style={{ fontSize: '12px' }}
-            />
-          </div>
-          <button
-            className='card-light flex w-[40px] h-full bg-main-pink/70 rounded-full text-start text-white justify-center items-center box-border ml-[8px]'
-            type='submit'
-            style={{ fontSize: '12px' }}
-          >
-            <a href='/main'>&gt;</a>
-          </button>
-        </form>
-        <div style={{ fontSize: '10px' }}>
-          <span>비밀번호를 잊으셨나요?</span>
-          <a className='ml-[10px] underline' href='/main'>
-            비밀번호 찾기
-          </a>
+      <form className='w-full h-full flex flex-col justify-center items-center box-content'>
+        <div className='relative w-2/3 mb-[30px]'>
+          <input
+            type='email'
+            placeholder=' '
+            className='floating-label-input block w-full h-[50px] card rounded-full focus:outline-none px-[20px]'
+          />
+          <label className='floating-label absolute left-[20px] top-[15px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
+            이메일
+          </label>
         </div>
-      </div>
+        <div className='relative w-2/3 mb-[30px]'>
+          <input
+            type='password'
+            placeholder=' '
+            className='floating-label-input block w-full h-[50px] card rounded-full focus:outline-none px-[20px]'
+          />
+          <label className='floating-label absolute left-[20px] top-[15px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
+            비밀번호
+          </label>
+        </div>
+        <button
+          className='card-light flex w-2/3 h-[50px] bg-main-pink/70 rounded-full text-start text-white justify-center items-center box-border ml-[8px]'
+          type='submit'
+          style={{ fontSize: '12px' }}
+        >
+          <a href='/main'>로그인</a>
+        </button>
+      </form>
     </div>
   );
 }

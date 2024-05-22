@@ -1,15 +1,15 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const Third = (props) => {
+  const router = useRouter();
   let [clicked, setClicked] = useState(false);
 
   const clickCert = () => {
     setClicked(true);
     // 메일로 인증번호 보내기
-  };
-
-  const clickBtn = () => {
-    props.handlePage(props.page + 1);
   };
 
   const createCert = () => {
@@ -25,7 +25,9 @@ const Third = (props) => {
 
           <button
             className='btn p-[20px] mb-[20px] rounded-full'
-            onClick={clickBtn}
+            onClick={() => {
+              router.push('/register/account');
+            }}
           >
             확인
           </button>

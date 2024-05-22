@@ -1,10 +1,9 @@
+'use client';
+
 import { useRouter } from 'next/navigation';
 
 const Last = () => {
   const router = useRouter();
-  const redirect = () => {
-    router.push('/');
-  };
   return (
     <div className='w-full h-[calc(100vh_-_200px)] flex flex-col justify-center items-center'>
       <div className='flex flex-col items-center justify-center mb-[20px]'>
@@ -18,10 +17,15 @@ const Last = () => {
           여러분의 프로필을 작성한 후 매칭이 가능합니다
         </span>
         <span className='mb-[8px]' style={{ fontSize: '12px' }}>
-          Mypage -&gt; 프로필수정, 나의 취미, 나의 성격
+          Mypage &gt; 프로필수정, 나의 취미, 나의 성격
         </span>
       </div>
-      <button className='w-[50%] btn p-[20px] mb-[20px]' onClick={redirect}>
+      <button
+        className='w-[50%] btn p-[20px] mb-[20px]'
+        onClick={() => {
+          router.push('/');
+        }}
+      >
         메인으로
       </button>
     </div>

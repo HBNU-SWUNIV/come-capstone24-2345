@@ -1,7 +1,8 @@
+'use client';
+import { useRouter } from 'next/navigation';
+
 const Fifth = (props) => {
-  const clickBtn = () => {
-    props.handlePage(props.page + 1);
-  };
+  const router = useRouter();
   return (
     <>
       <div className='size-full flex flex-col p-[20px]'>
@@ -44,7 +45,12 @@ const Fifth = (props) => {
           </div>
         </div>
 
-        <button className='btn p-[20px] mb-[20px]' onClick={clickBtn}>
+        <button
+          className='btn p-[20px] mb-[20px]'
+          onClick={() => {
+            router.push('/register/success');
+          }}
+        >
           제출
         </button>
       </div>

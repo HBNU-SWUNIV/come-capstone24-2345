@@ -1,7 +1,9 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+
 const Second = (props) => {
-  const clickBtn = () => {
-    props.handlePage(props.page + 1);
-  };
+  let router = useRouter();
   return (
     <div className='size-full flex flex-col p-[20px]'>
       <progress
@@ -28,7 +30,12 @@ const Second = (props) => {
         <input placeholder='19990101' className='bg-transparent' />
       </div>
 
-      <button className='btn p-[20px] rounded-full' onClick={clickBtn}>
+      <button
+        className='btn p-[20px] rounded-full'
+        onClick={() => {
+          router.push('/register/univ');
+        }}
+      >
         다음
       </button>
     </div>

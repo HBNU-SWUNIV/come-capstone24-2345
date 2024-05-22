@@ -1,6 +1,10 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const Fourth = (props) => {
+  const router = useRouter();
   let [clickDup, setClickDup] = useState(false);
   let [checkDup, setCheckDup] = useState(false);
 
@@ -13,10 +17,6 @@ const Fourth = (props) => {
       }
     }
   }, [clickDup]);
-
-  const clickBtn = () => {
-    props.handlePage(props.page + 1);
-  };
 
   return (
     <>
@@ -120,7 +120,12 @@ const Fourth = (props) => {
                 type='password'
               />
             </div>
-            <button className='btn p-[20px] mb-[20px]' onClick={clickBtn}>
+            <button
+              className='btn p-[20px] mb-[20px]'
+              onClick={() => {
+                router.push('/register/photo');
+              }}
+            >
               확인
             </button>
           </>
