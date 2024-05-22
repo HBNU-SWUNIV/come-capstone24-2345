@@ -46,6 +46,7 @@ const UserCheck = (props) => {
       {content.map((e, i) => {
         return (
           <div
+            key={e.key}
             className='card w-[300px] h-[80px] px-[20px] rounded-[20px] flex items-center mb-[20px] cursor-pointer'
             onClick={() => {
               clickHandler(e.key);

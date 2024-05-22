@@ -1,10 +1,7 @@
 const Review = () => {
   return (
     <div>
-      <div
-        className='w-full text-start mt-[20px] mb-[20px]'
-        style={{ fontSize: '16px' }}
-      >
+      <div className='w-full text-start my-[20px]' style={{ fontSize: '16px' }}>
         <span className='mr-2'>✍🏻</span>
         <span>플링 사용 후기</span>
         <br />
@@ -15,7 +12,7 @@ const Review = () => {
 
       <div className='overflow-x-scroll w-[280px]'>
         <div className='flex w-[300%] box-border'>
-          <div className='card-light bg-white w-full h-[200px] px-[20px] rounded-[20px]'></div>
+          <div className='card bg-white w-full h-[200px] mx-[20px] rounded-[20px]'></div>
           <div className='card-light bg-white w-full h-[200px] px-[20px] rounded-[20px]'></div>
           <div className='card-light bg-white w-full h-[200px] px-[20px] rounded-[20px]'></div>
         </div>
