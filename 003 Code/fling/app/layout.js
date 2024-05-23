@@ -2,7 +2,6 @@ import './globals.css';
 import './reset.css';
 import './login.css';
 import localfont from 'next/font/local';
-import Head from 'next/head';
 
 const hanbit = localfont({
   src: '../public/fonts/KCC-Hanbit.woff2',
@@ -17,7 +16,7 @@ export const metadata = {
   },
   appleWebApp: {
     title: '플링',
-    statusBarStyle: 'black-translucent',
+    statusBarStyle: '#F6EBFE',
     startupImage: [
       '/assets/startup/apple-touch-startup-image-768x1004.png',
       {
@@ -31,7 +30,6 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang='ko'>
-      {/* <body className={inter.className}> */}
       <body className={hanbit.className}>
         <div className='w-screen h-screen flex'>
           {/* max-h-[940px] */}

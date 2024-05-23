@@ -1,6 +1,6 @@
 const Match = () => {
   return (
-    <div>
+    <>
       <div
         className='w-full text-start mt-[20px] mb-[20px]'
         style={{ fontSize: '16px' }}
@@ -8,7 +8,7 @@ const Match = () => {
         <span className='mr-2'>🏫</span>
         <span>국립한밭대학교</span>
       </div>
-      <div className='card rounded-[20px] w-[300px] flex flex-col items-center py-[10px] mb-[20px]'>
+      <div className='card rounded-[20px] w-full flex flex-col items-center py-[20px] mb-[20px]'>
         <div className='w-[100px] h-[100px] my-[8px]'>
           <img className='size-full' src='/main-search-heart.svg' />
         </div>
@@ -36,7 +36,7 @@ const Match = () => {
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

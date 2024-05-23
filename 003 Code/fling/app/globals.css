@@ -20,48 +20,21 @@ html {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  overscroll-behavior: none;
+  overflow: hidden;
+  overscroll-behavior-y: contain;
 }
 
 body {
+  overflow: hidden;
+  overscroll-behavior-y: contain;
   min-height: 100vh;
 }
 
 .main {
-  /* min-width: 375px; */
-  /* background-image: linear-gradient(
-      224deg,
-      transparent 0%,
-      transparent 30%,
-      rgba(249, 249, 249, 0.02) 30%,
-      rgba(249, 249, 249, 0.02) 36%,
-      transparent 36%,
-      transparent 100%
-    ),
-    linear-gradient(
-      345deg,
-      transparent 0%,
-      transparent 53%,
-      rgb(247, 237, 255) 53%,
-      rgb(247, 237, 255) 63%,
-      transparent 63%,
-      transparent 100%
-    ),
-    linear-gradient(
-      284deg,
-      transparent 0%,
-      transparent 28%,
-      rgb(246, 236, 255) 28%,
-      rgb(246, 236, 255) 38%,
-      transparent 38%,
-      transparent 100%
-    ),
-    linear-gradient(90deg, rgb(251, 246, 255), rgb(251, 246, 255)); */
-
   background-image: linear-gradient(
     180deg,
-    rgba(220, 170, 255, 0.2) 0%,
-    rgba(112, 0, 255, 0.2) 100%
+    /* rgba(220, 170, 255, 0.2) 0%, */ rgb(248, 237, 255) 0%,
+    /* rgba(112, 0, 255, 0.2) 100% */ rgb(228, 207, 255) 100%
   );
 }
 
@@ -171,6 +144,27 @@ body {
   margin-top: -20px;
 }
 
+.star-rating {
+  direction: rtl;
+  display: inline-flex;
+  font-size: 2em;
+}
+.star-rating input[type='radio'] {
+  display: none;
+}
+.star-rating label {
+  color: #ddd;
+  cursor: pointer;
+}
+.star-rating input[type='radio']:checked ~ label,
+.star-rating input[type='radio']:checked ~ label ~ label {
+  color: #ffcc00;
+}
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: #ffcc00;
+}
+
 progress {
   appearance: none;
 }
@@ -179,11 +173,15 @@ progress::-webkit-progress-bar {
   border-radius: 10px;
   box-shadow: inset 3px 3px 10px #ccc; */
   /* box-shadow: 0 4px 15px rgba(31, 38, 135, 0.25); */
-  border-radius: 9999px;
-  background-color: rgba(255, 255, 255, 0.1);
+  /* border-radius: 9999px; */
+  border-top-right-radius: 9999px;
+  border-bottom-right-radius: 9999px;
+  background-color: rgba(0, 0, 0, 0);
 }
 progress::-webkit-progress-value {
-  border-radius: 10px;
+  /* border-radius: 10px; */
+  border-top-right-radius: 9999px;
+  border-bottom-right-radius: 9999px;
   background: var(--main-puple);
   background: -webkit-linear-gradient(
     to right,
@@ -203,5 +201,20 @@ progress::-webkit-progress-value {
   }
   100% {
     transform: translateY(0);
+  }
+}
+
+@keyframes rollingBanner {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@media all and (display-mode: standalone) {
+  .intallAppBtn {
+    display: none;
   }
 }

@@ -10,7 +10,7 @@ const Second = (props) => {
         min={0}
         max={100}
       ></progress>
-      <span className='text-start mb-[20px]' style={{ fontSize: '22px' }}>
+      <span className='text-start mb-[20px]' style={{ fontSize: '20px' }}>
         회원님의 이름과 생년월일을 적어주세요
       </span>
 

@@ -20,13 +20,14 @@ const Last = () => {
           Mypage &gt; 프로필수정, 나의 취미, 나의 성격
         </span>
       </div>
+
       <button
-        className='w-[50%] btn p-[20px] mb-[20px]'
+        className='w-[50%] btn p-[20px]'
         onClick={() => {
-          router.push('/');
+          router.replace('/login');
         }}
       >
-        메인으로
+        로그인하기
       </button>
     </div>
   );

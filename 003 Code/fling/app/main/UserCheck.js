@@ -30,7 +30,7 @@ const UserCheck = (props) => {
   };
 
   return (
-    <div>
+    <>
       <div
         className='w-full text-start mt-[20px] mb-[20px]'
         style={{ fontSize: '16px' }}
@@ -47,7 +47,7 @@ const UserCheck = (props) => {
         return (
           <div
             key={e.key}
-            className='card w-[300px] h-[80px] px-[20px] rounded-[20px] flex items-center mb-[20px] cursor-pointer'
+            className='card w-full h-[80px] px-[20px] rounded-[20px] flex items-center mb-[20px] cursor-pointer'
             onClick={() => {
               clickHandler(e.key);
             }}
@@ -55,9 +55,10 @@ const UserCheck = (props) => {
             <div className='w-[15%] flex justify-center items-center'>
               <img className='w-[40px] h-[40px]' src={`/${e.img}.svg`} />
             </div>
-            <div className='w-[75%] text-start pl-[15px]'>
-              <span style={{ fontSize: '14px' }}>{e.title}</span>
-              <br />
+            <div className='w-[75%] text-start pl-[15px] flex flex-col'>
+              <span style={{ fontSize: '14px' }} className='mb-[12px]'>
+                {e.title}
+              </span>
               <span style={{ fontSize: '10px' }}>{e.subtitle}</span>
             </div>
             <div className='w-[10%] flex justify-center items-center'>
@@ -69,7 +70,7 @@ const UserCheck = (props) => {
           </div>
         );
       })}
-    </div>
+    </>
   );
 };
 

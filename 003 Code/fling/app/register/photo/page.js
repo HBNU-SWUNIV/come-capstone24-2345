@@ -5,14 +5,14 @@ const Fifth = (props) => {
   const router = useRouter();
   return (
     <>
-      <div className='size-full flex flex-col p-[20px]'>
-        <progress
-          className='w-full mb-[20px]'
-          value={80}
-          min={0}
-          max={100}
-        ></progress>
-        <span className='text-start mb-[20px]' style={{ fontSize: '22px' }}>
+      <progress
+        className='w-full max-w-[440px] fixed top-[60px]'
+        value={80}
+        min={0}
+        max={100}
+      ></progress>
+      <div className='size-full flex flex-col'>
+        <span className='text-start mb-[20px]' style={{ fontSize: '20px' }}>
           회원님의 본인확인
         </span>
         <div className='flex justify-between mb-[20px]'>
@@ -48,7 +48,7 @@ const Fifth = (props) => {
         <button
           className='btn p-[20px] mb-[20px]'
           onClick={() => {
-            router.push('/register/success');
+            router.replace('/register/success');
           }}
         >
           제출

@@ -7,7 +7,7 @@ import ChatTrue from './ChatTrue';
 const Chat = () => {
   let [matched, setMatched] = useState(true);
   return (
-    <div className='size-full relative p-[20px]'>
+    <div className='size-full relative \'>
       {matched ? <ChatTrue /> : <ChatFalse />}
     </div>
   );

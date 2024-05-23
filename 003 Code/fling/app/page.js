@@ -2,14 +2,13 @@ import Link from 'next/link';
 
 export default function Start() {
   return (
-    <div className='flex flex-col size-full items-center pt-[100px]'>
+    <div className='flex flex-col size-full items-center pt-[100px] relative'>
       <div className='w-full h-[20%]'>
         <div
-          className='w-full h-[20%] px-[20px] text-end font-thin'
+          className='w-full h-[20%] px-[20px] text-end'
           style={{
             fontSize: '30px',
             lineHeight: '50px',
-            fontWeight: '400',
           }}
         >
           <p>터치 단 한 번으로</p>

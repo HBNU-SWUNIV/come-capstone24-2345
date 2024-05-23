@@ -25,7 +25,7 @@ const Register = () => {
             fontSize: '14px',
           }}
           onClick={() => {
-            router.push('/register/user');
+            router.replace('/register/user');
           }}
         >
           <p className='mr-[8px]'>본인인증</p>

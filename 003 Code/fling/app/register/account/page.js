@@ -20,14 +20,14 @@ const Fourth = (props) => {
 
   return (
     <>
-      <div className='size-full flex flex-col p-[20px]'>
-        <progress
-          className='w-full mb-[20px]'
-          value={60}
-          min={0}
-          max={100}
-        ></progress>
-        <span className='text-start mb-[20px]' style={{ fontSize: '22px' }}>
+      <progress
+        className='w-full max-w-[440px] fixed top-[60px]'
+        value={60}
+        min={0}
+        max={100}
+      ></progress>
+      <div className='size-full flex flex-col'>
+        <span className='text-start mb-[20px]' style={{ fontSize: '20px' }}>
           계정 생성
         </span>
         <div className='flex flex-col p-[20px] card rounded-[20px] mb-[20px]'>
@@ -123,7 +123,7 @@ const Fourth = (props) => {
             <button
               className='btn p-[20px] mb-[20px]'
               onClick={() => {
-                router.push('/register/photo');
+                router.replace('/register/photo');
               }}
             >
               확인
