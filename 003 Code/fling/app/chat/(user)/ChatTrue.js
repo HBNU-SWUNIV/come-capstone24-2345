@@ -6,7 +6,7 @@ import mbtiF from '@/public/mbti/F.svg';
 import mbtiP from '@/public/mbti/P.svg';
 
 import { useRouter } from 'next/navigation';
-import ScrollingBanner from './ScrollingBanner';
+import Slider from './Slider';
 
 const ChatTrue = () => {
   const router = useRouter();
@@ -97,8 +97,9 @@ const ChatTrue = () => {
             </div>
           </div>
         </div> */}
+        <Slider texts={['🎱 당구', '🎳 볼링', '🎾 테니스', '🏂 보드']} />
 
-        <div className='w-full'>
+        {/* <div className='w-full'>
           <marquee direction={`left`} className='p-[20px] scroll-smooth'>
             <div className='flex w-min'>
               <div className='w-max card p-[20px] mr-[8px] rounded-[20px]'>
@@ -118,7 +119,7 @@ const ChatTrue = () => {
               </div>
             </div>
           </marquee>
-        </div>
+        </div> */}
 
         <span>닉네임 님의 성격</span>
         {/* <div className='w-[calc(100%_+_20px)] p-[20px] overflow-x-scroll translate-x-[-20px]'>
@@ -142,7 +143,11 @@ const ChatTrue = () => {
             </div>
           </marquee>
         </div> */}
-        <div className='w-full'>
+
+        <Slider
+          texts={['활동적인', '적극적인', '대담한', '유머러스한', '능률적인']}
+        />
+        {/* <div className='w-full'>
           <marquee direction={`right`} className='p-[20px]'>
             <div className='flex w-min'>
               <div className='w-max card p-[20px] mr-[8px] rounded-[20px]'>
@@ -162,7 +167,7 @@ const ChatTrue = () => {
               </div>
             </div>
           </marquee>
-        </div>
+        </div> */}
 
         <div className='w-full flex flex-col items-center mb-[20px]'>
           <div className='my-[20px]'>

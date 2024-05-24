@@ -3,7 +3,7 @@ import Navigator from '@/app/Navigator';
 const ChatLayout = ({ children }) => {
   return (
     <div className='w-full relative'>
-      <header className='max-w-[440px] w-full mx-auto h-[60px] bg-[#f6ebfe] px-[20px] fixed top-0 flex items-center'>
+      <header className='max-w-[440px] w-full mx-auto h-[60px] bg-[#f6ebfe] px-[20px] fixed top-0 flex items-center z-50'>
         <div className='h-[50%] flex items-center'>
           <img className='h-[80%] aspect-square' src='/logo.png' />
           <span className='text-2xl ml-[8px]'>플링</span>

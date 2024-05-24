@@ -16,21 +16,15 @@ import { useState } from 'react';
 
 const ChatRoomLayout = ({ children }) => {
   const router = useRouter();
-  let [clickPlus, setClickPlus] = useState(false);
 
   const handleClickPlus = () => {
-    if (clickPlus) {
-      document.querySelector('#chatInput').classList.add('translate-y-[350px]');
-    } else {
-      document
-        .querySelector('#chatInput')
-        .classList.remove('translate-y-[350px]');
-    }
-    setClickPlus(!clickPlus);
+    document
+      .querySelector('#chat-input')
+      .classList.toggle('translate-y-[350px]');
   };
   return (
     <div className='w-full relative'>
-      <header className='max-w-[440px] w-full mx-auto h-[60px] bg-[#f6ebfe] fixed top-0 flex items-center'>
+      <header className='max-w-[440px] w-full mx-auto h-[60px] bg-[#f6ebfe] fixed top-0 flex items-center z-50'>
         <div className='w-[15%] h-[50%] flex items-center justify-center'>
           <img
             className='h-[80%] aspect-square cursor-pointer'
@@ -56,8 +50,8 @@ const ChatRoomLayout = ({ children }) => {
       </main>
 
       <nav
-        id='chatInput'
-        className='max-w-[440px] w-full mx-auto h-[400px] fixed bottom-0 px-[10px] flex flex-col justify-center card '
+        id='chat-input'
+        className='max-w-[440px] w-full mx-auto h-[400px] fixed bottom-0 px-[10px] flex flex-col justify-center card translate-y-[350px]'
       >
         <div className='w-full h-[50px] mb-[20px] pr-[5px] flex items-center'>
           <button className='size-[40px] mr-[8px]' onClick={handleClickPlus}>

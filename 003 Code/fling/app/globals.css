@@ -52,6 +52,13 @@ body {
   background-color: rgba(255, 255, 255, 0.9);
 }
 
+.mychat {
+  box-shadow: 0 4px 15px rgba(31, 38, 135, 0.25);
+  /* box-shadow: 0 2px 0px rgba(31, 38, 135, 0.3); */
+  background-color: var(--main-puple-50);
+  color: white;
+}
+
 .btn {
   border-radius: 9999px;
   box-shadow: 0 4px 15px rgba(31, 38, 135, 0.25);
