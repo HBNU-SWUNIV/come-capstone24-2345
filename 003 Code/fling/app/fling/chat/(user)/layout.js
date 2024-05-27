@@ -1,5 +1,5 @@
+import Navigator from '@/app/Navigator';
 import Link from 'next/link';
-import Navigator from '../../Navigator';
 
 const ChatLayout = ({ children }) => {
   return (

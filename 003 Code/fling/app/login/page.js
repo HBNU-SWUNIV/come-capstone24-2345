@@ -29,7 +29,7 @@ export default function Login() {
 
     if (result.status == 200) {
       alert('로그인되었습니다');
-      router.replace('/main');
+      router.replace('/fling/main');
     } else {
       alert(result.error);
     }
