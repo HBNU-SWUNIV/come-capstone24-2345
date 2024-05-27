@@ -1,8 +1,11 @@
 'use client';
 
+import { setGlobalNickname, setGlobalPassword } from '@/lib/store';
 import axios from 'axios';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const RegisterAccount = () => {
   let [nickname, setNickname] = useState('');
@@ -10,8 +13,10 @@ const RegisterAccount = () => {
   let [password, setPassword] = useState('');
   let [reEnterPassword, setReEnterPassword] = useState('');
 
+  const globalUserInfo = useSelector((state) => state.registerUserInfo);
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const dispatch = useDispatch();
+  // const searchParams = useSearchParams();
 
   const handleNickname = (e) => {
     setNickname(e.target.value);
@@ -28,9 +33,10 @@ const RegisterAccount = () => {
   const checkNickname = async (e) => {
     e.preventDefault();
     await axios
-      .get(`/api/check/nickname?nickname=${nickname}`)
-      .then((res) => {
-        console.log(res.data);
+      .post('/api/check/nickname', { nickname })
+      .then((result) => {
+        dispatch(setGlobalNickname(result.data.nickname));
+        console.log('/register/account : ' + JSON.stringify(globalUserInfo));
         setIsExistNickname(false);
       })
       .catch((err) => {
@@ -44,9 +50,10 @@ const RegisterAccount = () => {
       .post('/api/check/password', {
         password,
         reEnterPassword,
-        email: searchParams.get('email'),
       })
-      .then((res) => {
+      .then((result) => {
+        dispatch(setGlobalPassword(result.data));
+        console.log('/register/account : ' + JSON.stringify(globalUserInfo));
         router.push('/register/photo');
       })
       .catch((err) => {
@@ -75,6 +82,7 @@ const RegisterAccount = () => {
               onChange={handleNickname}
               value={nickname}
               placeholder='홍길동전'
+              autoFocus={true}
               className='bg-transparent'
             />
           </div>
@@ -103,7 +111,7 @@ const RegisterAccount = () => {
                 아이디
               </span>
               <input
-                value={searchParams.get('email')}
+                value={globalUserInfo.email}
                 className='bg-transparent'
                 disabled
               />

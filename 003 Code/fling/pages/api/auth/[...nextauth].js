@@ -22,9 +22,8 @@ export const authOptions = {
           .collection('user_cred')
           .findOne({ email: credentials.email });
         if (!user) {
-          // console.log('이메일이 맞지 않습니다');
-          throw new Error('이메일이나 비밀번호가 올바르지 않습니다');
           // return null;
+          throw new Error('이메일이나 비밀번호가 올바르지 않습니다');
         }
         const pwcheck = await bcrypt.compare(
           credentials.password,
@@ -32,7 +31,6 @@ export const authOptions = {
         );
 
         if (!pwcheck) {
-          //   console.log('비밀번호가 맞지 않습니다');
           //   return null;
           throw new Error('이메일이나 비밀번호가 올바르지 않습니다');
         }
@@ -44,27 +42,25 @@ export const authOptions = {
   //jwt 만료일설정
   session: {
     strategy: 'jwt',
-    maxAge: 60,
+    maxAge: 10 * 60, // 10분
   },
 
   callbacks: {
     //jwt 만들 때 실행되는 코드
     //user변수는 DB의 유저정보담겨있고 token.user에 뭐 저장하면 jwt에 들어감
-    jwt: async ({ token, user, account, profile, isNewUser }) => {
+    jwt: async ({ token, user }) => {
       if (user) {
-        // token.user = {};
-        // token.user.name = user.name;
-        // token.user.email = user.email;
-        token.email = user.email;
-        token.test = 123123;
+        token.user = {};
+        token.user.email = user.email;
+        token.user.univ = user.univ;
+        token.user.name = user.name;
+        token.user.nickname = user.nickname;
       }
       return token;
     },
     //5. 유저 세션이 조회될 때 마다 실행되는 코드
     session: async ({ session, token }) => {
-      session.user.email = token.email;
-      session.user.test = token.test;
-      // session.user = token.user;
+      session.user = token.user;
       return session;
     },
   },

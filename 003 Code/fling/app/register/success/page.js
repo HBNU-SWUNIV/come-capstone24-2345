@@ -1,9 +1,26 @@
 'use client';
 
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
 
 const Last = () => {
   const router = useRouter();
+
+  const globalUserInfo = useSelector((state) => state.registerUserInfo);
+
+  const clickHandler = async (e) => {
+    const hasEmptyString = Object.values(globalUserInfo).includes('');
+
+    if (!hasEmptyString) {
+      await axios.post('/api/user/info', globalUserInfo).then((result) => {
+        alert('회원가입을 축하드립니다!');
+        router.replace('/login');
+      });
+    } else {
+      alert('입력하지 않은 값이 있음');
+    }
+  };
   return (
     <div className='w-full h-[calc(100vh_-_200px)] flex flex-col justify-center items-center'>
       <div className='flex flex-col items-center justify-center mb-[20px]'>
@@ -21,12 +38,7 @@ const Last = () => {
         </span>
       </div>
 
-      <button
-        className='w-[50%] btn p-[20px]'
-        onClick={() => {
-          router.replace('/login');
-        }}
-      >
+      <button className='w-[50%] btn p-[20px]' onClick={clickHandler}>
         로그인하기
       </button>
     </div>

@@ -1,8 +1,6 @@
 const CheckNickname = (req, res) => {
-  if (req.method == 'GET') {
-    const data = req.query;
-    console.log(data);
-
+  if (req.method == 'POST') {
+    const data = req.body;
     // data.nickname이 DB에 존재한다면
     // res.status(400).send('이미 존재하는 닉네임입니다');
 
@@ -11,7 +9,7 @@ const CheckNickname = (req, res) => {
       res.status(400).send('올바르지 않은 닉네임입니다');
     } else {
       // 모든 조건에 부합한다면
-      res.status(200).send('OK');
+      res.status(200).send(data);
     }
   }
 };

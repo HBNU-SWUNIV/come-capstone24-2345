@@ -1,8 +1,10 @@
 'use client';
 
+import store from '@/lib/store';
 import { useRouter } from 'next/navigation';
+import { Provider } from 'react-redux';
 
-const RegisterLayout = ({ children, backPage }) => {
+const RegisterLayout = ({ children }) => {
   const router = useRouter();
 
   return (
@@ -26,7 +28,7 @@ const RegisterLayout = ({ children, backPage }) => {
       </header>
       <main className='w-full h-auto pt-[60px]'>
         <div className='flex flex-col items-center px-[20px] pt-[40px]'>
-          {children}
+          <Provider store={store}>{children}</Provider>
         </div>
       </main>
     </div>

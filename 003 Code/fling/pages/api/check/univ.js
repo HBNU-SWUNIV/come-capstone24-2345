@@ -33,12 +33,17 @@ const handleCheckUniv = (req, res) => {
 
     if (!validateEmail(data.email)) {
       res.status(400).send('이메일이 올바르지 않은 형식입니다');
-    } else {
-      // 모두 올바르다면 해당 이메일로 인증번호 전송
+    }
+    // else if(//univCert로도 이메일이 인증되었다면?){
 
+    //   // 해당 이메일로 인증번호 전송
+    // }
+    else {
       let certNum = Math.floor(Math.random() * 900000) + 100000;
       console.log(certNum);
-      res.status(200).send(certNum);
+
+      data.certNum = certNum;
+      res.status(200).send(data);
     }
   }
 };

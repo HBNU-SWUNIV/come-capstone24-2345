@@ -1,21 +1,47 @@
 'use client';
+
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 const RegisterPhoto = () => {
+  let [profileSrc, setProfileSrc] = useState(true); // null로 수정할 것
+  let [studentIDSrc, setStudentIDSrc] = useState(true); // null로 수정할 것
+
   const router = useRouter();
 
   const checkPhoto = (e) => {
     e.preventDefault();
+    if (profileSrc && studentIDSrc) {
+      router.push('/register/success');
+    }
   };
 
   const handleProfile = async (e) => {
     let imgFile = e.target.files[0];
     let imgFileName = encodeURIComponent(imgFile.name);
-    let result = await axios.get(`/api/check/photo?file=${imgFileName}`);
+    await axios
+      .post('/api/check/profile', { imgFileName })
+      .then((result) => {
+        setProfileSrc(result.data.imgFileName);
+      })
+      .catch((err) => {
+        alert(err.response.data);
+      });
   };
 
-  const handleStudentID = (e) => {};
+  const handleStudentID = async (e) => {
+    let imgFile = e.target.files[0];
+    let imgFileName = encodeURIComponent(imgFile.name);
+    await axios
+      .post('/api/check/studentID', { imgFileName })
+      .then((result) => {
+        setStudentIDSrc(result.data.imgFileName);
+      })
+      .catch((err) => {
+        alert(err.response.data);
+      });
+  };
   return (
     <>
       <progress

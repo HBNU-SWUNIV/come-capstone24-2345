@@ -1,12 +1,18 @@
 'use client';
 
+import { setGlobalBirth, setGlobalName } from '@/lib/store';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const RegisterUser = () => {
   let [userName, setUserName] = useState('');
   let [userBirth, setUserBirth] = useState('');
+
+  const dispatch = useDispatch();
+  const globalUserInfo = useSelector((state) => state.registerUserInfo);
 
   let router = useRouter();
 
@@ -21,8 +27,11 @@ const RegisterUser = () => {
     await axios
       .post('/api/check/userInfo', { userName, userBirth })
       .then((result) => {
+        // console.log(result.data);
+        dispatch(setGlobalName(result.data.userName));
+        dispatch(setGlobalBirth(result.data.userBirth));
+        console.log('/register/user : ' + JSON.stringify(globalUserInfo));
         router.push('/register/univ');
-        // 데이터 전송할 것
       })
       .catch((err) => {
         alert(err.response.data);
@@ -52,6 +61,7 @@ const RegisterUser = () => {
           <input
             onChange={handleUserName}
             autoComplete='off'
+            autoFocus={true}
             value={userName}
             placeholder='홍길동'
             className='bg-transparent'

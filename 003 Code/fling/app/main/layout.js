@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import Navigator from '../Navigator';
-import { getServerSession } from 'next-auth';
-import authOptions from '@/pages/api/auth/[...nextauth]';
 import React from 'react';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 
 const MainLayout = async ({ children }) => {
   let session = await getServerSession(authOptions);
-  session ? console.log(session) : console.log(`${session}`);
-
+  if (session) {
+    console.log(session);
+  }
   return (
     <div className='w-full relative'>
       {/* <div className='w-full h-[90px] flex items-center border-b border-solid border-white/50 px-[20px]'>

@@ -1,8 +1,15 @@
 'use client';
 
+import {
+  setGlobalDepartment,
+  setGlobalEmail,
+  setGlobalUniv,
+} from '@/lib/store';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const RegisterUniv = () => {
   let [certReq, setCertReq] = useState(false);
@@ -13,6 +20,8 @@ const RegisterUniv = () => {
   let [receivedCertNum, setReceivedCertNum] = useState(null);
 
   const router = useRouter();
+  const dispatch = useDispatch();
+  const globalUserInfo = useSelector((state) => state.registerUserInfo);
 
   const handleUniv = (e) => {
     setUniv(e.target.value);
@@ -35,9 +44,13 @@ const RegisterUniv = () => {
         department,
         email,
       })
-      .then((res) => {
+      .then((result) => {
         setCertReq(true);
-        setReceivedCertNum(res.data);
+        setReceivedCertNum(result.data.certNum);
+        dispatch(setGlobalUniv(result.data.univ));
+        dispatch(setGlobalDepartment(result.data.department));
+        dispatch(setGlobalEmail(result.data.email));
+        console.log('/register/univ : ' + JSON.stringify(globalUserInfo));
       })
       .catch((err) => {
         alert(err.response.data);
@@ -48,9 +61,8 @@ const RegisterUniv = () => {
 
     if (certNum == receivedCertNum) {
       alert('인증되었습니다!');
-      router.push(`/register/account?email=${email}`);
-
-      // 데이터 전송하기
+      console.log('/register/univ : ' + JSON.stringify(globalUserInfo));
+      router.push('/register/account');
     } else {
       alert('인증번호가 올바르지 않습니다');
     }
@@ -78,6 +90,7 @@ const RegisterUniv = () => {
               inputMode='text'
               autoComplete='off'
               placeholder='국립한밭대학교'
+              autoFocus={true}
               className='bg-transparent'
             />
           </div>
