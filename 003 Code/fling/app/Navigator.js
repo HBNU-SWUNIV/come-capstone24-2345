@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -7,7 +8,6 @@ import { useEffect, useState } from 'react';
 const Navigator = (props) => {
   let [path, setPath] = useState(['home', 'chat', 'foodie', 'mypage']);
   const pathname = usePathname();
-  const router = useRouter();
 
   useEffect(() => {
     switch (pathname) {
@@ -29,43 +29,36 @@ const Navigator = (props) => {
 
   return (
     <div className='w-[90%] h-[70%] bg-white flex card rounded-full px-[10px] translate-y-[10px]'>
-      <button
+      <Link
+        href='/main'
         className='w-1/4 h-full flex flex-col justify-center items-center'
-        onClick={() => {
-          router.push('/main');
-        }}
       >
         <img src={`/nav/${path[0]}.svg`} className='size-[35px] mb-[4px]' />
 
         {/* <span style={{ fontSize: '12px' }}>Home</span> */}
-      </button>
-      <button
+      </Link>
+      <Link
+        href='/chat'
         className='w-1/4 h-full flex flex-col justify-center items-center'
-        onClick={() => {
-          router.push('/chat');
-        }}
       >
         <img src={`/nav/${path[1]}.svg`} className='size-[35px] mb-[4px]' />
         {/* <span style={{ fontSize: '12px' }}>Chat</span> */}
-      </button>
-      <button
+      </Link>
+      <Link
+        href='/foodie'
         className='w-1/4 h-full flex flex-col justify-center items-center'
-        onClick={() => {
-          router.push('/foodie');
-        }}
       >
         <img src={`/nav/${path[2]}.svg`} className='size-[35px] mb-[4px]' />
         {/* <span style={{ fontSize: '12px' }}>Foddie</span> */}
-      </button>
-      <button
+      </Link>
+      <Link
+        href='/mypage'
         className='w-1/4 h-full flex flex-col justify-center items-center'
-        onClick={() => {
-          router.push('/mypage');
-        }}
+        onC
       >
         <img src={`/nav/${path[3]}.svg`} className='size-[35px] mb-[4px]' />
         {/* <span style={{ fontSize: '12px' }}>Mypage</span> */}
-      </button>
+      </Link>
     </div>
   );
 };

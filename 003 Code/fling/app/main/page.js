@@ -5,6 +5,7 @@ import Match from './Match';
 import UserCheck from './UserCheck';
 import Review from './Review';
 import Modal from './Modal';
+import { signOut } from 'next-auth/react';
 
 const Main = () => {
   let [modal, setModal] = useState(false);
@@ -20,11 +21,15 @@ const Main = () => {
     console.log(data);
   };
 
-
-  
-
   return (
     <>
+      <button
+        onClick={() => {
+          signOut();
+        }}
+      >
+        로그아웃
+      </button>
       <Match />
       <UserCheck handleUserCheck={handleUserCheck} />
       <Review />

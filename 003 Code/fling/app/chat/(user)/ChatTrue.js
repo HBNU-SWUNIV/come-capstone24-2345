@@ -1,9 +1,9 @@
 import Image from 'next/image';
 
-import mbtiI from '@/public/mbti/I.svg';
-import mbtiS from '@/public/mbti/S.svg';
-import mbtiF from '@/public/mbti/F.svg';
-import mbtiP from '@/public/mbti/P.svg';
+import mbtiI from '/public/mbti/I.svg';
+import mbtiS from '/public/mbti/S.svg';
+import mbtiF from '/public/mbti/F.svg';
+import mbtiP from '/public/mbti/P.svg';
 
 import { useRouter } from 'next/navigation';
 import Slider from './Slider';

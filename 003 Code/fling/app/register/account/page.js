@@ -1,22 +1,58 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 
-const Fourth = (props) => {
+const RegisterAccount = () => {
+  let [nickname, setNickname] = useState('');
+  let [isExistNickname, setIsExistNickname] = useState(true);
+  let [password, setPassword] = useState('');
+  let [reEnterPassword, setReEnterPassword] = useState('');
+
   const router = useRouter();
-  let [clickDup, setClickDup] = useState(false);
-  let [checkDup, setCheckDup] = useState(false);
+  const searchParams = useSearchParams();
 
-  useEffect(() => {
-    if (clickDup) {
-      if (false) {
-        setCheckDup(false);
-      } else {
-        setCheckDup(true);
-      }
-    }
-  }, [clickDup]);
+  const handleNickname = (e) => {
+    setNickname(e.target.value);
+  };
+
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const handleReEnterPassword = (e) => {
+    setReEnterPassword(e.target.value);
+  };
+
+  const checkNickname = async (e) => {
+    e.preventDefault();
+    await axios
+      .get(`/api/check/nickname?nickname=${nickname}`)
+      .then((res) => {
+        console.log(res.data);
+        setIsExistNickname(false);
+      })
+      .catch((err) => {
+        alert(err.response.data);
+      });
+  };
+
+  const checkPassword = async (e) => {
+    e.preventDefault();
+    await axios
+      .post('/api/check/password', {
+        password,
+        reEnterPassword,
+        email: searchParams.get('email'),
+      })
+      .then((res) => {
+        router.push('/register/photo');
+      })
+      .catch((err) => {
+        alert(err.response.data);
+      });
+  };
 
   return (
     <>
@@ -30,42 +66,35 @@ const Fourth = (props) => {
         <span className='text-start mb-[20px]' style={{ fontSize: '20px' }}>
           계정 생성
         </span>
-        <div className='flex flex-col p-[20px] card rounded-[20px] mb-[20px]'>
-          <span className='text-start mb-[16px]' style={{ fontSize: '14px' }}>
-            닉네임
-          </span>
-          <input placeholder='홍길동전' className='bg-transparent' />
-        </div>
+        <form onSubmit={checkNickname}>
+          <div className='flex flex-col p-[20px] card rounded-[20px] mb-[20px]'>
+            <span className='text-start mb-[16px]' style={{ fontSize: '14px' }}>
+              닉네임
+            </span>
+            <input
+              onChange={handleNickname}
+              value={nickname}
+              placeholder='홍길동전'
+              className='bg-transparent'
+            />
+          </div>
 
-        {clickDup ? (
-          checkDup ? (
-            <span
+          {isExistNickname == false && (
+            <p
               className='text-start pl-[20px] mb-[20px]'
               style={{ fontSize: '12px' }}
             >
               사용가능한 닉네임입니다
-            </span>
-          ) : (
-            <span
-              className='text-start pl-[20px] mb-[20px]'
-              style={{ fontSize: '12px' }}
-            >
-              이미 사용중인 닉네임입니다
-            </span>
-          )
-        ) : null}
+            </p>
+          )}
 
-        <button
-          className='btn p-[20px] mb-[20px]'
-          onClick={() => {
-            setClickDup(true);
-          }}
-        >
-          중복 확인
-        </button>
+          <button className='w-full btn p-[20px] mb-[20px]' type='submit'>
+            중복 확인
+          </button>
+        </form>
 
-        {checkDup ? (
-          <>
+        {isExistNickname == false && (
+          <form onSubmit={checkPassword}>
             <div className='flex flex-col p-[20px] card rounded-[20px] mb-[20px]'>
               <span
                 className='text-start mb-[16px]'
@@ -73,7 +102,11 @@ const Fourth = (props) => {
               >
                 아이디
               </span>
-              <input value='example@school.ac.kr' className='bg-transparent' />
+              <input
+                value={searchParams.get('email')}
+                className='bg-transparent'
+                disabled
+              />
             </div>
 
             <div
@@ -91,6 +124,8 @@ const Fourth = (props) => {
                 비밀번호
               </span>
               <input
+                onChange={handlePassword}
+                value={password}
                 placeholder='********'
                 className='bg-transparent'
                 type='password'
@@ -115,24 +150,21 @@ const Fourth = (props) => {
                 비밀번호 재입력
               </span>
               <input
+                onChange={handleReEnterPassword}
+                value={reEnterPassword}
                 placeholder='********'
                 className='bg-transparent'
                 type='password'
               />
             </div>
-            <button
-              className='btn p-[20px] mb-[20px]'
-              onClick={() => {
-                router.replace('/register/photo');
-              }}
-            >
+            <button className='w-full btn p-[20px] mb-[20px]' type='submit'>
               확인
             </button>
-          </>
-        ) : null}
+          </form>
+        )}
       </div>
     </>
   );
 };
 
-export default Fourth;
+export default RegisterAccount;

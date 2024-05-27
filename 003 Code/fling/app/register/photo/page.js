@@ -1,8 +1,21 @@
 'use client';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-const Fifth = (props) => {
+const RegisterPhoto = () => {
   const router = useRouter();
+
+  const checkPhoto = (e) => {
+    e.preventDefault();
+  };
+
+  const handleProfile = async (e) => {
+    let imgFile = e.target.files[0];
+    let imgFileName = encodeURIComponent(imgFile.name);
+    let result = await axios.get(`/api/check/photo?file=${imgFileName}`);
+  };
+
+  const handleStudentID = (e) => {};
   return (
     <>
       <progress
@@ -15,47 +28,70 @@ const Fifth = (props) => {
         <span className='text-start mb-[20px]' style={{ fontSize: '20px' }}>
           회원님의 본인확인
         </span>
-        <div className='flex justify-between mb-[20px]'>
-          <div className='w-[46%]'>
-            <span style={{ fontSize: '18px' }}>프로필 사진</span>
-            <div className='w-full flex justify-center items-center my-[20px] card aspect-square rounded-[20px] text-5xl'>
-              +
-            </div>
-            <div
-              className='flex flex-col text-start pl-[8px] opacity-60'
-              style={{ fontSize: '12px' }}
-            >
-              <span className='mb-[8px]'>본인확인이 가능한 정면사진</span>
-              <span className='mb-[8px]'>사진은 변환 처리됨</span>
-              <span>본 사진은 공개되지 않음</span>
-            </div>
-          </div>
-          <div className='w-[46%]'>
-            <span style={{ fontSize: '18px' }}>학생증 사진</span>
-            <div className='w-full flex justify-center items-center my-[20px] card aspect-square rounded-[20px] text-5xl'>
-              +
-            </div>
-            <div
-              className='flex flex-col text-start pl-[8px] opacity-60'
-              style={{ fontSize: '12px' }}
-            >
-              <span className='mb-[8px]'>모바일, 실물 학생증만 가능</span>
-              <span>이름과 본인사진을 포함해야 함</span>
-            </div>
-          </div>
-        </div>
 
-        <button
-          className='btn p-[20px] mb-[20px]'
-          onClick={() => {
-            router.replace('/register/success');
-          }}
-        >
-          제출
-        </button>
+        <form onSubmit={checkPhoto} method='POST'>
+          <div className='flex justify-between mb-[20px]'>
+            <div className='w-[46%]'>
+              <span style={{ fontSize: '18px' }}>프로필 사진</span>
+              <label htmlFor='profile'>
+                <div className='w-full flex justify-center items-center my-[20px] card aspect-square rounded-[20px] text-5xl cursor-pointer'>
+                  +
+                </div>
+                <input
+                  type='file'
+                  id='profile'
+                  accept='image/*'
+                  onChange={handleProfile}
+                  className='hidden'
+                />
+              </label>
+
+              <div
+                className='flex flex-col text-start pl-[8px] opacity-60'
+                style={{ fontSize: '12px' }}
+              >
+                <span className='mb-[8px]'>본인확인이 가능한 정면사진</span>
+                <span className='mb-[8px]'>사진은 변환 처리됨</span>
+                <span>본 사진은 공개되지 않음</span>
+              </div>
+            </div>
+            <div className='w-[46%]'>
+              <span style={{ fontSize: '18px' }}>학생증 사진</span>
+              <label htmlFor='studentID'>
+                <div className='w-full flex justify-center items-center my-[20px] card aspect-square rounded-[20px] text-5xl cursor-pointer'>
+                  +
+                </div>
+                <input
+                  type='file'
+                  id='studentID'
+                  accept='image/*'
+                  onChange={handleStudentID}
+                  className='hidden'
+                />
+              </label>
+              <div
+                className='flex flex-col text-start pl-[8px] opacity-60'
+                style={{ fontSize: '12px' }}
+              >
+                <span className='mb-[8px]'>모바일, 실물 학생증만 가능</span>
+                <span>이름과 본인사진을 포함해야 함</span>
+              </div>
+            </div>
+          </div>
+
+          <p
+            className='mb-[20px] text-[var(--main-puple)]'
+            style={{ fontSize: '14px' }}
+          >
+            대학 인증 심사기간은 며칠이 소요될 수 있습니다
+          </p>
+          <button className='w-full btn p-[20px] mb-[20px]' type='submit'>
+            제출하기
+          </button>
+        </form>
       </div>
     </>
   );
 };
 
-export default Fifth;
+export default RegisterPhoto;

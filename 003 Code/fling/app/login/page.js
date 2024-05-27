@@ -1,4 +1,39 @@
+'use client';
+
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
 export default function Login() {
+  let [email, setEmail] = useState('');
+  let [password, setPassword] = useState('');
+  const router = useRouter();
+
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const clickLogin = async (e) => {
+    e.preventDefault();
+
+    let result = await signIn('credentials', {
+      email: email,
+      password: password,
+      redirect: false,
+      // callbackUrl: '/main',
+    });
+
+    if (result.status == 200) {
+      alert('로그인되었습니다');
+      router.replace('/main');
+    } else {
+      alert(result.error);
+    }
+  };
   return (
     <div className='flex flex-col size-full items-center pt-[100px]'>
       <div className='w-full'>
@@ -22,9 +57,15 @@ export default function Login() {
         />
       </div> */}
 
-      <form className='w-full h-full flex flex-col justify-center items-center box-content'>
+      <form
+        onSubmit={clickLogin}
+        method='POST'
+        className='w-full h-full flex flex-col justify-center items-center box-content'
+      >
         <div className='relative w-2/3 mb-[30px]'>
           <input
+            onChange={handleEmail}
+            value={email}
             type='email'
             placeholder=' '
             className='floating-label-input block w-full h-[50px] card rounded-full focus:outline-none px-[20px]'
@@ -35,6 +76,8 @@ export default function Login() {
         </div>
         <div className='relative w-2/3 mb-[30px]'>
           <input
+            onChange={handlePassword}
+            value={password}
             type='password'
             placeholder=' '
             className='floating-label-input block w-full h-[50px] card rounded-full focus:outline-none px-[20px]'

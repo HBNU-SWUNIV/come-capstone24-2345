@@ -1,6 +1,13 @@
+import { getServerSession } from 'next-auth';
+import authOptions from '@/pages/api/auth/[...nextauth]';
 import Link from 'next/link';
 
-export default function Start() {
+export default async function Main() {
+  // let session = await getServerSession(authOptions);
+  // if (session) {
+  //   console.log(session);
+  // }
+
   return (
     <div className='flex flex-col size-full items-center pt-[100px] relative'>
       <div className='w-full h-[20%]'>

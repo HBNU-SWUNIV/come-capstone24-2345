@@ -1,9 +1,6 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const Register = () => {
-  const router = useRouter();
   return (
     <>
       <div className='w-full h-[calc(100vh_-_200px)] flex flex-col justify-center items-center'>
@@ -19,18 +16,16 @@ const Register = () => {
           <span>회원님의 학교 이메일과 학생증이 필요해요</span>
         </div>
 
-        <button
+        <Link
+          href='/register/user'
           className='card w-[160px] h-[50px] flex justify-center items-center rounded-full content-center mb-[20px]'
           style={{
             fontSize: '14px',
           }}
-          onClick={() => {
-            router.replace('/register/user');
-          }}
         >
           <p className='mr-[8px]'>본인인증</p>
           <p>&gt;</p>
-        </button>
+        </Link>
       </div>
     </>
   );

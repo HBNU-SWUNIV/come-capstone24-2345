@@ -1,6 +1,7 @@
-import './globals.css';
 import './reset.css';
+import './globals.css';
 import './login.css';
+import './slider.css';
 import localfont from 'next/font/local';
 
 const hanbit = localfont({

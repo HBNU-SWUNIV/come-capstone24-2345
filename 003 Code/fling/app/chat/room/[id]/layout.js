@@ -1,27 +1,48 @@
 'use client';
 
 import Image from 'next/image';
-import plus from '@/public/plus.svg';
-import send from '@/public/send.svg';
+import plus from '/public/plus.svg';
+import send from '/public/send.svg';
 
-import camera from '@/public/camera.svg';
-import photo from '@/public/photo.svg';
-import exchange from '@/public/exchange.svg';
-import calendar from '@/public/calendar.svg';
-import megaphone from '@/public/megaphone.svg';
-import chatout from '@/public/logout.svg';
+import camera from '/public/camera.svg';
+import photo from '/public/photo.svg';
+import exchange from '/public/exchange.svg';
+import calendar from '/public/calendar.svg';
+import megaphone from '/public/megaphone.svg';
+import chatout from '/public/logout.svg';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const ChatRoomLayout = ({ children }) => {
   const router = useRouter();
+  let [isOpenPlus, setIsOpenPlus] = useState(false);
+  let [isFocusInput, setIsFocusInput] = useState(false);
+  const plusRef = useRef();
+  const inputRef = useRef();
 
-  const handleClickPlus = () => {
-    document
-      .querySelector('#chat-input')
-      .classList.toggle('translate-y-[350px]');
+  const clickPlus = () => {
+    setIsOpenPlus((isOpenPlus) => !isOpenPlus);
   };
+
+  const focusInput = () => {
+    document.addEventListener('focus', () => {});
+  };
+
+  useEffect(() => {
+    const outSideClick = (e) => {
+      if (isOpenPlus && !plusRef.current.contains(e.target)) {
+        setIsOpenPlus(false);
+      }
+    };
+
+    document.addEventListener('click', outSideClick);
+
+    return () => {
+      document.removeEventListener('click', outSideClick);
+    };
+  }, [isOpenPlus]);
+
   return (
     <div className='w-full relative'>
       <header className='max-w-[440px] w-full mx-auto h-[60px] bg-[#f6ebfe] fixed top-0 flex items-center z-50'>
@@ -51,14 +72,23 @@ const ChatRoomLayout = ({ children }) => {
 
       <nav
         id='chat-input'
-        className='max-w-[440px] w-full mx-auto h-[400px] fixed bottom-0 px-[10px] flex flex-col justify-center card translate-y-[350px]'
+        className='max-w-[440px] w-full mx-auto h-auto fixed bottom-0 px-[10px] flex flex-col justify-center bg-white'
       >
         <div className='w-full h-[50px] mb-[20px] pr-[5px] flex items-center'>
-          <button className='size-[40px] mr-[8px]' onClick={handleClickPlus}>
-            <Image className='size-full' src={plus} alt='plus' />
+          <button className='size-[40px] mr-[8px]'>
+            <Image
+              className='size-full'
+              src={plus}
+              alt='plus'
+              onClick={clickPlus}
+              ref={plusRef}
+            />
           </button>
           <form className='w-full h-[40px] relative'>
-            <input className='size-full card rounded-full pl-[20px] pr-[45px]' />
+            <input
+              className='size-full card rounded-full pl-[20px] pr-[45px]'
+              ref={inputRef}
+            />
             <button
               className='size-[30px] absolute top-[5px] right-[10px]'
               type='submit'
@@ -68,61 +98,63 @@ const ChatRoomLayout = ({ children }) => {
           </form>
         </div>
 
-        <div className='w-full flex flex-grow flex-col pb-[20px]'>
-          <div className='w-full h-1/2 flex justify-evenly'>
-            <div className='flex flex-col justify-center'>
-              <Image
-                className='size-[40px] box-content p-[20px] card rounded-[20px] mb-[16px]'
-                src={camera}
-                alt='camera'
-              />
-              <span>카메라</span>
+        {isOpenPlus && (
+          <div className='w-full flex flex-grow flex-col mb-[40px]'>
+            <div className='w-full h-1/2 flex justify-evenly mb-[20px]'>
+              <div className='flex flex-col justify-center'>
+                <Image
+                  className='size-[40px] box-content p-[20px] card rounded-[20px] mb-[16px]'
+                  src={camera}
+                  alt='camera'
+                />
+                <span>카메라</span>
+              </div>
+              <div className='flex flex-col justify-center'>
+                <Image
+                  className='size-[40px] box-content p-[20px] card rounded-[20px] mb-[16px]'
+                  src={photo}
+                  alt='photo'
+                />
+                <span>사진</span>
+              </div>
+              <div className='flex flex-col justify-center'>
+                <Image
+                  className='size-[40px] box-content p-[20px] card rounded-[20px] mb-[16px]'
+                  src={exchange}
+                  alt='exchange'
+                />
+                <span>실명전환</span>
+              </div>
             </div>
-            <div className='flex flex-col justify-center'>
-              <Image
-                className='size-[40px] box-content p-[20px] card rounded-[20px] mb-[16px]'
-                src={photo}
-                alt='photo'
-              />
-              <span>사진</span>
-            </div>
-            <div className='flex flex-col justify-center'>
-              <Image
-                className='size-[40px] box-content p-[20px] card rounded-[20px] mb-[16px]'
-                src={exchange}
-                alt='exchange'
-              />
-              <span>실명전환</span>
-            </div>
-          </div>
 
-          <div className='w-full h-1/2 flex justify-evenly'>
-            <div className='flex flex-col justify-center'>
-              <Image
-                className='size-[40px] box-content p-[20px] card rounded-[20px] mb-[16px]'
-                src={calendar}
-                alt='calendar'
-              />
-              <span>대면신청</span>
-            </div>
-            <div className='flex flex-col justify-center'>
-              <Image
-                className='size-[40px] box-content p-[20px] card rounded-[20px] mb-[16px]'
-                src={megaphone}
-                alt='megaphone'
-              />
-              <span>신고하기</span>
-            </div>
-            <div className='flex flex-col justify-center'>
-              <Image
-                className='size-[40px] box-content p-[20px] card rounded-[20px] mb-[16px]'
-                src={chatout}
-                alt='chatout'
-              />
-              <span>나가기</span>
+            <div className='w-full h-1/2 flex justify-evenly'>
+              <div className='flex flex-col justify-center'>
+                <Image
+                  className='size-[40px] box-content p-[20px] card rounded-[20px] mb-[16px]'
+                  src={calendar}
+                  alt='calendar'
+                />
+                <span>대면신청</span>
+              </div>
+              <div className='flex flex-col justify-center'>
+                <Image
+                  className='size-[40px] box-content p-[20px] card rounded-[20px] mb-[16px]'
+                  src={megaphone}
+                  alt='megaphone'
+                />
+                <span>신고하기</span>
+              </div>
+              <div className='flex flex-col justify-center'>
+                <Image
+                  className='size-[40px] box-content p-[20px] card rounded-[20px] mb-[16px]'
+                  src={chatout}
+                  alt='chatout'
+                />
+                <span>나가기</span>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </nav>
     </div>
   );

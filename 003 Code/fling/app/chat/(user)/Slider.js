@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import style from './Slider.module.css';
 
 const Slider = (props) => {
   // 애니메이션 제어 할 상태 변수
@@ -10,32 +9,28 @@ const Slider = (props) => {
   const onRun = () => setAnimate(true);
 
   return (
-    <div className={style.wrapper}>
-      <div className={style.slide_container}>
+    <div className='wrapper'>
+      <div className='slide_container'>
         <ul
-          className={style.slide_wrapper}
+          className='slide_wrapper'
           onMouseEnter={onStop}
           onMouseLeave={onRun}
         >
-          <div
-            className={`${style.slide} ${style.original} ${animate ? '' : style.stop}`}
-          >
+          <div className={`slide original ${animate ? '' : ' stop'}`}>
             {props.texts.map((text, i) => (
               <div
                 key={text}
-                className={`${style.item} w-max card p-[20px] mr-[8px] rounded-[20px]`}
+                className='item w-max card p-[20px] mr-[8px] rounded-[20px]'
               >
                 <span>{text}</span>
               </div>
             ))}
           </div>
-          <div
-            className={`${style.slide} ${style.clone} ${animate ? '' : style.stop}`}
-          >
+          <div className={`slide clone ${animate ? '' : ' stop'}`}>
             {props.texts.map((text, i) => (
               <div
-                key={text + i}
-                className={`${style.item} w-max card p-[20px] mr-[8px] rounded-[20px]`}
+                key={text}
+                className='item w-max card p-[20px] mr-[8px] rounded-[20px]'
               >
                 <span>{text}</span>
               </div>
