@@ -46,7 +46,7 @@ const RegisterPhoto = () => {
     <>
       <progress
         className='w-full max-w-[440px] fixed top-[60px]'
-        value={80}
+        value={85}
         min={0}
         max={100}
       ></progress>

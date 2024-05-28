@@ -7,6 +7,10 @@ import { Provider } from 'react-redux';
 const RegisterLayout = ({ children }) => {
   const router = useRouter();
 
+  const backClickHandler = () => {
+    router.back();
+  };
+
   return (
     <div className='w-full relative'>
       <header className='max-w-[440px] w-full mx-auto h-[60px] bg-[#f6ebfe] fixed top-0 flex items-center'>
@@ -14,9 +18,7 @@ const RegisterLayout = ({ children }) => {
           <img
             className='h-[80%] aspect-square cursor-pointer'
             src='/direction/chevron-left.svg'
-            onClick={() => {
-              router.back();
-            }}
+            onClick={backClickHandler}
           />
         </div>
 

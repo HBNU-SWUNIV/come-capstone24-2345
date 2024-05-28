@@ -4,6 +4,7 @@ const userInfoHandler = async (req, res) => {
   if (req.method == 'POST') {
     const data = req.body;
 
+    req.body.coin = 10000;
     const client = await connectDB;
     const db = client.db('Fling');
     await db.collection('user_cred').insertOne(data);

@@ -16,7 +16,6 @@ const RegisterAccount = () => {
   const globalUserInfo = useSelector((state) => state.registerUserInfo);
   const router = useRouter();
   const dispatch = useDispatch();
-  // const searchParams = useSearchParams();
 
   const handleNickname = (e) => {
     setNickname(e.target.value);
@@ -65,7 +64,7 @@ const RegisterAccount = () => {
     <>
       <progress
         className='w-full max-w-[440px] fixed top-[60px]'
-        value={60}
+        value={68}
         min={0}
         max={100}
       ></progress>

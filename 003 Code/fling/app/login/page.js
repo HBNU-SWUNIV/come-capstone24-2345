@@ -1,6 +1,7 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -87,12 +88,19 @@ export default function Login() {
           </label>
         </div>
         <button
-          className='card-light flex w-2/3 h-[50px] bg-main-pink/70 rounded-full text-start text-white justify-center items-center box-border ml-[8px]'
+          className='card-light flex w-2/3 h-[50px] bg-main-pink/70 rounded-full text-start text-white justify-center items-center box-border mb-[20px]'
           type='submit'
-          style={{ fontSize: '12px' }}
+          // style={{ fontSize: '12px' }}
         >
-          <a href='/main'>로그인</a>
+          로그인
         </button>
+        <Link
+          className='underline'
+          style={{ fontSize: '12px' }}
+          href={'/findPW'}
+        >
+          비밀번호를 잊으셨나요?
+        </Link>
       </form>
     </div>
   );

@@ -5,6 +5,10 @@ const withPWA = nextPWA({
 });
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  // experimental: {
+  //   urlImports: ['https://cdn.sheetjs.com/xlsx-latest/package/xlsx.mjs'],
+  // },
+};
 
 export default withPWA(nextConfig);

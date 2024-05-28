@@ -31,7 +31,11 @@ const handleCheckUniv = (req, res) => {
       return emailPattern.some((regex) => new RegExp(regex).test(email));
     };
 
-    if (!validateEmail(data.email)) {
+    if (data.univ == '') {
+      res.status(400).send('대학교를 선택해주세요');
+    } else if (data.department == '') {
+      res.status(400).send('학과를 선택해주세요');
+    } else if (!validateEmail(data.email)) {
       res.status(400).send('이메일이 올바르지 않은 형식입니다');
     }
     // else if(//univCert로도 이메일이 인증되었다면?){

@@ -41,7 +41,7 @@ const RegisterUser = () => {
     <>
       <progress
         className='w-full max-w-[440px] fixed top-[60px]'
-        value={20}
+        value={34}
         min={0}
         max={100}
       ></progress>

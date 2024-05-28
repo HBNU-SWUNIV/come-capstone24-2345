@@ -17,7 +17,7 @@ const Register = () => {
         </div>
 
         <Link
-          href='/register/user'
+          href='/register/gender'
           className='card w-[160px] h-[50px] flex justify-center items-center rounded-full content-center mb-[20px]'
           style={{
             fontSize: '14px',

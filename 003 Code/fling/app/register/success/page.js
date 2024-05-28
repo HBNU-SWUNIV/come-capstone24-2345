@@ -18,7 +18,9 @@ const Last = () => {
         router.replace('/login');
       });
     } else {
-      alert('입력하지 않은 값이 있음');
+      alert('비정상적인 접근입니다');
+      alert('회원가입 페이지로 이동합니다');
+      router.replace('/register');
     }
   };
   return (
