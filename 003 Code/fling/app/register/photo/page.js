@@ -111,7 +111,10 @@ const RegisterPhoto = () => {
           >
             대학 인증 심사기간은 며칠이 소요될 수 있습니다
           </p>
-          <button className='w-full btn p-[20px] mb-[20px]' type='submit'>
+          <button
+            className='w-full btn p-[20px] mb-[20px] rounded-full'
+            type='submit'
+          >
             제출하기
           </button>
         </form>

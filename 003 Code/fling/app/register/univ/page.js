@@ -209,7 +209,10 @@ const RegisterUniv = () => {
             />
           </div>
 
-          <button className='w-full btn p-[20px] mb-[20px]' type='submit'>
+          <button
+            className='w-full btn p-[20px] mb-[20px] rounded-full'
+            type='submit'
+          >
             인증 요청
           </button>
         </form>

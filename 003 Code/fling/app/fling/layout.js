@@ -6,10 +6,10 @@ const FlingLayout = async ({ children }) => {
   const session = await getServerSession(authOptions);
   if (session) {
     console.log(session);
-  } else {
-    // alert('로그인 후 이용해 주세요');
-    redirect('/');
   }
+  // else {
+  //   redirect('/');
+  // }
   return <>{children}</>;
 };
 

@@ -23,8 +23,7 @@ const Register = () => {
             fontSize: '14px',
           }}
         >
-          <p className='mr-[8px]'>본인인증</p>
-          <p>&gt;</p>
+          <p>본인인증</p>
         </Link>
       </div>
     </>

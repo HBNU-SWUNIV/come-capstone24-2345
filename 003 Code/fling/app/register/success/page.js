@@ -40,7 +40,10 @@ const Last = () => {
         </span>
       </div>
 
-      <button className='w-[50%] btn p-[20px]' onClick={clickHandler}>
+      <button
+        className='w-[50%] btn p-[20px] rounded-full'
+        onClick={clickHandler}
+      >
         로그인하기
       </button>
     </div>

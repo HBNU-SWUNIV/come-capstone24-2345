@@ -53,7 +53,7 @@ const RegisterAccount = () => {
       .then((result) => {
         dispatch(setGlobalPassword(result.data));
         console.log('/register/account : ' + JSON.stringify(globalUserInfo));
-        router.push('/register/photo');
+        router.push('/register/mbti');
       })
       .catch((err) => {
         alert(err.response.data);
@@ -95,7 +95,10 @@ const RegisterAccount = () => {
             </p>
           )}
 
-          <button className='w-full btn p-[20px] mb-[20px]' type='submit'>
+          <button
+            className='w-full btn p-[20px] mb-[20px] rounded-full'
+            type='submit'
+          >
             중복 확인
           </button>
         </form>
@@ -164,7 +167,10 @@ const RegisterAccount = () => {
                 type='password'
               />
             </div>
-            <button className='w-full btn p-[20px] mb-[20px]' type='submit'>
+            <button
+              className='w-full btn p-[20px] mb-[20px] rounded-full'
+              type='submit'
+            >
               확인
             </button>
           </form>

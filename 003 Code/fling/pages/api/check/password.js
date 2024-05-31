@@ -18,17 +18,7 @@ const CheckPassword = async (req, res) => {
     } else if (data.password != data.reEnterPassword) {
       res.status(400).send('비밀번호가 맞는지 다시 확인해주세요');
     } else {
-      // let client = await connectDB;
-      // let db = client.db('Fling');
-
       const hashedPW = await bcrypt.hash(data.password, 10);
-      // await db
-      //   .collection('user_cred')
-      //   .insertOne({
-      //     nickname: data.nickname,
-      //     email: data.email,
-      //     password: hashedPW,
-      //   });
       res.status(200).send(hashedPW);
     }
   }
