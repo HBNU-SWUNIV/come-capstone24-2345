@@ -2,6 +2,7 @@ import './reset.css';
 import './globals.css';
 import './login.css';
 import './slider.css';
+import 'react-datepicker/dist/react-datepicker.css';
 import localfont from 'next/font/local';
 
 const hanbit = localfont({
@@ -17,7 +18,9 @@ export const metadata = {
   },
   appleWebApp: {
     title: '플링',
-    statusBarStyle: '#F6EBFE',
+    statusBarStyle: 'black',
+    // '#FBF6FF',
+    // '#F6EBFE',
     startupImage: [
       '/assets/startup/apple-touch-startup-image-768x1004.png',
       {

@@ -1,5 +1,9 @@
+'use client';
+
 import Navigator from '@/app/Navigator';
 import Link from 'next/link';
+import React from 'react';
+import { SessionProvider } from 'next-auth/react';
 
 const ChatLayout = ({ children }) => {
   return (
@@ -16,7 +20,11 @@ const ChatLayout = ({ children }) => {
       </nav> */}
 
       <main className='w-full h-auto pt-[60px] pb-[120px] px-[20px]'>
-        <div className='w-full flex flex-col items-center'>{children}</div>
+        <div className='w-full flex flex-col items-center'>
+          <SessionProvider>{children}</SessionProvider>
+          {/* {children} */}
+          {/* {React.cloneElement(children, { session })} */}
+        </div>
       </main>
       <nav className='max-w-[440px] w-full mx-auto h-[100px] fixed bottom-0 flex justify-center '>
         <Navigator />

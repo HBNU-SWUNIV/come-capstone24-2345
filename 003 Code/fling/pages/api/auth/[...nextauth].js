@@ -56,6 +56,13 @@ export const authOptions = {
         token.user.department = user.department;
         token.user.name = user.name;
         token.user.nickname = user.nickname;
+        token.user.drinkLimit = user.drinkLimit;
+        token.user.gender = user.gender;
+        token.user.height = user.height;
+        token.user.hobby = user.hobby;
+        token.user.datingType = user.datingType;
+        token.user.mbti = user.mbti;
+        token.user.smoking = user.smoking;
       }
       return token;
     },

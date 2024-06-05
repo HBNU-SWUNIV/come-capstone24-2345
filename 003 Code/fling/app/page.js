@@ -40,7 +40,6 @@ export default async function Main() {
             className='card w-[160px] h-[50px] flex justify-center items-center rounded-full content-center mb-[20px]'
             style={{
               fontSize: '14px',
-              fontWeight: '800',
             }}
             href='/register'
           >

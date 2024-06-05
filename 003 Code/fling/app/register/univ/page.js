@@ -7,7 +7,7 @@ import {
 } from '@/lib/store';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 const RegisterUniv = () => {
@@ -24,6 +24,11 @@ const RegisterUniv = () => {
 
   const router = useRouter();
   const dispatch = useDispatch();
+  const topRef = useRef();
+
+  useEffect(() => {
+    console.log(topRef.current);
+  }, []);
 
   useEffect(() => {
     const fetchCSVData = async () => {
@@ -155,7 +160,7 @@ const RegisterUniv = () => {
       )}
       <progress
         className='w-full max-w-[440px] fixed top-[60px]'
-        value={51}
+        value={30}
         min={0}
         max={100}
       ></progress>
@@ -173,7 +178,6 @@ const RegisterUniv = () => {
                 onChange={handleUniv}
                 value={univ}
                 disabled
-                placeholder='국립한밭대학교'
                 className='bg-transparent flex-grow'
               />
               <img onClick={clickSearch} src='/search.svg' />
@@ -190,7 +194,6 @@ const RegisterUniv = () => {
                 value={department}
                 disabled
                 autoComplete='off'
-                placeholder='컴퓨터공학과'
                 className='bg-transparent'
               />
             </div>
@@ -237,6 +240,8 @@ const RegisterUniv = () => {
                 <input
                   onChange={handleCertNum}
                   value={certNum}
+                  type='number'
+                  inputMode='numeric'
                   placeholder='12345678'
                   className='bg-transparent'
                 />

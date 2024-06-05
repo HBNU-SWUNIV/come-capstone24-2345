@@ -6,10 +6,9 @@ const FlingLayout = async ({ children }) => {
   const session = await getServerSession(authOptions);
   if (session) {
     console.log(session);
+  } else {
+    redirect('/');
   }
-  // else {
-  //   redirect('/');
-  // }
   return <>{children}</>;
 };
 

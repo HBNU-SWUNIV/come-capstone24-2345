@@ -1,17 +1,39 @@
-const MainLayout = ({ children }) => {
+'use client';
+
+import { useRouter } from 'next/navigation';
+
+const FindPWLayout = ({ children }) => {
+  const router = useRouter();
+
+  const backClickHandler = () => {
+    router.back();
+  };
+
   return (
-    <div className='w-full bg-yellow-500/20 relative'>
-      <header className='max-w-[440px] w-full mx-auto h-[100px] bg-black/50 fixed top-0'>
-        header
+    <div className='w-full relative'>
+      {/* bg-[#f6ebfe] */}
+      <header className='max-w-[440px] w-full mx-auto h-[60px] bg-[#FBF6FF] fixed top-0 flex items-center'>
+        <div className='w-[15%] h-[50%] flex items-center justify-center'>
+          <img
+            className='h-[80%] aspect-square cursor-pointer'
+            src='/direction/chevron-left.svg'
+            onClick={backClickHandler}
+          />
+        </div>
+
+        <div className='w-[70%] h-[50%] flex items-center justify-center'>
+          <span className='text-xl ml-[8px]'>비밀번호 찾기</span>
+        </div>
+
+        <div className='w-[15%] h-[50%] flex items-center'></div>
       </header>
-      <main className='w-full h-auto py-[100px]'>
-        <div className='flex flex-col items-center'>{children}</div>
+      <main className='w-full h-auto pt-[40px]'>
+        <div className='flex flex-col items-center px-[20px] pt-[40px]'>
+          {children}
+        </div>
       </main>
-      {/* <nav className='max-w-[440px] w-full mx-auto h-[100px] bg-black/50 fixed bottom-0'>
-        nav
-      </nav> */}
     </div>
   );
 };
 
-export default MainLayout;
+export default FindPWLayout;

@@ -18,7 +18,7 @@ const RegisterMBTI = () => {
       .post('/api/check/mbti', { mbti })
       .then((result) => {
         dispatch(setGlobalMbti(result.data));
-        router.push('/register/etc');
+        router.push('/register/hobby');
       })
       .catch((err) => {
         alert(err.response.data);
@@ -62,7 +62,7 @@ const RegisterMBTI = () => {
     <>
       <progress
         className='w-full max-w-[440px] fixed top-[60px]'
-        value={17}
+        value={50}
         min={0}
         max={100}
       ></progress>
@@ -172,7 +172,7 @@ const RegisterMBTI = () => {
           </div>
         </div>
 
-        <button type='submit' className='btn p-[20px] rounded-full'>
+        <button type='submit' className='btn p-[20px] mb-[40px] rounded-full'>
           다음
         </button>
       </form>

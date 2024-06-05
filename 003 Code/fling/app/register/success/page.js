@@ -10,9 +10,14 @@ const Last = () => {
   const globalUserInfo = useSelector((state) => state.registerUserInfo);
 
   const clickHandler = async (e) => {
-    const hasEmptyString = Object.values(globalUserInfo).includes('');
+    const isEmpty = (object) =>
+      !Object.values(object).every(
+        (element) => element !== null && element !== ''
+      );
 
-    if (!hasEmptyString) {
+    console.log(globalUserInfo);
+
+    if (!isEmpty(globalUserInfo)) {
       await axios.post('/api/user/info', globalUserInfo).then((result) => {
         alert('회원가입을 축하드립니다!');
         router.replace('/login');

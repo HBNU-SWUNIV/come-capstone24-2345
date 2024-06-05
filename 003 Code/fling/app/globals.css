@@ -72,11 +72,13 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 .main {
-  background-image: linear-gradient(
-    180deg,
-    /* rgba(220, 170, 255, 0.2) 0%, */ rgb(248, 237, 255) 0%,
-    /* rgba(112, 0, 255, 0.2) 100% */ rgb(228, 207, 255) 100%
-  );
+  background-color: #fbf6ff;
+  /* background-image: linear-gradient( */
+  /* 180deg, */
+  /* rgba(220, 170, 255, 0.2) 0%, */
+  /* rgb(248, 237, 255) 0%, rgba(112, 0, 255, 0.2) 100% */
+  /* rgb(228, 207, 255) 100% */
+  /* ); */
 }
 
 .bg-img {
@@ -88,7 +90,7 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 .card {
-  box-shadow: 0 4px 15px rgba(31, 38, 135, 0.25);
+  box-shadow: 0 4px 4px rgba(31, 38, 135, 0.25);
   /* box-shadow: 0 2px 0px rgba(31, 38, 135, 0.3); */
   background-color: rgba(255, 255, 255, 0.9);
 }
@@ -102,10 +104,17 @@ input[type='range']::-webkit-slider-thumb {
 
 .btn {
   /* border-radius: 9999px; */
-  box-shadow: 0 4px 15px rgba(31, 38, 135, 0.25);
+  box-shadow: 0 4px 4px rgba(31, 38, 135, 0.25);
   /* box-shadow: 0 2px 0px rgba(31, 38, 135, 0.3); */
-  background-color: var(--main-puple-50);
+  background-color: var(--main-pink);
   color: white;
+}
+
+.btn:active {
+  box-shadow: 0 1px 4px rgba(31, 38, 135, 0.25);
+  background-color: var(--main-puple-50);
+  position: relative;
+  top: 5px;
 }
 
 .matching,
@@ -211,6 +220,10 @@ input[type='range']::-webkit-slider-thumb {
 .star-rating label:hover,
 .star-rating label:hover ~ label {
   color: #ffcc00;
+}
+
+.react-datepicker-wrapper {
+  width: 100%;
 }
 
 progress {

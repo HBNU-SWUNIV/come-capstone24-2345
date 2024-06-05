@@ -64,7 +64,7 @@ const RegisterAccount = () => {
     <>
       <progress
         className='w-full max-w-[440px] fixed top-[60px]'
-        value={68}
+        value={40}
         min={0}
         max={100}
       ></progress>

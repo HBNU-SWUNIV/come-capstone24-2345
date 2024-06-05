@@ -59,7 +59,7 @@ const RegisterMBTI = () => {
     <>
       <progress
         className='w-full max-w-[440px] fixed top-[60px]'
-        value={17}
+        value={80}
         min={0}
         max={100}
       ></progress>

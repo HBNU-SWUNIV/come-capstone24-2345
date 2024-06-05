@@ -4,23 +4,21 @@ import { setGlobalBirth, setGlobalName } from '@/lib/store';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
+import Calendar from './Calendar';
 
 const RegisterUser = () => {
   let [userName, setUserName] = useState('');
-  let [userBirth, setUserBirth] = useState('');
+  let [userBirth, setUserBirth] = useState(new Date());
 
   const dispatch = useDispatch();
-  const globalUserInfo = useSelector((state) => state.registerUserInfo);
-
-  let router = useRouter();
+  const router = useRouter();
 
   const handleUserName = (e) => {
     setUserName(e.target.value);
   };
-  const handleUserBirth = (e) => {
-    setUserBirth(e.target.value);
+  const handleUserBirth = (date) => {
+    setUserBirth(date);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +28,7 @@ const RegisterUser = () => {
         // console.log(result.data);
         dispatch(setGlobalName(result.data.userName));
         dispatch(setGlobalBirth(result.data.userBirth));
-        console.log('/register/user : ' + JSON.stringify(globalUserInfo));
+        // console.log('/register/user : ' + JSON.stringify(globalUserInfo));
         router.push('/register/univ');
       })
       .catch((err) => {
@@ -41,7 +39,7 @@ const RegisterUser = () => {
     <>
       <progress
         className='w-full max-w-[440px] fixed top-[60px]'
-        value={34}
+        value={20}
         min={0}
         max={100}
       ></progress>
@@ -68,19 +66,30 @@ const RegisterUser = () => {
           />
         </div>
 
-        <div className='flex flex-col p-[20px] card rounded-[20px] mb-[20px]'>
+        <div className='flex flex-col items-start p-[20px] card rounded-[20px] mb-[20px]'>
           <span className='text-start mb-[16px]' style={{ fontSize: '14px' }}>
             생년월일
           </span>
-          <input
+          {/* <input
             onChange={handleUserBirth}
             // inputMode='numeric'
-            type='date'
+            required
+            type='number'
             value={userBirth}
             autoComplete='off'
-            placeholder='19990101'
+            placeholder='YYYYMMDD'
             className='bg-transparent'
-          />
+          /> */}
+          {/* <DatePicker
+            className='w-full text-start'
+            shouldCloseOnSelect
+            locale={ko}
+            selected={userBirth}
+            onChange={(date) => setUserBirth(date)}
+            dateFormat={'yyyy-MM-dd'}
+            customInput={<CustomButtonInput />}
+          /> */}
+          <Calendar userBirth={userBirth} handleUserBirth={handleUserBirth} />
         </div>
 
         <button type='submit' className='btn p-[20px] rounded-full'>
