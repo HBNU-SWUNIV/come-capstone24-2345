@@ -13,7 +13,6 @@
         <img src="https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=flat&logo=tailwind-css&logoColor=white">
   - 💾 Back-End : 
         <img src="https://img.shields.io/badge/Node.js-43853D?style=flate&logo=node.js&logoColor=white">
-        <img src="https://img.shields.io/badge/express.js-000000?style=flat&logo=express&logoColor=white">
         <img src="https://img.shields.io/badge/mongoDB-47A248?style=flat&logo=MongoDB&logoColor=white">
         <img src="https://img.shields.io/badge/Next-black?style=flat&logo=next.js&logoColor=white">
 
