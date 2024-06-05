@@ -1,6 +1,22 @@
-const handleCheckUniv = (req, res) => {
+import { connectDB } from '@/util/database';
+
+const handleCheckUniv = async (req, res) => {
   if (req.method == 'POST') {
     const data = req.body;
+
+    const client = await connectDB;
+    const db = client.db('Fling');
+
+    let isExistEmail = await db
+      .collection('user_cred')
+      .find({ $and: [{ univ: data.univ }, { email: data.email }] })
+      .toArray();
+
+    if (isExistEmail.length != 0) {
+      res.status(400).send('이미 존재하는 계정입니다');
+    } else {
+      console.log('같은 계정 없음');
+    }
     // 대학이 존재하지 않는다면
     // res.status(400).send("대학명이 올바르지 않습니다")
 

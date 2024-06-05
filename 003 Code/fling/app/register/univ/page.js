@@ -95,6 +95,7 @@ const RegisterUniv = () => {
       })
       .then((result) => {
         setCertReq(true);
+        alert('인증번호를 발송하였습니다!');
         setReceivedCertNum(result.data.certNum);
         dispatch(setGlobalUniv(result.data.univ));
         dispatch(setGlobalDepartment(result.data.department));
@@ -124,7 +125,7 @@ const RegisterUniv = () => {
               <>
                 <span style={{ fontSize: '20px' }}>대학교 리스트</span>
                 <div className='flex flex-col w-full h-full mb-[20px] overflow-y-scroll'>
-                  {totalUnivName?.map((univName) => {
+                  {/* {totalUnivName?.map((univName) => {
                     return (
                       <p
                         key={univName}
@@ -134,7 +135,14 @@ const RegisterUniv = () => {
                         {univName}
                       </p>
                     );
-                  })}
+                  })} */}
+                  <p
+                    key='한밭대학교'
+                    className='bg-white rounded-full p-[8px] my-[4px] whitespace-nowrap cursor-pointer'
+                    onClick={handleUniv}
+                  >
+                    한밭대학교
+                  </p>
                 </div>
               </>
             ) : (

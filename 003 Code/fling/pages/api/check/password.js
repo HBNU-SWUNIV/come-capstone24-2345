@@ -1,10 +1,8 @@
-import { connectDB } from '@/util/database';
 import bcrypt from 'bcrypt';
 
 const CheckPassword = async (req, res) => {
   if (req.method == 'POST') {
     const data = req.body;
-    console.log(data);
 
     // 숫자, 특수기호를 최소 하나 이상
     // 8자 이상

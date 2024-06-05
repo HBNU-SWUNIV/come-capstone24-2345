@@ -15,11 +15,9 @@ const Last = () => {
         (element) => element !== null && element !== ''
       );
 
-    console.log(globalUserInfo);
-
     if (!isEmpty(globalUserInfo)) {
       await axios.post('/api/user/info', globalUserInfo).then((result) => {
-        alert('회원가입을 축하드립니다!');
+        alert(result.data);
         router.replace('/login');
       });
     } else {
