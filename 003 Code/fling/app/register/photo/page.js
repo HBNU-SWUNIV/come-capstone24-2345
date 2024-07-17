@@ -1,46 +1,110 @@
 'use client';
 
-import axios from 'axios';
+import { setGlobalIDCardImg, setGlobalProfileImg } from '@/lib/store';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const RegisterPhoto = () => {
-  let [profileSrc, setProfileSrc] = useState(true); // null로 수정할 것
-  let [studentIDSrc, setStudentIDSrc] = useState(true); // null로 수정할 것
+  let [profileSrc, setProfileSrc] = useState(null);
+  let [studentIDSrc, setStudentIDSrc] = useState(null);
 
   const router = useRouter();
+  const dispatch = useDispatch();
+  const globalUserInfo = useSelector((state) => state.registerUserInfo);
 
-  const checkPhoto = (e) => {
+  useEffect(() => {
+    if (globalUserInfo.profileImg != '' && globalUserInfo.IDCardImg != '') {
+      router.replace('/register/introduction');
+    }
+  }, [globalUserInfo]);
+
+  const checkPhoto = async (e) => {
     e.preventDefault();
-    if (profileSrc && studentIDSrc) {
-      router.push('/register/success');
+
+    if (profileSrc) {
+      let file = profileSrc;
+      let filename = encodeURIComponent(file.name);
+      let res = await fetch('/api/check/profile?file=' + filename);
+      res = await res.json();
+
+      console.log(res);
+      //S3 업로드
+      const formData = new FormData();
+      Object.entries({ ...res.fields, file }).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+      let uploadResult = await fetch(res.url, {
+        method: 'POST',
+        body: formData,
+      });
+      console.log(uploadResult);
+
+      if (uploadResult.ok) {
+        dispatch(setGlobalProfileImg(uploadResult.url + '/' + filename));
+      } else {
+        console.log('실패');
+      }
+    }
+
+    if (studentIDSrc) {
+      let file = studentIDSrc;
+      let filename = encodeURIComponent(file.name);
+      let res = await fetch('/api/check/profile?file=' + filename);
+      res = await res.json();
+
+      //S3 업로드
+      const formData = new FormData();
+      Object.entries({ ...res.fields, file }).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+      let uploadResult = await fetch(res.url, {
+        method: 'POST',
+        body: formData,
+      });
+      console.log(uploadResult);
+
+      if (uploadResult.ok) {
+        dispatch(setGlobalIDCardImg(uploadResult.url + '/' + filename));
+      } else {
+        console.log('실패');
+      }
+    }
+    // };
+    if (profileSrc == null || studentIDSrc == null) {
+      alert('프로필과 학생증 사진을 올려주세요');
     }
   };
 
   const handleProfile = async (e) => {
-    let imgFile = e.target.files[0];
-    let imgFileName = encodeURIComponent(imgFile.name);
-    await axios
-      .post('/api/check/profile', { imgFileName })
-      .then((result) => {
-        setProfileSrc(result.data.imgFileName);
-      })
-      .catch((err) => {
-        alert(err.response.data);
-      });
+    let file = e.target.files[0];
+    let arr = file.name.split('.');
+    let extension = arr[arr.length - 1];
+
+    let renamedFile = new File(
+      [file],
+      `${globalUserInfo.email}_profile.${extension}`,
+      {
+        type: file.type,
+      }
+    );
+    setProfileSrc(renamedFile);
   };
 
   const handleStudentID = async (e) => {
-    let imgFile = e.target.files[0];
-    let imgFileName = encodeURIComponent(imgFile.name);
-    await axios
-      .post('/api/check/studentID', { imgFileName })
-      .then((result) => {
-        setStudentIDSrc(result.data.imgFileName);
-      })
-      .catch((err) => {
-        alert(err.response.data);
-      });
+    let file = e.target.files[0];
+    let arr = file.name.split('.');
+    let extension = arr[arr.length - 1];
+
+    let renamedFile = new File(
+      [file],
+      `${globalUserInfo.email}_studentID.${extension}`,
+      {
+        type: file.type,
+      }
+    );
+    setStudentIDSrc(renamedFile);
   };
   return (
     <>
@@ -60,8 +124,15 @@ const RegisterPhoto = () => {
             <div className='w-[46%]'>
               <span style={{ fontSize: '18px' }}>프로필 사진</span>
               <label htmlFor='profile'>
-                <div className='w-full flex justify-center items-center my-[20px] card aspect-square rounded-[20px] text-5xl cursor-pointer'>
-                  +
+                <div className='w-full aspect-square p-[20px] flex justify-center items-center my-[20px] card rounded-[20px] text-5xl cursor-pointer'>
+                  {profileSrc ? (
+                    <img
+                      className='w-full aspect-square object-contain'
+                      src={profileSrc ? URL.createObjectURL(profileSrc) : ''}
+                    />
+                  ) : (
+                    '+'
+                  )}
                 </div>
                 <input
                   type='file'
@@ -84,8 +155,17 @@ const RegisterPhoto = () => {
             <div className='w-[46%]'>
               <span style={{ fontSize: '18px' }}>학생증 사진</span>
               <label htmlFor='studentID'>
-                <div className='w-full flex justify-center items-center my-[20px] card aspect-square rounded-[20px] text-5xl cursor-pointer'>
-                  +
+                <div className='w-full aspect-square p-[20px] flex justify-center items-center my-[20px] card rounded-[20px] text-5xl cursor-pointer'>
+                  {studentIDSrc ? (
+                    <img
+                      className='w-full aspect-square object-contain'
+                      src={
+                        studentIDSrc ? URL.createObjectURL(studentIDSrc) : ''
+                      }
+                    />
+                  ) : (
+                    '+'
+                  )}
                 </div>
                 <input
                   type='file'

@@ -1,13 +1,25 @@
 'use client';
 
+import { setGlobalIDCardImg, setGlobalProfileImg } from '@/lib/store';
 import axios from 'axios';
+import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 
-const Last = () => {
+const RegisterSuccess = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const profileSrc = searchParams.get('profileSrc');
+  const studentIDSrc = searchParams.get('studentIDSrc');
 
+  const dispatch = useDispatch();
   const globalUserInfo = useSelector((state) => state.registerUserInfo);
+
+  useEffect(() => {
+    console.log(globalUserInfo);
+  }, []);
 
   const clickHandler = async (e) => {
     const isEmpty = (object) =>
@@ -53,4 +65,4 @@ const Last = () => {
   );
 };
 
-export default Last;
+export default RegisterSuccess;

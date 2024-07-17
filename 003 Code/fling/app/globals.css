@@ -2,6 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+.btn {
+  @apply rounded-[15px] border border-solid border-[#E8E6EA] transition-all ease-in-out duration-300;
+}
+
+.btn:active {
+  /* @apply relative top-[5px]; */
+  transform: scale(0.95);
+  @apply rounded-[18px];
+}
+
+.full-btn {
+  @apply bg-main-red rounded-[15px] border border-solid border-main-red text-white transition-all ease-in-out duration-300;
+}
+
+.full-btn:active {
+  /* @apply relative top-[5px]; */
+  transform: scale(0.95);
+  @apply rounded-[18px];
+}
+
+.focus-btn {
+  @apply rounded-[15px] border border-solid border-main-red text-main-red transition-all ease-in-out duration-300;
+}
+
+.focus-btn:active {
+  transform: scale(0.95);
+  @apply rounded-[18px];
+}
+
+.disabled-btn {
+  @apply rounded-[15px] border border-solid border-[#E8E6EA] text-[#E8E6EA];
+}
+
 :root {
   --main-pink: rgba(220, 170, 255, 1);
   --main-pink-70: rgba(220, 170, 255, 0.7);
@@ -42,7 +75,7 @@ input[type='number'] {
   -moz-appearance: textfield;
 }
 
-input[type='range'] {
+/* input[type='range'] {
   -webkit-appearance: none;
   background: transparent;
 }
@@ -69,10 +102,10 @@ input[type='range']::-webkit-slider-thumb {
   border-radius: 9999px;
   box-shadow: 0 4px 15px rgba(31, 38, 135, 0.25);
   box-shadow: -100vw 0 0 calc(100vw - 10px) var(--main-puple-50);
-}
+} */
 
 .main {
-  background-color: #fbf6ff;
+  /* background-color: #fbf6ff; */
   /* background-image: linear-gradient( */
   /* 180deg, */
   /* rgba(220, 170, 255, 0.2) 0%, */
@@ -102,20 +135,20 @@ input[type='range']::-webkit-slider-thumb {
   color: white;
 }
 
-.btn {
-  /* border-radius: 9999px; */
-  box-shadow: 0 4px 4px rgba(31, 38, 135, 0.25);
-  /* box-shadow: 0 2px 0px rgba(31, 38, 135, 0.3); */
-  background-color: var(--main-pink);
-  color: white;
-}
+/* .btn { */
+/* border-radius: 9999px; */
+/* box-shadow: 0 4px 4px rgba(31, 38, 135, 0.25); */
+/* box-shadow: 0 2px 0px rgba(31, 38, 135, 0.3); */
+/* background-color: var(--main-pink); */
+/* color: white; */
+/* } */
 
-.btn:active {
+/* .btn:active {
   box-shadow: 0 1px 4px rgba(31, 38, 135, 0.25);
   background-color: var(--main-puple-50);
   position: relative;
   top: 5px;
-}
+} */
 
 .matching,
 .mbti,

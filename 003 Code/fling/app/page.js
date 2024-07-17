@@ -41,7 +41,7 @@ export default async function Main() {
             style={{
               fontSize: '14px',
             }}
-            href='/register'
+            href='/test/register'
           >
             회원가입
           </Link>

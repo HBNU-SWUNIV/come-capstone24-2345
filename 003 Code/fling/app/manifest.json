@@ -1,9 +1,9 @@
 {
-  "theme_color": "#FBF6FF",
-  "background_color": "#FBF6FF",
+  "theme_color": "#FFFFFF",
+  "background_color": "#FFFFFF",
   "display": "standalone",
-  "scope": "/",
-  "start_url": "/",
+  "scope": "/test",
+  "start_url": "/test",
   "name": "Fling",
   "short_name": "Fling",
   "description": "Capstone-2345",

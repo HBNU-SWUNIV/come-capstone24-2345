@@ -1,34 +1,34 @@
 const CheckUserInfo = (req, res) => {
-  if (req.method == 'POST') {
+  if (req.method === 'POST') {
     const data = req.body;
-    console.log(data);
+
     const namePattern = new RegExp('^[가-힣]{2,4}$');
-    // const birthYear = parseInt(data.userBirth.split('-')[0]);
 
-    const birth = data.userBirth.slice(0, 10).split('-');
-    const year = birth[0];
-    const month = birth[1];
-    const day = birth[2];
-    console.log(year, month, day);
-    if (data.userName == '') {
+    // const birth = data.userBirth.slice(0, 10).split('-');
+    // const year = birth[0];
+    // const month = birth[1];
+    // const day = birth[2];
+    // console.log(year, month, day);
+    const currentYear = new Date().getFullYear();
+
+    if (data.name === '') {
       res.status(400).send('이름을 입력해 주세요');
-    } else if (!namePattern.test(data.userName)) {
-      res.status(400).send('이름을 올바르게 입력해 주세요');
-    } else if (year > 2003) {
-      res.status(400).send('생년월일을 올바르게 선택해주세요');
-    } else {
+    } else if (!namePattern.test(data.name)) {
+      res.status(400).send('올바르지 않은 이름 형식입니다');
+    } else if (currentYear - parseInt(data.birth.year) < 19) {
       res
-        .status(200)
-        .send({ userName: data.userName, userBirth: { year, month, day } });
+        .status(400)
+        .send(`${currentYear - 19}년생 이전의 대학생만 이용이 가능합니다`);
+    } else {
+      res.status(200).send({
+        name: data.name,
+        birth: {
+          year: parseInt(data.birth.year),
+          month: parseInt(data.birth.month),
+          day: parseInt(data.birth.day),
+        },
+      });
     }
-    //   res.status(400).send('생년월일을 입력해 주세요');
-    // } else if (year < 1900 || year > 2100) {
-    //   res.status(400).send('태어나신 년도를 올바르게 입력해 주세요');
-    // } else if(month < 1 || month > 12){
-    //   res.status(400).send("태어나신 월을 올바르게 입력해주세요")
-    // } else if(day < 1 || )
-
-    // res.status(200).send(data);
   }
 };
 
