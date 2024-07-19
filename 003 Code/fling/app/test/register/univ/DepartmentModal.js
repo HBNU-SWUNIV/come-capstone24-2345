@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react';
 import useOnClickOutside from '@/hooks/useOnClickOutside';
 import { Input } from '@nextui-org/react';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 const DepartmentModal = (props) => {
   const [searchValue, setSearchValue] = useState([]);
@@ -31,9 +32,11 @@ const DepartmentModal = (props) => {
   return (
     <div
       // className={`w-full h-screen flex flex-col justify-end absolute z-20 transition-transform duration-500 ${props.isOpenModal ? '' : 'translate-y-[100vh]'}`}
-      className={`size-full flex flex-col justify-end absolute z-20 bg-black/20`}
+      className={`size-full flex flex-col justify-end absolute z-[999] bg-black/20`}
     >
-      <div
+      <motion.div
+        initial={{ x: 0, y: 100, opacity: 0 }}
+        animate={{ x: 0, y: 0, opacity: 1 }}
         ref={modalRef}
         className={`w-full min-h-[440px] h-[50vh] flex flex-col justify-around rounded-t-[30px] p-[40px] bg-white z-30 relative `}
       >
@@ -85,7 +88,7 @@ const DepartmentModal = (props) => {
         >
           확인
         </button> */}
-      </div>
+      </motion.div>
     </div>
   );
 };

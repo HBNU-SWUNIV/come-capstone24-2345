@@ -1,32 +1,40 @@
 'use client';
 
 import Link from 'next/link';
-import CarouselComponent from './Carousel';
 import EventCodeModal from './EventCodeModal';
 import { useState } from 'react';
+import Image from 'next/image';
+import MainSlider from './MainSlider';
+import InstallPrompt from './InstallPrompt';
 
 const StartPage = () => {
   const [isEventCodeModalOpen, setIsEventCodeModalOpen] = useState(false);
-
-  // function isPageOverscrolled() {
-  //   return (
-  //     document.documentElement.scrollHeight >
-  //     document.documentElement.clientHeight
-  //   );
-  // }
+  const [isClickInstallBtn, setIsClickInstallBtn] = useState(false);
 
   return (
     <div className='w-full h-screen px-[40px] relative'>
-      <header className='absolute w-full h-[100px] flex justify-between px-[30px] py-[25px] z-50 left-0'>
-        <img src='/main-logo.svg' className='h-full' />
-        {/* {isPageOverscrolled() ? 'yes' : 'no'} */}
-        <button
-          onClick={() => setIsEventCodeModalOpen(true)}
-          className='focus-btn px-[20px] text-info'
-        >
-          코드 받기
-        </button>
+      <header className='absolute w-full h-[100px] flex justify-between items-center px-[30px] py-[25px] z-50 left-0'>
+        <Image src='/main-logo.svg' alt='main-logo' width={100} height={50} />
+        <div>
+          <button
+            onClick={() => setIsClickInstallBtn(true)}
+            className={`${isClickInstallBtn ? 'hidden' : null} focus-btn px-[20px] h-[40px] text-info`}
+          >
+            인앱 설치
+          </button>
+          <button
+            onClick={() => setIsEventCodeModalOpen(true)}
+            className='focus-btn px-[20px] h-[40px] text-info'
+          >
+            코드 신청
+          </button>
+        </div>
       </header>
+
+      <InstallPrompt
+        isClickInstallBtn={isClickInstallBtn}
+        setIsClickInstallBtn={setIsClickInstallBtn}
+      />
 
       {isEventCodeModalOpen && (
         <EventCodeModal setIsEventCodeModalOpen={setIsEventCodeModalOpen} />
@@ -34,7 +42,7 @@ const StartPage = () => {
 
       <div className='size-full flex flex-col justify-center items-center relative'>
         <div className='w-full min-h-[300px] h-1/2 relative top-[-50px] flex flex-col justify-evenly items-center'>
-          <CarouselComponent />
+          <MainSlider />
         </div>
 
         <div className='w-full absolute bottom-[50px]'>
@@ -49,7 +57,7 @@ const StartPage = () => {
 
           <div className='w-full flex justify-center text-subtitle'>
             <p>이미 계정이 있으신가요?</p>
-            <Link className='ml-[10px] text-main-red' href={'#'}>
+            <Link className='ml-[10px] text-main-red' href={'/test/login'}>
               로그인하기
             </Link>
           </div>

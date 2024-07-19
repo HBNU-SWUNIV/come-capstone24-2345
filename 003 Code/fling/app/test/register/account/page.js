@@ -66,7 +66,7 @@ const RegisterAccount = () => {
         .then((result) => {
           dispatch(setGlobalPassword(result.data));
           dispatch(setGlobalNickname(nickname));
-          router.push('/test/register/mbti');
+          router.replace('/test/register/mbti');
         })
         .catch((err) => {
           alert(err.response.data);

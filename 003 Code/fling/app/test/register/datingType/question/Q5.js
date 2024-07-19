@@ -1,3 +1,5 @@
+import { motion } from 'framer-motion';
+
 const Q5 = (props) => {
   const handleQuestion = (ans) => {
     let copy = [...props.answer];
@@ -14,7 +16,13 @@ const Q5 = (props) => {
   };
 
   return (
-    <>
+    <motion.div
+      variants={props.variants}
+      initial='hidden'
+      animate='enter'
+      transition={props.easeInOut}
+      className='w-full'
+    >
       <div className='w-full mt-[120px] text-start'>
         <span className='text-title'>Q5</span>
       </div>
@@ -64,7 +72,7 @@ const Q5 = (props) => {
           다음질문
         </button>
       </div>
-    </>
+    </motion.div>
   );
 };
 

@@ -7,7 +7,12 @@ import Q3 from './Q3';
 import Q4 from './Q4';
 import Q5 from './Q5';
 import Q6 from './Q6';
-import ResultDatingType from './ResultDatingType';
+import { easeInOut } from 'framer-motion';
+
+const variants = {
+  hidden: { opacity: 0, x: 100, y: 0 },
+  enter: { opacity: 1, x: 0, y: 0 },
+};
 
 const RegisterDatingTypeQuestion = () => {
   let [answer, setAnswer] = useState([0, 0, 0, 0, 0, 0]);
@@ -16,22 +21,80 @@ const RegisterDatingTypeQuestion = () => {
   const questions = () => {
     switch (page) {
       case 1:
-        return <Q1 answer={answer} setAnswer={setAnswer} setPage={setPage} />;
+        return (
+          <Q1
+            variants={variants}
+            easeInOut={easeInOut}
+            answer={answer}
+            setAnswer={setAnswer}
+            setPage={setPage}
+          />
+        );
       case 2:
-        return <Q2 answer={answer} setAnswer={setAnswer} setPage={setPage} />;
+        return (
+          <Q2
+            variants={variants}
+            easeInOut={easeInOut}
+            answer={answer}
+            setAnswer={setAnswer}
+            setPage={setPage}
+          />
+        );
       case 3:
-        return <Q3 answer={answer} setAnswer={setAnswer} setPage={setPage} />;
+        return (
+          <Q3
+            variants={variants}
+            easeInOut={easeInOut}
+            answer={answer}
+            setAnswer={setAnswer}
+            setPage={setPage}
+          />
+        );
       case 4:
-        return <Q4 answer={answer} setAnswer={setAnswer} setPage={setPage} />;
+        return (
+          <Q4
+            variants={variants}
+            easeInOut={easeInOut}
+            answer={answer}
+            setAnswer={setAnswer}
+            setPage={setPage}
+          />
+        );
       case 5:
-        return <Q5 answer={answer} setAnswer={setAnswer} setPage={setPage} />;
+        return (
+          <Q5
+            variants={variants}
+            easeInOut={easeInOut}
+            answer={answer}
+            setAnswer={setAnswer}
+            setPage={setPage}
+          />
+        );
       case 6:
-        return <Q6 answer={answer} setAnswer={setAnswer} setPage={setPage} />;
+        return (
+          <Q6
+            variants={variants}
+            easeInOut={easeInOut}
+            answer={answer}
+            setAnswer={setAnswer}
+            setPage={setPage}
+          />
+        );
     }
   };
   return (
     <div className='w-full h-screen px-[40px] relative'>
-      <div className='size-full flex flex-col items-center'>{questions()}</div>
+      <div className='size-full flex flex-col items-center'>
+        {/* <motion.div
+        variants={variants}
+        initial='hidden'
+        animate='enter'
+        transition={easeInOut}
+        className='size-full flex flex-col items-center'
+      > */}
+        {questions()}
+        {/* </motion.div> */}
+      </div>
     </div>
   );
 };

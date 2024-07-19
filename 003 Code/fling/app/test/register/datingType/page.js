@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 const RegisterDatingType = () => {
   const router = useRouter();
   const handleNext = () => {
-    router.push('/test/register/datingType/question');
+    router.replace('/test/register/datingType/question');
   };
   return (
     <div className='w-full h-screen px-[40px] relative'>

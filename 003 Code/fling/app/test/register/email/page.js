@@ -99,7 +99,7 @@ const RegisterEmail = () => {
     if (inputCode === verificationCode) {
       dispatch(setGlobalEmail(email));
       alert('인증되었습니다!');
-      router.push('/test/register/photo');
+      router.replace('/test/register/photo');
     } else {
       alert('인증코드가 일치하지 않습니다!');
     }

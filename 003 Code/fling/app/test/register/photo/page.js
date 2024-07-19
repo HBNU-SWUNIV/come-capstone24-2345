@@ -71,7 +71,7 @@ const RegisterPhoto = () => {
           studentIDRes.uploadResult.url + '/' + studentIDRes.fileName;
         dispatch(setGlobalProfileImg(profileURL));
         dispatch(setGlobalIDCardImg(studentIDURL));
-        router.push('/test/register/account');
+        router.replace('/test/register/account');
       } else {
         alert('업로드 과정에서 에러가 발생했습니다');
       }

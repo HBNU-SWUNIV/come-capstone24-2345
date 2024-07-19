@@ -59,7 +59,7 @@ const RegisterUniv = () => {
       .then((result) => {
         dispatch(setGlobalUniv(result.data.univ));
         dispatch(setGlobalDepartment(result.data.department));
-        router.push('/test/register/email');
+        router.replace('/test/register/email');
       })
       .catch((err) => {
         alert(err.response.data);

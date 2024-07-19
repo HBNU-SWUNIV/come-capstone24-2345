@@ -36,7 +36,7 @@ const RegisterUser = () => {
       .then((result) => {
         dispatch(setGlobalName(result.data.name));
         dispatch(setGlobalBirth(result.data.birth));
-        router.push('/test/register/univ');
+        router.replace('/test/register/univ');
       })
       .catch((err) => {
         alert(err.response.data);

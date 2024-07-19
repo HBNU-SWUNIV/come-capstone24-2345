@@ -22,7 +22,7 @@ const RegisterMBTI = () => {
       alert('선택하지 않은 성향이 있습니다');
     } else {
       dispatch(setGlobalMbti(MBTI));
-      router.push('/test/register/hobby');
+      router.replace('/test/register/hobby');
     }
   };
 

@@ -48,7 +48,7 @@ const RegisterEtc = () => {
       dispatch(setGlobalDrinkLimit(drinkLimit));
       dispatch(setGlobalSmoking(smoking));
       dispatch(setGlobalArmy(army));
-      router.push('/test/register/datingType');
+      router.replace('/test/register/datingType');
     }
   };
 

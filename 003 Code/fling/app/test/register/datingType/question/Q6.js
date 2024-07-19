@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 import ResultDatingType from './ResultDatingType';
+import { motion } from 'framer-motion';
 
 const Q6 = (props) => {
   const [showResult, setShowResult] = useState(false);
@@ -29,7 +30,13 @@ const Q6 = (props) => {
   };
 
   return (
-    <div className='w-full flex flex-col'>
+    <motion.div
+      variants={props.variants}
+      initial='hidden'
+      animate='enter'
+      transition={props.easeInOut}
+      className='w-full flex flex-col'
+    >
       {showResult && <ResultDatingType datingType={datingType} />}
       <div className='w-full mt-[120px] text-start'>
         <span className='text-title'>Q6</span>
@@ -83,7 +90,7 @@ const Q6 = (props) => {
           결과보기
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

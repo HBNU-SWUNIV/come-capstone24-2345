@@ -1,6 +1,7 @@
 'use client';
 
 import JSConfetti from 'js-confetti';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -8,6 +9,8 @@ const RegisterSuccess = () => {
   const confettiRef = useRef();
 
   const registerUserInfo = useSelector((state) => state.registerUserInfo);
+
+  const router = useRouter();
 
   useEffect(() => {
     const jsConfetti = new JSConfetti(confettiRef.current);
@@ -33,7 +36,7 @@ const RegisterSuccess = () => {
   }, [confettiRef]);
 
   const handleLoginBtn = () => {
-    console.log(registerUserInfo);
+    router.replace('/test/login');
   };
 
   return (

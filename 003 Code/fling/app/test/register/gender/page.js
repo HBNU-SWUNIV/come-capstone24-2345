@@ -27,7 +27,7 @@ const RegisterGender = () => {
       .post('/api/check/gender', { gender })
       .then((result) => {
         dispatch(setGlobalGender(result.data));
-        router.push('/test/register/user');
+        router.replace('/test/register/user');
       })
       .catch((err) => {
         alert(err.response.data);

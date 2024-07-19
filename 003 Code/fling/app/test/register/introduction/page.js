@@ -21,7 +21,7 @@ const RegisterIntroduction = () => {
       .post('/api/check/introduction', { introduction })
       .then((result) => {
         dispatch(setGlobalIntroduction(result.data.introduction));
-        router.push('/test/register/success');
+        router.replace('/test/register/success');
       })
       .catch((err) => {
         alert(err.response.data);

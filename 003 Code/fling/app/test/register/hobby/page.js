@@ -66,7 +66,7 @@ const RegisterHobby = () => {
       alert('최소 한 가지 이상의 취미를 선택해주세요');
     } else {
       dispatch(setGlobalHobby(userHobby));
-      router.push('/test/register/etc');
+      router.replace('/test/register/etc');
     }
   };
 
