@@ -9,7 +9,7 @@ import FifthQuestion from './FifthQuestion';
 import SixthQuestion from './SixthQuestion';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { setGlobalDatingType } from '@/lib/store';
+import { setGlobalDatingType } from '@/library/store';
 import { useRouter } from 'next/navigation';
 
 const RegisterTendency = () => {

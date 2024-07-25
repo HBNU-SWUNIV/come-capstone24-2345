@@ -4,7 +4,7 @@ import {
   setGlobalDrinkLimit,
   setGlobalHeight,
   setGlobalSmoking,
-} from '@/lib/store';
+} from '@/library/store';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';

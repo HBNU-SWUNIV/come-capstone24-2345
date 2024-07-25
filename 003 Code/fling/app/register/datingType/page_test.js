@@ -1,6 +1,6 @@
 'use client';
 
-import { setGlobalPersonality } from '@/lib/store';
+import { setGlobalPersonality } from '@/library/store';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';

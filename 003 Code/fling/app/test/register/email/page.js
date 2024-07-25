@@ -1,6 +1,6 @@
 'use client';
 
-import { setGlobalEmail } from '@/lib/store';
+import { setGlobalEmail } from '@/library/store';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';

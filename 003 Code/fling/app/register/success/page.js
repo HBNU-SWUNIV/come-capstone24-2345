@@ -1,6 +1,6 @@
 'use client';
 
-import { setGlobalIDCardImg, setGlobalProfileImg } from '@/lib/store';
+import { setGlobalIDCardImg, setGlobalProfileImg } from '@/library/store';
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';

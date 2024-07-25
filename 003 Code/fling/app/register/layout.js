@@ -1,6 +1,6 @@
 'use client';
 
-import store from '@/lib/store';
+import store from '@/library/store';
 import { useRouter } from 'next/navigation';
 import { Provider } from 'react-redux';
 

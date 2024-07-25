@@ -4,7 +4,7 @@ import {
   setGlobalDepartment,
   setGlobalEmail,
   setGlobalUniv,
-} from '@/lib/store';
+} from '@/library/store';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';

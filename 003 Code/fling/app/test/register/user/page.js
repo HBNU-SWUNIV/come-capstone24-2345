@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { setGlobalBirth, setGlobalName } from '@/lib/store';
+import { setGlobalBirth, setGlobalName } from '@/library/store';
 import Image from 'next/image';
 
 const RegisterUser = () => {

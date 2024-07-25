@@ -1,6 +1,6 @@
 'use client';
 
-import { setGlobalMbti } from '@/lib/store';
+import { setGlobalMbti } from '@/library/store';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';

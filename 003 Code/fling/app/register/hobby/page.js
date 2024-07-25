@@ -1,6 +1,6 @@
 'use client';
 
-import { setGlobalHobby } from '@/lib/store';
+import { setGlobalHobby } from '@/library/store';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';

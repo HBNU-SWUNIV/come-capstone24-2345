@@ -1,6 +1,6 @@
 'use client';
 
-import { setGlobalNickname, setGlobalPassword } from '@/lib/store';
+import { setGlobalNickname, setGlobalPassword } from '@/library/store';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';

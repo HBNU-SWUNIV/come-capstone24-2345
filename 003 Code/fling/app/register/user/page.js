@@ -1,6 +1,6 @@
 'use client';
 
-import { setGlobalBirth, setGlobalName } from '@/lib/store';
+import { setGlobalBirth, setGlobalName } from '@/library/store';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
