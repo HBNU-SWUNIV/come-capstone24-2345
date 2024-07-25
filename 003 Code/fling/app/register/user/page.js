@@ -1,102 +1,104 @@
 'use client';
 
-import { setGlobalBirth, setGlobalName } from '@/library/store';
-import axios from 'axios';
+import { useEffect, useState } from 'react';
+import CalendarModal from './CalendarModal';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import Calendar from './Calendar';
+import { setGlobalBirth, setGlobalName } from '@/library/store';
+import Image from 'next/image';
 
 const RegisterUser = () => {
-  let [userName, setUserName] = useState('');
-  let [userBirth, setUserBirth] = useState(new Date());
+  const [openModal, setOpenModal] = useState(false);
+  const [name, setName] = useState('');
+  const [birth, setBirth] = useState(null);
 
-  const dispatch = useDispatch();
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  const handleUserName = (e) => {
-    setUserName(e.target.value);
+  const selector = useSelector((state) => state.registerUserInfo);
+
+  useEffect(() => {
+    console.log(selector);
+  }, [selector]);
+
+  const handleName = (e) => {
+    setName(e.target.value);
   };
-  const handleUserBirth = (date) => {
-    setUserBirth(date);
+  const handleBirth = () => {
+    setOpenModal(true);
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+
+  const handleNext = async () => {
     await axios
-      .post('/api/check/userInfo', { userName, userBirth })
+      .post('/api/check/userInfo', { name, birth })
       .then((result) => {
-        // console.log(result.data);
-        dispatch(setGlobalName(result.data.userName));
-        dispatch(setGlobalBirth(result.data.userBirth));
-        // console.log('/register/user : ' + JSON.stringify(globalUserInfo));
-        router.push('/register/univ');
+        dispatch(setGlobalName(result.data.name));
+        dispatch(setGlobalBirth(result.data.birth));
+        router.replace('/register/univ');
       })
       .catch((err) => {
         alert(err.response.data);
       });
   };
+
   return (
-    <>
-      <progress
-        className='w-full max-w-[440px] fixed top-[60px]'
-        value={20}
-        min={0}
-        max={100}
-      ></progress>
-      <form
-        className='size-full flex flex-col'
-        onSubmit={handleSubmit}
-        method='POST'
-      >
-        <span className='text-start mb-[20px]' style={{ fontSize: '20px' }}>
-          회원님의 이름과 생년월일을 적어주세요
-        </span>
+    <div className='w-full h-screen px-[40px] relative'>
+      <div className='size-full flex flex-col items-center'>
+        <div className='w-full mt-[120px] text-start'>
+          <p className='text-title'>회원님의 성명과</p>
+          <p className='text-title'>생년월일을 입력해주세요</p>
+        </div>
 
-        <div className='flex flex-col p-[20px] card rounded-[20px] mb-[20px]'>
-          <span className='text-start mb-[16px]' style={{ fontSize: '14px' }}>
-            이름
-          </span>
-          <input
-            onChange={handleUserName}
-            autoComplete='off'
-            autoFocus={true}
-            value={userName}
-            placeholder='홍길동'
-            className='bg-transparent'
+        <div className='w-full mt-[40px] flex flex-col gap-[20px]'>
+          <div className='relative w-full'>
+            <input
+              onChange={handleName}
+              placeholder=' '
+              className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn'
+            />
+            <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
+              성명
+            </label>
+          </div>
+          <button
+            onClick={handleBirth}
+            className={`w-full flex gap-[20px] text-start p-[20px] ${birth ? 'btn' : 'bg-main-red/15 rounded-[15px]'} text-white`}
+          >
+            <Image
+              src='/register/user/calendar.svg'
+              width={25}
+              height={25}
+              alt='calendar'
+            />
+            <p className='text-main-red'>
+              {birth == null
+                ? '생년월일을 선택해주세요'
+                : `${birth.year}-${birth.month}-${birth.day}`}
+            </p>
+          </button>
+        </div>
+
+        {openModal ? (
+          <CalendarModal
+            setBirth={setBirth}
+            openModal={openModal}
+            setOpenModal={setOpenModal}
           />
-        </div>
+        ) : null}
 
-        <div className='flex flex-col items-start p-[20px] card rounded-[20px] mb-[20px]'>
-          <span className='text-start mb-[16px]' style={{ fontSize: '14px' }}>
-            생년월일
-          </span>
-          {/* <input
-            onChange={handleUserBirth}
-            // inputMode='numeric'
-            required
-            type='number'
-            value={userBirth}
-            autoComplete='off'
-            placeholder='YYYYMMDD'
-            className='bg-transparent'
-          /> */}
-          {/* <DatePicker
-            className='w-full text-start'
-            shouldCloseOnSelect
-            locale={ko}
-            selected={userBirth}
-            onChange={(date) => setUserBirth(date)}
-            dateFormat={'yyyy-MM-dd'}
-            customInput={<CustomButtonInput />}
-          /> */}
-          <Calendar userBirth={userBirth} handleUserBirth={handleUserBirth} />
+        <div className='absolute bottom-[50px] w-[calc(100%_-_80px)]'>
+          <button
+            disabled={name === '' || birth === null}
+            onClick={handleNext}
+            className={`w-full h-[60px] my-[20px] ${name === '' || birth === null ? 'disabled-btn' : 'full-btn'}`}
+          >
+            다음
+          </button>
         </div>
-
-        <button type='submit' className='btn p-[20px] rounded-full'>
-          다음
-        </button>
-      </form>
-    </>
+      </div>
+    </div>
   );
 };
 

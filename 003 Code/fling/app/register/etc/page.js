@@ -1,180 +1,207 @@
 'use client';
 
 import {
+  setGlobalArmy,
   setGlobalDrinkLimit,
   setGlobalHeight,
   setGlobalSmoking,
 } from '@/library/store';
-import axios from 'axios';
+import { Slider, Button } from '@nextui-org/react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-const RegisterMBTI = () => {
-  let [height, setHeight] = useState(null);
-  let [drinkLimit, setDrinkLimit] = useState(0);
-  let [smoking, setSmoking] = useState(null);
+const RegisterEtc = () => {
+  const [height, setHeight] = useState(null);
+  const [drinkLimit, setDrinkLimit] = useState(1.5);
+  const [smoking, setSmoking] = useState(null);
+  const [army, setArmy] = useState(null);
 
-  const refHeight = useRef();
-  const refRange = useRef();
-  const router = useRouter();
+  // useEffect(() => {
+  //   console.log(height);
+  //   console.log(smoking);
+  //   console.log(army);
+  // }, [height, smoking, army]);
+
+  const heightRef = useRef();
+
   const dispatch = useDispatch();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await axios
-      .post('/api/check/etc', { height, drinkLimit, smoking })
-      .then((result) => {
-        console.log(result.data);
-        dispatch(setGlobalHeight(result.data.height));
-        dispatch(setGlobalDrinkLimit(result.data.drinkLimit));
-        dispatch(setGlobalSmoking(result.data.smoking));
-        router.push('/register/photo');
-      })
-      .catch((err) => {
-        alert(err.response.data);
-      });
-  };
+  const router = useRouter();
 
   const handleHeight = (e) => {
     if (e.target.value.length > 3) {
-      refHeight.current.value = e.target.value.substr(0, 3);
+      heightRef.current.value = e.target.value.substr(0, 3);
     }
     let value = parseInt(e.target.value);
+    console.log(value);
     setHeight(value);
   };
 
-  const handleDrinkLimit = (e) => {
-    setDrinkLimit(parseFloat(e.target.value));
-  };
-
-  const handleSmoking = (e) => {
-    if (e.target.dataset.smoking === 'true') {
-      setSmoking(true);
-    } else if (e.target.dataset.smoking === 'false') {
-      setSmoking(false);
+  const handleNext = () => {
+    if (height === null || smoking === null || army === null) {
+      alert('회원님의 정보를 모두 입력해주세요');
+    } else if (height < 100 || height > 210) {
+      alert('회원님의 키를 올바르게 입력해주세요');
+    } else {
+      dispatch(setGlobalHeight(height));
+      dispatch(setGlobalDrinkLimit(drinkLimit));
+      dispatch(setGlobalSmoking(smoking));
+      dispatch(setGlobalArmy(army));
+      router.replace('/register/datingType');
     }
   };
+
   return (
-    <>
-      <progress
-        className='w-full max-w-[440px] fixed top-[60px]'
-        value={80}
-        min={0}
-        max={100}
-      ></progress>
+    <div className='w-full h-screen px-[40px] relative'>
+      <div className='size-full flex flex-col items-center'>
+        <div className='w-full mt-[120px] text-start'>
+          <span className='text-title'>상세정보</span>
+        </div>
 
-      <form
-        className='size-full flex flex-col'
-        onSubmit={handleSubmit}
-        method='POST'
-      >
-        <span className='text-start mb-[20px]' style={{ fontSize: '20px' }}>
-          회원님의 키와 주량을 입력해 주세요
-        </span>
-
-        <div className='w-full mb-[20px]'>
-          <div className='w-full flex justify-between card rounded-[20px] mb-[20px] p-[20px]'>
-            <div className='w-3/4 flex'>
-              <p>📏</p>
+        <div className='w-full mt-[20px] flex flex-col gap-[10px]'>
+          <div className='w-full flex flex-col'>
+            <div className='relative w-full'>
               <input
-                ref={refHeight}
+                ref={heightRef}
                 onChange={handleHeight}
                 type='number'
-                inputMode='decimal'
-                placeholder='160'
-                className='w-full bg-transparent ml-[8px]'
+                inputMode='numeric'
+                placeholder=' '
+                className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn'
               />
+
+              <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
+                키
+              </label>
+              <p className='absolute right-[20px] top-[20px] text-gray-500'>
+                cm
+              </p>
             </div>
-            <p>cm</p>
           </div>
 
-          <label className='w-full'>
-            <input
-              type='range'
-              className='w-[93%]'
-              value={drinkLimit || 0}
-              min={0}
-              max={5}
-              step={0.5}
-              ref={refRange}
-              onInput={handleDrinkLimit}
-              list='drink'
-            />
-            <datalist
-              id='drink'
-              className='w-full grid grid-flow-col justify-items-center mt-[5px]'
-            >
-              <option className='w-[34px]' value='0'>
-                알쓰
-              </option>
-              <option
-                className='w-[1px] h-[1px] border-r border-black/20 border-solid'
-                value='0.5'
-              ></option>
-              <option className='w-[34px]' value='1'>
-                1병
-              </option>
-              <option
-                className='w-[1px] h-[1px] border-r border-black/20 border-solid'
-                value='1.5'
-              ></option>
-              <option className='w-[34px]' value='2'>
-                2병
-              </option>
-              <option
-                className='w-[1px] h-[1px] border-r border-black/20 border-solid'
-                value='2.5'
-              ></option>
-              <option className='w-[34px]' value='3'>
-                3병
-              </option>
-              <option
-                className='w-[1px] h-[1px] border-r border-black/20 border-solid'
-                value='3.5'
-              ></option>
-              <option className='w-[34px]' value='4'>
-                4병
-              </option>
-              <option
-                className='w-[1px] h-[1px] border-r border-black/20 border-solid'
-                value='4.5'
-              ></option>
-              <option className='w-[34px]' value='5'>
-                고래
-              </option>
-            </datalist>
-          </label>
+          <div className='w-full flex flex-col'>
+            <p className='my-[20px] text-subtitle text-start opacity-70'>
+              회원님의 주량은 어떻게 되나요?
+            </p>
+
+            <div className='flex flex-col gap-2 w-full h-full max-w-md items-start justify-center'>
+              <Slider
+                aria-label='주량'
+                size='md'
+                minValue={0}
+                maxValue={10}
+                color='danger'
+                step={0.5}
+                value={drinkLimit}
+                onChange={setDrinkLimit}
+                startContent={
+                  <Button
+                    isIconOnly
+                    radius='full'
+                    variant='light'
+                    onPress={() =>
+                      setDrinkLimit((prev) => (prev >= 1 ? prev - 1 : 0))
+                    }
+                  >
+                    <Image
+                      src='/register/etc/wine-empty.svg'
+                      alt='wine-empty'
+                      width={20}
+                      height={20}
+                    />
+                  </Button>
+                }
+                endContent={
+                  <Button
+                    isIconOnly
+                    radius='full'
+                    variant='light'
+                    onPress={() =>
+                      setDrinkLimit((prev) => (prev <= 9 ? prev + 1 : 10))
+                    }
+                  >
+                    <Image
+                      src='/register/etc/wine-fill.svg'
+                      alt='wine-empty'
+                      width={20}
+                      height={20}
+                    />
+                  </Button>
+                }
+                className='max-w-md'
+              />
+              <p className='text-info'>{drinkLimit}병</p>
+            </div>
+          </div>
+
+          <div className='w-full flex flex-col'>
+            <p className='my-[20px] text-subtitle text-start opacity-70'>
+              회원님은 담배를 피우시나요?
+            </p>
+            <div className='flex gap-[20px]'>
+              <button
+                onClick={() => setSmoking('smoking')}
+                className={`w-full py-[15px] flex justify-center items-center gap-[10px] ${smoking === 'smoking' ? 'focus-btn' : 'btn'}`}
+              >
+                <Image
+                  // src={`/register/etc/${smoking === 'smoking' ? 'checked' : 'unchecked'}/smoking.svg`}
+                  src={`/register/etc/unchecked/smoking.svg`}
+                  alt='smoking'
+                  width={20}
+                  height={20}
+                />
+                <span>흡연자</span>
+              </button>
+              <button
+                onClick={() => setSmoking('noSmoking')}
+                className={`w-full py-[15px] flex justify-center items-center gap-[10px] ${smoking === 'noSmoking' ? 'focus-btn' : 'btn'}`}
+              >
+                <Image
+                  // src={`/register/etc/${smoking === 'noSmoking' ? 'checked' : 'unchecked'}/no-smoking.svg`}
+                  src={`/register/etc/unchecked/no-smoking.svg`}
+                  alt='no-smoking'
+                  width={20}
+                  height={20}
+                />
+                <span>비흡연자</span>
+              </button>
+            </div>
+          </div>
+
+          <div className='w-full flex flex-col'>
+            <p className='my-[20px] text-subtitle text-start opacity-70'>
+              회원님은 군대를 갔다오셨나요?
+            </p>
+            <div className='flex gap-[20px]'>
+              <button
+                onClick={() => setArmy('army')}
+                className={`w-full py-[15px] flex justify-center gap-[10px] ${army === 'army' ? 'focus-btn' : 'btn'}`}
+              >
+                <span>군필</span>
+              </button>
+              <button
+                onClick={() => setArmy('noArmy')}
+                className={`w-full py-[15px] flex justify-center gap-[10px] ${army === 'noArmy' ? 'focus-btn' : 'btn'}`}
+              >
+                <span>미필</span>
+              </button>
+            </div>
+          </div>
         </div>
 
-        <span className='text-start mb-[20px]' style={{ fontSize: '20px' }}>
-          회원님의 흡연여부를 선택해 주세요
-        </span>
-
-        <div
-          className='w-full flex justify-between gap-[20px] mb-[20px]'
-          onClick={handleSmoking}
-        >
-          <div
-            data-smoking={false}
-            className={`w-1/2 p-[20px] rounded-[20px] cursor-pointer ${smoking === false ? 'btn' : 'card'}`}
+        <div className='w-full'>
+          <button
+            disabled={!height || smoking === null || army === null}
+            onClick={handleNext}
+            className={`w-full h-[60px] my-[20px] ${!height || smoking === null || army === null ? 'disabled-btn' : 'full-btn'}`}
           >
-            🙅🏻 비흡연자
-          </div>
-          <div
-            data-smoking={true}
-            className={`w-1/2 p-[20px] rounded-[20px] cursor-pointer ${smoking === true ? 'btn' : 'card'}`}
-          >
-            🚬 흡연자
-          </div>
+            다음
+          </button>
         </div>
-
-        <button type='submit' className='btn p-[20px] rounded-full'>
-          다음
-        </button>
-      </form>
-    </>
+      </div>
+    </div>
   );
 };
 
-export default RegisterMBTI;
+export default RegisterEtc;

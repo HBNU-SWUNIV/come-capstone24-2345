@@ -1,182 +1,115 @@
 'use client';
 
 import { setGlobalMbti } from '@/library/store';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 const RegisterMBTI = () => {
-  let [mbti, setMbti] = useState(['', '', '', '']);
+  const [MBTI, setMBTI] = useState(['', '', '', '']);
 
-  const router = useRouter();
   const dispatch = useDispatch();
+  const router = useRouter();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await axios
-      .post('/api/check/mbti', { mbti })
-      .then((result) => {
-        dispatch(setGlobalMbti(result.data));
-        router.push('/register/hobby');
-      })
-      .catch((err) => {
-        alert(err.response.data);
-      });
+  const handleButton = (type, groupIndex) => {
+    let copy = [...MBTI];
+    copy[groupIndex] = type;
+    setMBTI(copy);
   };
 
-  useEffect(() => {
-    console.log(mbti);
-  }, [mbti]);
-
-  const handleIE = (e) => {
-    if (e.target.dataset.mbti) {
-      let copy = [...mbti];
-      copy[0] = e.target.dataset.mbti;
-      setMbti(copy);
-    }
-  };
-  const handleNS = (e) => {
-    if (e.target.dataset.mbti) {
-      let copy = [...mbti];
-      copy[1] = e.target.dataset.mbti;
-      setMbti(copy);
-    }
-  };
-  const handleFT = (e) => {
-    if (e.target.dataset.mbti) {
-      let copy = [...mbti];
-      copy[2] = e.target.dataset.mbti;
-      setMbti(copy);
-    }
-  };
-  const handlePJ = (e) => {
-    if (e.target.dataset.mbti) {
-      let copy = [...mbti];
-      copy[3] = e.target.dataset.mbti;
-      setMbti(copy);
+  const handleNext = () => {
+    if (MBTI.includes('')) {
+      alert('선택하지 않은 성향이 있습니다');
+    } else {
+      dispatch(setGlobalMbti(MBTI));
+      router.replace('/register/hobby');
     }
   };
 
-  return (
-    <>
-      <progress
-        className='w-full max-w-[440px] fixed top-[60px]'
-        value={50}
-        min={0}
-        max={100}
-      ></progress>
-
-      <form
-        className='size-full flex flex-col'
-        onSubmit={handleSubmit}
-        method='POST'
-      >
-        <span className='text-start mb-[20px]' style={{ fontSize: '20px' }}>
-          회원님의 MBTI를 선택해 주세요
-        </span>
-
-        <div
-          className='flex justify-evenly w-full mb-[20px]'
-          onClick={handleIE}
+  const createLeftMBTI = (type, title, subtitle, groupIndex) => {
+    return (
+      <div className='w-full flex gap-[20px] items-center'>
+        <button
+          onClick={() => {
+            handleButton(type, groupIndex);
+          }}
+          className={`size-[65px] text-title ${MBTI[groupIndex] === type ? 'focus-btn' : 'btn'}`}
         >
-          <div className='w-2/5 flex flex-col items-center'>
-            <img
-              className={`w-3/5 p-[25px] mb-[20px] aspect-square rounded-[20px] cursor-pointer ${mbti[0] == 'I' ? 'btn' : 'card'}`}
-              data-mbti='I'
-              src='/mbti/I.svg'
-            />
-            <p>내향형</p>
-            <p style={{ fontSize: '12px' }}>깊이있는 대인관계 유지</p>
-          </div>
-          <div className='w-2/5 flex flex-col items-center'>
-            <img
-              className={`w-3/5 p-[25px] mb-[20px] aspect-square rounded-[20px] cursor-pointer ${mbti[0] == 'E' ? 'btn' : 'card'}`}
-              data-mbti='E'
-              src='/mbti/E.svg'
-            />
-            <p>외향형</p>
-            <p style={{ fontSize: '12px' }}>폭넓은 대인관계 유지</p>
-          </div>
-        </div>
-
-        <div
-          className='flex justify-evenly w-full mb-[20px]'
-          onClick={handleNS}
-        >
-          <div className='w-2/5 flex flex-col items-center'>
-            <img
-              className={`w-3/5 p-[25px] mb-[20px] aspect-square rounded-[20px] cursor-pointer ${mbti[1] == 'N' ? 'btn' : 'card'}`}
-              data-mbti='N'
-              src='/mbti/N.svg'
-            />
-            <p>직관형</p>
-            <p style={{ fontSize: '12px' }}>현재지향적</p>
-          </div>
-          <div className='w-2/5 flex flex-col items-center'>
-            <img
-              className={`w-3/5 p-[25px] mb-[20px] aspect-square rounded-[20px] cursor-pointer ${mbti[1] == 'S' ? 'btn' : 'card'}`}
-              data-mbti='S'
-              src='/mbti/S.svg'
-            />
-            <p>감각형</p>
-            <p style={{ fontSize: '12px' }}>미래지향적</p>
-          </div>
-        </div>
-
-        <div
-          className='flex justify-evenly w-full mb-[20px]'
-          onClick={handleFT}
-        >
-          <div className='w-2/5 flex flex-col items-center'>
-            <img
-              className={`w-3/5 p-[25px] mb-[20px] aspect-square rounded-[20px] cursor-pointer ${mbti[2] == 'F' ? 'btn' : 'card'}`}
-              data-mbti='F'
-              src='/mbti/F.svg'
-            />
-            <p>감정형</p>
-            <p style={{ fontSize: '12px' }}>사람, 관계에 관심</p>
-          </div>
-          <div className='w-2/5 flex flex-col items-center'>
-            <img
-              className={`w-3/5 p-[25px] mb-[20px] aspect-square rounded-[20px] cursor-pointer ${mbti[2] == 'T' ? 'btn' : 'card'}`}
-              data-mbti='T'
-              src='/mbti/T.svg'
-            />
-            <p>사고형</p>
-            <p style={{ fontSize: '12px' }}>진실, 사실에 관심</p>
-          </div>
-        </div>
-
-        <div
-          className='flex justify-evenly w-full mb-[20px]'
-          onClick={handlePJ}
-        >
-          <div className='w-2/5 flex flex-col items-center'>
-            <img
-              className={`w-3/5 p-[25px] mb-[20px] aspect-square rounded-[20px] cursor-pointer ${mbti[3] == 'P' ? 'btn' : 'card'}`}
-              data-mbti='P'
-              src='/mbti/P.svg'
-            />
-            <p>인식형</p>
-            <p style={{ fontSize: '12px' }}>목적과 방향은 변화 가능</p>
-          </div>
-          <div className='w-2/5 flex flex-col items-center'>
-            <img
-              className={`w-3/5 p-[25px] mb-[20px] aspect-square rounded-[20px] cursor-pointer ${mbti[3] == 'J' ? 'btn' : 'card'}`}
-              data-mbti='J'
-              src='/mbti/J.svg'
-            />
-            <p>판단형</p>
-            <p style={{ fontSize: '12px' }}>분명한 목적과 방향</p>
-          </div>
-        </div>
-
-        <button type='submit' className='btn p-[20px] mb-[40px] rounded-full'>
-          다음
+          {type}
         </button>
-      </form>
-    </>
+        <div className='text-start flex flex-col gap-[4px]'>
+          <p
+            className={`text-subtitle ${MBTI[groupIndex] === type ? 'text-main-red' : ''}`}
+          >
+            {title}
+          </p>
+          <p
+            className={`text-info ${MBTI[groupIndex] === type ? 'text-main-red/50' : ''}`}
+          >
+            {subtitle}
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const createRightMBTI = (type, title, subtitle, groupIndex) => {
+    return (
+      <div className='w-full flex justify-end gap-[20px] items-center'>
+        <div className='text-end flex flex-col gap-[4px]'>
+          <p
+            className={`text-subtitle ${MBTI[groupIndex] === type ? 'text-main-red' : ''}`}
+          >
+            {title}
+          </p>
+          <p
+            className={`text-info ${MBTI[groupIndex] === type ? 'text-main-red/50' : ''}`}
+          >
+            {subtitle}
+          </p>
+        </div>
+        <button
+          className={`size-[65px] text-title ${MBTI[groupIndex] === type ? 'focus-btn' : 'btn'}`}
+          onClick={() => {
+            handleButton(type, groupIndex);
+          }}
+        >
+          {type}
+        </button>
+      </div>
+    );
+  };
+  return (
+    <div className='w-full h-screen px-[40px] relative'>
+      <div className='size-full flex flex-col items-center'>
+        <div className='w-full mt-[120px] text-start'>
+          <span className='text-title'>회원님의 MBTI</span>
+        </div>
+
+        <div className='w-full mt-[20px]'>
+          <div className='w-full flex flex-col gap-[10px]'>
+            {createLeftMBTI('I', '내향형', '깊이있는 대인관계 유지', 0)}
+            {createLeftMBTI('E', '외향형', '폭넓은 대인관계 유지', 0)}
+            {createRightMBTI('N', '직관형', '현재지향적', 1)}
+            {createRightMBTI('S', '감각형', '미래지향적', 1)}
+            {createLeftMBTI('F', '감정형', '사람, 관계에 관심', 2)}
+            {createLeftMBTI('T', '사고형', '진실, 사실에 관심', 2)}
+            {createRightMBTI('P', '인식형', '목적과 방향은 변화 가능', 3)}
+            {createRightMBTI('J', '판단형', '분명한 목적과 방향', 3)}
+          </div>
+        </div>
+
+        <div className='w-full'>
+          <button
+            disabled={MBTI.includes('')}
+            onClick={handleNext}
+            className={`w-full h-[60px] my-[20px] ${MBTI.includes('') ? 'disabled-btn' : 'full-btn'}`}
+          >
+            다음
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

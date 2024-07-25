@@ -18,7 +18,7 @@ const ResultDatingType = ({ datingType }) => {
 
   const handleNext = () => {
     dispatch(setGlobalDatingType(datingType));
-    router.replace('/test/register/introduction');
+    router.replace('/register/introduction');
   };
 
   return (

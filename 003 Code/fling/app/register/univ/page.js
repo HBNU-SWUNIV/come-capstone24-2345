@@ -1,37 +1,29 @@
 'use client';
 
-import {
-  setGlobalDepartment,
-  setGlobalEmail,
-  setGlobalUniv,
-} from '@/library/store';
+// import BottomSheet from '@/app/register/univ/BottomSheet';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import UnivModal from './UnivModal';
+import DepartmentModal from './DepartmentModal';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import { useDispatch } from 'react-redux';
+import { setGlobalDepartment, setGlobalUniv } from '@/library/store';
 
 const RegisterUniv = () => {
-  let [totalUnivDepartment, setTotalUnivDepartment] = useState({});
-  let [totalUnivName, setTotalUnivName] = useState([]);
-  let [isClickSearch, setIsClickSearch] = useState(false);
-  let [searchPage, setSearchPage] = useState(true);
-  let [univ, setUniv] = useState('');
-  let [department, setDepartment] = useState('');
-  let [email, setEmail] = useState('');
-  let [certReq, setCertReq] = useState(false);
-  let [certNum, setCertNum] = useState('');
-  let [receivedCertNum, setReceivedCertNum] = useState(null);
+  const [univList, setUnivList] = useState(null);
+  const [departmentList, setDepartmentList] = useState(null);
+  const [univModalOpen, setUnivModalOpen] = useState(false);
+  const [departmentModalOpen, setDepartmentModalOpen] = useState(false);
+
+  const [univ, setUniv] = useState('');
+  const [department, setDepartment] = useState('');
 
   const router = useRouter();
   const dispatch = useDispatch();
-  const topRef = useRef();
 
   useEffect(() => {
-    console.log(topRef.current);
-  }, []);
-
-  useEffect(() => {
-    const fetchCSVData = async () => {
+    const fetchUnivList = async () => {
       await axios('/23년_대학명_및_학과명_리스트.csv').then((result) => {
         let csvFile = result.data;
         let splitRow = csvFile.split('\r\n');
@@ -41,7 +33,6 @@ const RegisterUniv = () => {
         });
 
         const univ_department = {};
-
         let featuring = splitRow.map((element) => {
           let [univName, , , , department] = element;
           if (!univ_department[univName]) {
@@ -52,217 +43,117 @@ const RegisterUniv = () => {
           return element[0];
         });
 
-        setTotalUnivName(
+        setUnivList(
           [...new Set(featuring)].sort((a, b) => a.localeCompare(b, 'ko-KR'))
         );
-        setTotalUnivDepartment(univ_department);
+        setDepartmentList(univ_department);
       });
     };
-    fetchCSVData();
+
+    fetchUnivList();
   }, []);
 
-  const clickSearch = (e) => {
-    setIsClickSearch(true);
-  };
-
-  const handleUniv = (e) => {
-    let univ = e.target.textContent;
-    setUniv(univ);
-    setSearchPage((state) => !state);
-  };
-
-  const handleDepartment = (e) => {
-    let department = e.target.textContent;
-    setDepartment(department);
-    setIsClickSearch(false);
-    setSearchPage((state) => !state);
-  };
-
-  const handleEmail = (e) => {
-    setEmail(e.target.value);
-  };
-  const handleCertNum = (e) => {
-    setCertNum(e.target.value);
-  };
-
-  const clickCertReq = async (e) => {
-    e.preventDefault();
+  const handleNext = async () => {
     await axios
-      .post('/api/check/univ', {
-        univ,
-        department,
-        email,
-      })
+      .post('/api/check/univ', { univ, department })
       .then((result) => {
-        setCertReq(true);
-        alert('인증번호를 발송하였습니다!');
-        setReceivedCertNum(result.data.certNum);
         dispatch(setGlobalUniv(result.data.univ));
         dispatch(setGlobalDepartment(result.data.department));
-        dispatch(setGlobalEmail(result.data.email));
+        router.replace('/register/email');
       })
       .catch((err) => {
         alert(err.response.data);
       });
   };
-  const checkCert = async (e) => {
-    e.preventDefault();
-
-    if (certNum == receivedCertNum) {
-      alert('인증되었습니다!');
-      router.push('/register/account');
-    } else {
-      alert('인증번호가 올바르지 않습니다');
-    }
-  };
 
   return (
-    <>
-      {isClickSearch && (
-        <div className='w-full h-screen flex justify-center items-center bg-black/60 absolute top-0 left-0 z-50'>
-          <div className='size-4/5 flex flex-col p-[20px] card rounded-[20px]'>
-            {searchPage ? (
-              <>
-                <span style={{ fontSize: '20px' }}>대학교 리스트</span>
-                <div className='flex flex-col w-full h-full mb-[20px] overflow-y-scroll'>
-                  {/* {totalUnivName?.map((univName) => {
-                    return (
-                      <p
-                        key={univName}
-                        className='bg-white rounded-full p-[8px] my-[4px] whitespace-nowrap cursor-pointer'
-                        onClick={handleUniv}
-                      >
-                        {univName}
-                      </p>
-                    );
-                  })} */}
-                  <p
-                    key='한밭대학교'
-                    className='bg-white rounded-full p-[8px] my-[4px] whitespace-nowrap cursor-pointer'
-                    onClick={handleUniv}
-                  >
-                    한밭대학교
-                  </p>
-                </div>
-              </>
-            ) : (
-              <>
-                <span style={{ fontSize: '20px' }}>학과 리스트</span>
-                <div className='flex flex-col w-full h-full mb-[20px] overflow-y-scroll'>
-                  {totalUnivDepartment[univ].map((departmentName) => {
-                    return (
-                      <p
-                        key={univ + departmentName}
-                        className='w-full bg-white rounded-full py-[8px] my-[4px] whitespace-nowrap cursor-pointer'
-                        onClick={handleDepartment}
-                      >
-                        {departmentName}
-                      </p>
-                    );
-                  })}
-                </div>
-              </>
-            )}
+    <div className='w-full h-screen px-[40px] relative'>
+      <div className='size-full flex flex-col items-center'>
+        <div className='w-full mt-[120px] text-start'>
+          <p className='text-title'>대학명과 학과명을</p>
+          <p className='text-title'>입력해주세요</p>
+        </div>
+
+        <div className='w-full mt-[40px] flex flex-col gap-[20px]'>
+          <div className='relative w-full'>
+            <input
+              placeholder=' '
+              disabled
+              className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn bg-transparent'
+              value={univ}
+            />
+            <button
+              onClick={() => setUnivModalOpen(true)}
+              className='absolute top-[20px] right-[20px]'
+            >
+              <Image
+                src='/register/univ/search.svg'
+                alt='search'
+                width={25}
+                height={25}
+              />
+            </button>
+            <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
+              대학명
+            </label>
+          </div>
+
+          <div className='relative w-full'>
+            <input
+              placeholder=' '
+              disabled
+              className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn bg-transparent'
+              value={department}
+            />
+            <button
+              onClick={() => {
+                univ !== ''
+                  ? setDepartmentModalOpen(true)
+                  : alert('대학교를 선택해주세요');
+              }}
+              className='absolute top-[20px] right-[20px]'
+            >
+              <Image
+                src='/register/univ/search.svg'
+                alt='search'
+                width={25}
+                height={25}
+              />
+            </button>
+            <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
+              학과명
+            </label>
           </div>
         </div>
-      )}
-      <progress
-        className='w-full max-w-[440px] fixed top-[60px]'
-        value={30}
-        min={0}
-        max={100}
-      ></progress>
-      <div className='size-full flex flex-col'>
-        <span className='text-start mb-[20px]' style={{ fontSize: '20px' }}>
-          회원님의 대학정보를 적어주세요
-        </span>
-        <form onSubmit={clickCertReq} method='POST'>
-          <div className='flex flex-col p-[20px] card rounded-[20px] mb-[20px]'>
-            <span className='text-start mb-[16px]' style={{ fontSize: '14px' }}>
-              대학교명
-            </span>
-            <div className='w-full flex justify-between cursor-pointer'>
-              <input
-                onChange={handleUniv}
-                value={univ}
-                disabled
-                className='bg-transparent flex-grow'
-              />
-              <img onClick={clickSearch} src='/search.svg' />
-            </div>
-          </div>
 
-          <div className='flex flex-col p-[20px] card rounded-[20px] mb-[20px] relative'>
-            <span className='text-start mb-[16px]' style={{ fontSize: '14px' }}>
-              학과명
-            </span>
-            <div className='w-full flex justify-between cursor-pointer'>
-              <input
-                onChange={handleDepartment}
-                value={department}
-                disabled
-                autoComplete='off'
-                className='bg-transparent'
-              />
-            </div>
-          </div>
-
-          <div className='flex flex-col p-[20px] card rounded-[20px] mb-[20px]'>
-            <span className='text-start mb-[16px]' style={{ fontSize: '14px' }}>
-              학교 이메일
-            </span>
-            <input
-              onChange={handleEmail}
-              inputMode='email'
-              autoComplete='off'
-              placeholder='example@school.ac.kr'
-              className='bg-transparent'
-            />
-          </div>
-
-          <button
-            className='w-full btn p-[20px] mb-[20px] rounded-full'
-            type='submit'
-          >
-            인증 요청
-          </button>
-        </form>
-
-        {certReq && (
-          <>
-            <div
-              className='flex flex-col mb-[20px]'
-              style={{ fontSize: '12px', opacity: '0.7' }}
-            >
-              <span>인증번호를 받지 못하셨나요? </span>
-              <span>상단의 인증 요청버튼을 누르면 다시 받을 수 있어요</span>
-            </div>
-            <form onSubmit={checkCert} method='POST'>
-              <div className='flex flex-col p-[20px] card rounded-[20px] mb-[20px]'>
-                <span
-                  className='text-start mb-[16px]'
-                  style={{ fontSize: '14px' }}
-                >
-                  인증번호
-                </span>
-                <input
-                  onChange={handleCertNum}
-                  value={certNum}
-                  type='number'
-                  inputMode='numeric'
-                  placeholder='12345678'
-                  className='bg-transparent'
-                />
-              </div>
-
-              <button className='w-full btn p-[20px] mb-[20px] rounded-full'>
-                확인
-              </button>
-            </form>
-          </>
+        {univModalOpen && (
+          <UnivModal
+            univList={univList}
+            setUniv={setUniv}
+            setUnivModalOpen={setUnivModalOpen}
+          />
         )}
+
+        {departmentModalOpen && (
+          <DepartmentModal
+            univ={univ}
+            departmentList={departmentList[univ]}
+            setDepartment={setDepartment}
+            setDepartmentModalOpen={setDepartmentModalOpen}
+          />
+        )}
+
+        <div className='absolute bottom-[50px] w-[calc(100%_-_80px)]'>
+          <button
+            disabled={univ === '' || department === ''}
+            onClick={handleNext}
+            className={`w-full h-[60px] my-[20px] ${univ === '' || department === '' ? 'disabled-btn' : 'full-btn'}`}
+          >
+            다음
+          </button>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

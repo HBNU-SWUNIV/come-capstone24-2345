@@ -1,37 +1,52 @@
 'use client';
 
 import { setGlobalIDCardImg, setGlobalProfileImg } from '@/library/store';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 
 const RegisterPhoto = () => {
-  let [profileSrc, setProfileSrc] = useState(null);
-  let [studentIDSrc, setStudentIDSrc] = useState(null);
+  const [profileSrc, setProfileSrc] = useState(null);
+  const [studentIDSrc, setStudentIDSrc] = useState(null);
 
   const router = useRouter();
   const dispatch = useDispatch();
-  const globalUserInfo = useSelector((state) => state.registerUserInfo);
+  const userInfo = useSelector((state) => state.registerUserInfo);
 
-  useEffect(() => {
-    if (globalUserInfo.profileImg != '' && globalUserInfo.IDCardImg != '') {
-      router.replace('/register/introduction');
+  const handlePhoto = async (e, photoType) => {
+    let file = e.target.files[0];
+    if (file.type.includes('svg')) {
+      alert('svg 이미지 파일은 지원하지 않습니다');
+      return;
     }
-  }, [globalUserInfo]);
+    let arr = file.name.split('.');
+    let fileExtension = arr[arr.length - 1];
 
-  const checkPhoto = async (e) => {
-    e.preventDefault();
+    let renamedFile = new File(
+      [file],
+      `${userInfo.email}_${photoType}.${fileExtension}`,
+      {
+        type: file.type,
+      }
+    );
 
-    if (profileSrc) {
-      let file = profileSrc;
-      let filename = encodeURIComponent(file.name);
-      let res = await fetch('/api/check/profile?file=' + filename);
+    if (photoType === 'profile') {
+      setProfileSrc(renamedFile);
+    } else if (photoType === 'studentID') {
+      setStudentIDSrc(renamedFile);
+    }
+  };
+
+  async function uploadPhoto(data) {
+    if (data !== null) {
+      let file = data;
+      let fileName = encodeURIComponent(file.name);
+      let res = await fetch(`/api/check/profile?file=${fileName}`);
       res = await res.json();
 
-      console.log(res);
-      //S3 업로드
-      const formData = new FormData();
+      let formData = new FormData();
       Object.entries({ ...res.fields, file }).forEach(([key, value]) => {
         formData.append(key, value);
       });
@@ -39,167 +54,141 @@ const RegisterPhoto = () => {
         method: 'POST',
         body: formData,
       });
-      console.log(uploadResult);
 
-      if (uploadResult.ok) {
-        dispatch(setGlobalProfileImg(uploadResult.url + '/' + filename));
+      return { uploadResult, fileName };
+    }
+  }
+
+  const handleNext = async () => {
+    if (profileSrc && studentIDSrc) {
+      let profileRes = await uploadPhoto(profileSrc);
+      let studentIDRes = await uploadPhoto(studentIDSrc);
+
+      if (profileRes.uploadResult.ok && studentIDRes.uploadResult.ok) {
+        let profileURL =
+          profileRes.uploadResult.url + '/' + profileRes.fileName;
+        let studentIDURL =
+          studentIDRes.uploadResult.url + '/' + studentIDRes.fileName;
+        dispatch(setGlobalProfileImg(profileURL));
+        dispatch(setGlobalIDCardImg(studentIDURL));
+        router.replace('/register/account');
       } else {
-        console.log('실패');
+        alert('업로드 과정에서 에러가 발생했습니다');
       }
+    } else {
+      alert('프로필이나 학생증사진을 등록해주세요');
     }
-
-    if (studentIDSrc) {
-      let file = studentIDSrc;
-      let filename = encodeURIComponent(file.name);
-      let res = await fetch('/api/check/profile?file=' + filename);
-      res = await res.json();
-
-      //S3 업로드
-      const formData = new FormData();
-      Object.entries({ ...res.fields, file }).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
-      let uploadResult = await fetch(res.url, {
-        method: 'POST',
-        body: formData,
-      });
-      console.log(uploadResult);
-
-      if (uploadResult.ok) {
-        dispatch(setGlobalIDCardImg(uploadResult.url + '/' + filename));
-      } else {
-        console.log('실패');
-      }
-    }
-    // };
-    if (profileSrc == null || studentIDSrc == null) {
-      alert('프로필과 학생증 사진을 올려주세요');
-    }
-  };
-
-  const handleProfile = async (e) => {
-    let file = e.target.files[0];
-    let arr = file.name.split('.');
-    let extension = arr[arr.length - 1];
-
-    let renamedFile = new File(
-      [file],
-      `${globalUserInfo.email}_profile.${extension}`,
-      {
-        type: file.type,
-      }
-    );
-    setProfileSrc(renamedFile);
-  };
-
-  const handleStudentID = async (e) => {
-    let file = e.target.files[0];
-    let arr = file.name.split('.');
-    let extension = arr[arr.length - 1];
-
-    let renamedFile = new File(
-      [file],
-      `${globalUserInfo.email}_studentID.${extension}`,
-      {
-        type: file.type,
-      }
-    );
-    setStudentIDSrc(renamedFile);
   };
   return (
-    <>
-      <progress
-        className='w-full max-w-[440px] fixed top-[60px]'
-        value={90}
-        min={0}
-        max={100}
-      ></progress>
-      <div className='size-full flex flex-col'>
-        <span className='text-start mb-[20px]' style={{ fontSize: '20px' }}>
-          회원님의 본인확인
-        </span>
-
-        <form onSubmit={checkPhoto} method='POST'>
-          <div className='flex justify-between mb-[20px]'>
-            <div className='w-[46%]'>
-              <span style={{ fontSize: '18px' }}>프로필 사진</span>
-              <label htmlFor='profile'>
-                <div className='w-full aspect-square p-[20px] flex justify-center items-center my-[20px] card rounded-[20px] text-5xl cursor-pointer'>
-                  {profileSrc ? (
-                    <img
-                      className='w-full aspect-square object-contain'
-                      src={profileSrc ? URL.createObjectURL(profileSrc) : ''}
-                    />
-                  ) : (
-                    '+'
-                  )}
-                </div>
-                <input
-                  type='file'
-                  id='profile'
-                  accept='image/*'
-                  onChange={handleProfile}
-                  className='hidden'
-                />
-              </label>
-
-              <div
-                className='flex flex-col text-start pl-[8px] opacity-60'
-                style={{ fontSize: '12px' }}
-              >
-                <span className='mb-[8px]'>본인확인이 가능한 정면사진</span>
-                <span className='mb-[8px]'>사진은 변환 처리됨</span>
-                <span>본 사진은 공개되지 않음</span>
-              </div>
-            </div>
-            <div className='w-[46%]'>
-              <span style={{ fontSize: '18px' }}>학생증 사진</span>
-              <label htmlFor='studentID'>
-                <div className='w-full aspect-square p-[20px] flex justify-center items-center my-[20px] card rounded-[20px] text-5xl cursor-pointer'>
-                  {studentIDSrc ? (
-                    <img
-                      className='w-full aspect-square object-contain'
-                      src={
-                        studentIDSrc ? URL.createObjectURL(studentIDSrc) : ''
-                      }
-                    />
-                  ) : (
-                    '+'
-                  )}
-                </div>
-                <input
-                  type='file'
-                  id='studentID'
-                  accept='image/*'
-                  onChange={handleStudentID}
-                  className='hidden'
-                />
-              </label>
-              <div
-                className='flex flex-col text-start pl-[8px] opacity-60'
-                style={{ fontSize: '12px' }}
-              >
-                <span className='mb-[8px]'>모바일, 실물 학생증만 가능</span>
-                <span>이름과 본인사진을 포함해야 함</span>
-              </div>
-            </div>
+    <div className='w-full h-screen px-[40px] relative'>
+      <div className='size-full flex flex-col items-center'>
+        <div className='w-full mt-[120px] text-start'>
+          <span className='text-title'>본인 확인</span>
+          <div className='my-[10px] opacity-70 text-subtitle'>
+            <p>회원님의 얼굴이 나오는 사진과</p>
+            <p>대학교 학생증 사진을 제출해주세요</p>
           </div>
+        </div>
 
-          <p
-            className='mb-[20px] text-[var(--main-puple)]'
-            style={{ fontSize: '14px' }}
-          >
-            대학 인증 심사기간은 며칠이 소요될 수 있습니다
-          </p>
+        <div className='w-full mt-[20px] flex justify-center gap-[15px]'>
+          <div className='w-full flex flex-col justify-center gap-[10px]'>
+            <span>프로필사진</span>
+            <div
+              className={`w-full flex justify-center items-center aspect-square ${profileSrc ? 'focus-btn' : 'btn'} relative`}
+            >
+              {profileSrc ? (
+                <Image
+                  className='object-contain rounded-[15px]'
+                  src={profileSrc ? URL.createObjectURL(profileSrc) : ''}
+                  alt='profile'
+                  fill
+                />
+              ) : null}
+              <label
+                htmlFor='profile'
+                className='focus-btn cursor-pointer absolute right-[10px] bottom-[10px] p-[2px] bg-white'
+              >
+                <Image
+                  src={'/register/photo/add-photo.svg'}
+                  alt='add-photo'
+                  width={25}
+                  height={25}
+                />
+              </label>
+            </div>
+            <input
+              type='file'
+              id='profile'
+              accept='image/*, image/heic'
+              className='hidden'
+              onChange={(e) => handlePhoto(e, 'profile')}
+            />
+          </div>
+          <div className='w-full flex flex-col justify-center gap-[10px]'>
+            <span>학생증사진</span>
+            <div
+              className={`w-full flex justify-center items-center aspect-square ${studentIDSrc ? 'focus-btn' : 'btn'} relative`}
+            >
+              {studentIDSrc ? (
+                <Image
+                  className='object-contain rounded-[15px]'
+                  src={studentIDSrc ? URL.createObjectURL(studentIDSrc) : ''}
+                  alt='profile'
+                  fill
+                />
+              ) : null}
+              <label
+                htmlFor='studentID'
+                className='focus-btn cursor-pointer absolute right-[10px] bottom-[10px] p-[2px] bg-white'
+              >
+                <Image
+                  src={'/register/photo/add-photo.svg'}
+                  alt='add-photo'
+                  width={25}
+                  height={25}
+                />
+              </label>
+            </div>
+            <input
+              type='file'
+              id='studentID'
+              accept='image/*, image/heic'
+              className='hidden'
+              onChange={(e) => handlePhoto(e, 'studentID')}
+            />
+          </div>
+        </div>
+
+        <fieldset className='text-start w-full border border-[#E8E6EA] border-solid rounded-[15px] p-[20px] mt-[20px]'>
+          <legend className='px-[10px] text-main-red'>프로필사진 참고</legend>
+          <div className='flex flex-col gap-[10px] text-info'>
+            <p className='text-black/50'>프로필은 본인확인이 가능한 정면사진</p>
+            <p className='text-black/50'>프로필 사진은 AI 변환처리 돼요</p>
+            <p className='text-black/50'>등록한 사진은 공개되지 않아요</p>
+          </div>
+        </fieldset>
+
+        <fieldset className='text-start w-full border border-[#E8E6EA] border-solid rounded-[15px] p-[20px] mt-[20px]'>
+          <legend className='px-[10px] text-main-red'>학생증사진 참고</legend>
+          <div className='flex flex-col gap-[10px] text-info'>
+            <p className='text-black/50'>
+              실물 학생증과 모바일 학생증만 가능해요
+            </p>
+            <p className='text-black/50'>이름과 얼굴 사진이 나와야 해요</p>
+          </div>
+        </fieldset>
+
+        <div className='w-full'>
           <button
-            className='w-full btn p-[20px] mb-[20px] rounded-full'
-            type='submit'
+            // disabled={MBTI.includes('')}
+            onClick={handleNext}
+            className={`w-full h-[60px] my-[20px] full-btn`}
           >
-            제출하기
+            다음
           </button>
-        </form>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

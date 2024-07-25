@@ -1,66 +1,66 @@
 'use client';
 
-import { setGlobalIDCardImg, setGlobalProfileImg } from '@/library/store';
-import axios from 'axios';
-import { useSearchParams } from 'next/navigation';
+import JSConfetti from 'js-confetti';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 const RegisterSuccess = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const profileSrc = searchParams.get('profileSrc');
-  const studentIDSrc = searchParams.get('studentIDSrc');
+  const confettiRef = useRef();
 
-  const dispatch = useDispatch();
-  const globalUserInfo = useSelector((state) => state.registerUserInfo);
+  const registerUserInfo = useSelector((state) => state.registerUserInfo);
+
+  const router = useRouter();
 
   useEffect(() => {
-    console.log(globalUserInfo);
-  }, []);
-
-  const clickHandler = async (e) => {
-    const isEmpty = (object) =>
-      !Object.values(object).every(
-        (element) => element !== null && element !== ''
-      );
-
-    if (!isEmpty(globalUserInfo)) {
-      await axios.post('/api/user/info', globalUserInfo).then((result) => {
-        alert(result.data);
-        router.replace('/login');
+    const jsConfetti = new JSConfetti(confettiRef.current);
+    if (confettiRef.current) {
+      jsConfetti.addConfetti({
+        // emojis: ['❤️', '🌟', '💥', '✨', '🫧'],
+        confettiNumber: 150,
+        emojiSize: 40,
+        confettiColors: [
+          '#5D35FF', // purple
+          '#FFD600', // yellow
+          '#E94057', // red
+          '#0047FF', // blue
+          '#20E200', // green
+        ],
       });
-    } else {
-      alert('비정상적인 접근입니다');
-      alert('회원가입 페이지로 이동합니다');
-      router.replace('/register');
-    }
-  };
-  return (
-    <div className='w-full h-[calc(100vh_-_200px)] flex flex-col justify-center items-center'>
-      <div className='flex flex-col items-center justify-center mb-[20px]'>
-        <span
-          className='mb-[20px]'
-          style={{ fontSize: '22px', fontWeight: '700' }}
-        >
-          🎉 회원가입이 완료되었어요!
-        </span>
-        <span className='mb-[8px]' style={{ fontSize: '12px' }}>
-          여러분의 프로필을 작성한 후 매칭이 가능합니다
-        </span>
-        <span className='mb-[8px]' style={{ fontSize: '12px' }}>
-          Mypage &gt; 프로필수정, 나의 취미, 나의 성격
-        </span>
-      </div>
 
-      <button
-        className='w-[50%] btn p-[20px] rounded-full'
-        onClick={clickHandler}
-      >
-        로그인하기
-      </button>
+      return () => {
+        jsConfetti.clearCanvas();
+        jsConfetti.destroyCanvas();
+      };
+    }
+  }, [confettiRef]);
+
+  const handleLoginBtn = () => {
+    router.replace('/login');
+  };
+
+  return (
+    <div className='w-full h-screen px-[40px] relative'>
+      <div className='size-full flex flex-col justify-center items-center'>
+        <div
+          className='w-full flex flex-col justify-center items-center gap-[20px]'
+          ref={confettiRef}
+        >
+          <img src='/main-logo.svg' className='w-[150px]' />
+          <span className='text-title'>회원가입 완료!</span>
+          {/* <p className='text-subtitle'>플링 회원이 되신 것을 축하드려요!</p> */}
+          <div className='flex flex-col gap-[4px] text-info opacity-70'>
+            <p>회원님께서 입력하셨던 정보는</p>
+            <p>마이페이지에서 수정할 수 있어요</p>
+          </div>
+          <button
+            className='w-auto h-[60px] px-[60px] mt-[20px] full-btn'
+            onClick={handleLoginBtn}
+          >
+            로그인하기
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,107 +1,80 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
+import { signIn } from 'next-auth/react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
-export default function Login() {
-  let [email, setEmail] = useState('');
-  let [password, setPassword] = useState('');
+const LoginPage = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const router = useRouter();
 
-  const handleEmail = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePassword = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const clickLogin = async (e) => {
-    e.preventDefault();
-
-    let result = await signIn('credentials', {
-      email: email,
-      password: password,
+  const handleLogin = async () => {
+    let res = await signIn('credentials', {
+      email,
+      password,
       redirect: false,
-      // callbackUrl: '/main',
     });
 
-    if (result.status == 200) {
-      alert('로그인되었습니다');
-      router.replace('/fling/main');
+    if (res.status === 200) {
+      alert('로그인 되었습니다');
+      router.replace('/main');
     } else {
-      alert(result.error);
+      alert(res.error);
     }
   };
   return (
-    <div className='flex flex-col size-full items-center pt-[100px]'>
-      <div className='w-full'>
-        <div
-          className='w-full h-[20%] text-end font-thin px-[20px]'
-          style={{ fontSize: '30px', lineHeight: '50px' }}
-        >
-          <p>터치 단 한 번으로</p>
-          <p>랜덤 소개팅</p>
-          <div className='flex justify-end mt-[8px] font-medium items-center'>
-            <img className='w-[50px] h-[50px] mr-[8px]' src='/logo.png' />
-            <p>플링</p>
+    <div className='w-full h-screen px-[40px] relative'>
+      <div className='w-full h-full flex flex-col justify-center items-center gap-[20px]'>
+        <Image src='/main-logo.svg' width={200} height={100} alt='main-logo' />
+
+        <div className='w-full flex flex-col mt-[10px]'>
+          <div className='relative w-full'>
+            <input
+              type='email'
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder=' '
+              className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn'
+            />
+
+            <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
+              아이디(학교 이메일)
+            </label>
           </div>
         </div>
-      </div>
 
-      {/* <div className='w-[120%] h-[65%] flex relative items-center'>
-        <img
-          className='w-[100%] h-[100%] absolute left-[-7%]'
-          src='/login.svg'
-        />
-      </div> */}
+        <div className='w-full flex flex-col'>
+          <div className='relative w-full'>
+            <input
+              type='password'
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder=' '
+              className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn'
+            />
 
-      <form
-        onSubmit={clickLogin}
-        method='POST'
-        className='w-full h-full flex flex-col justify-center items-center box-content'
-      >
-        <div className='relative w-2/3 mb-[30px]'>
-          <input
-            onChange={handleEmail}
-            value={email}
-            type='email'
-            placeholder=' '
-            className='floating-label-input block w-full h-[50px] card rounded-full focus:outline-none px-[20px]'
-          />
-          <label className='floating-label absolute left-[20px] top-[15px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
-            이메일
-          </label>
+            <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
+              비밀번호
+            </label>
+            <Link
+              href={'#'}
+              className='absolute bottom-[-30px] right-0 text-main-red text-subtitle'
+            >
+              비밀번호 찾기
+            </Link>
+          </div>
         </div>
-        <div className='relative w-2/3 mb-[30px]'>
-          <input
-            onChange={handlePassword}
-            value={password}
-            type='password'
-            placeholder=' '
-            className='floating-label-input block w-full h-[50px] card rounded-full focus:outline-none px-[20px]'
-          />
-          <label className='floating-label absolute left-[20px] top-[15px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
-            비밀번호
-          </label>
-        </div>
+
         <button
-          className='card-light flex w-2/3 h-[50px] bg-main-pink/70 rounded-full text-start text-white justify-center items-center box-border mb-[20px]'
-          type='submit'
-          // style={{ fontSize: '12px' }}
+          onClick={handleLogin}
+          className='w-full h-[60px] mt-[40px] full-btn'
         >
           로그인
         </button>
-        <Link
-          className='underline'
-          style={{ fontSize: '12px' }}
-          href={'/findPW'}
-        >
-          비밀번호를 잊으셨나요?
-        </Link>
-      </form>
+      </div>
     </div>
   );
-}
+};
+export default LoginPage;
