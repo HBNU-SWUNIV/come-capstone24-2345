@@ -3,6 +3,7 @@ const { createSlice, configureStore } = require('@reduxjs/toolkit');
 const registerUserInfo = createSlice({
   name: 'registerUserInfo',
   initialState: {
+    eventCode: '',
     email: '',
     emailCert: false,
     password: '',
@@ -27,6 +28,9 @@ const registerUserInfo = createSlice({
     role: 'normal',
   },
   reducers: {
+    setGlobalEventCode: (state, action) => {
+      state.eventCode = action.payload;
+    },
     setGlobalGender: (state, action) => {
       state.gender = action.payload;
     },
@@ -88,6 +92,7 @@ const registerUserInfo = createSlice({
 });
 
 export const {
+  setGlobalEventCode,
   setGlobalGender,
   setGlobalName,
   setGlobalBirth,

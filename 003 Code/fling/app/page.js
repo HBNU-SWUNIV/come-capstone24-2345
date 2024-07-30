@@ -15,7 +15,7 @@ const StartPage = () => {
     <div className='w-full h-screen px-[40px] relative'>
       <header className='absolute w-full h-[100px] flex justify-between items-center px-[30px] py-[25px] z-50 left-0'>
         <Image src='/main-logo.svg' alt='main-logo' width={100} height={50} />
-        <div>
+        <div className='flex gap-[10px]'>
           <button
             onClick={() => setIsClickInstallBtn(true)}
             className={`${isClickInstallBtn ? 'hidden' : null} focus-btn px-[20px] h-[40px] text-info`}
@@ -48,10 +48,10 @@ const StartPage = () => {
         <div className='w-full absolute bottom-[50px]'>
           <button className='w-full h-[60px] my-[20px] rounded-[15px] bg-main-red text-white'>
             <Link
-              href='/register'
+              href='/register/code'
               className='size-full flex justify-center items-center'
             >
-              이벤트코드 입력하기
+              플링 시작하기
             </Link>
           </button>
 
