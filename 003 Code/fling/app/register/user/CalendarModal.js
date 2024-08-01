@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Calendar } from '@nextui-org/calendar';
 import useOnClickOutside from '@/hooks/useOnClickOutside';
+import { motion } from 'framer-motion';
 
 const CalendarModal = (props) => {
   let [selectedDate, setSelectedDate] = useState(null);
@@ -32,7 +33,9 @@ const CalendarModal = (props) => {
       // className={`w-full h-screen flex flex-col justify-end absolute z-20 transition-transform duration-500 ${props.isOpenModal ? '' : 'translate-y-[100vh]'}`}
       className={`size-full flex flex-col justify-end absolute z-20 bg-black/20`}
     >
-      <div
+      <motion.div
+        initial={{ x: 0, y: 100, opacity: 0 }}
+        animate={{ x: 0, y: 0, opacity: 1 }}
         ref={calendarRef}
         className={`w-full min-h-[440px] h-[50vh] flex flex-col justify-around rounded-t-[30px] p-[40px] bg-white z-30 relative `}
       >
@@ -70,7 +73,7 @@ const CalendarModal = (props) => {
         >
           확인
         </button>
-      </div>
+      </motion.div>
     </div>
   );
 };

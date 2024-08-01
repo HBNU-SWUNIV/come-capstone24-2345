@@ -3,7 +3,7 @@ import { Spinner } from '@nextui-org/react';
 
 const Loading = () => {
   return (
-    <div className='w-full h-screen flex justify-center items-center bg-black/30'>
+    <div className='w-full h-screen flex justify-center items-center'>
       <Spinner
         label='잠시만 기다려주세요...'
         color='danger'

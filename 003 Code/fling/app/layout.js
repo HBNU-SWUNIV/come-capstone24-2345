@@ -2,8 +2,6 @@ import './reset.css';
 import './globals.css';
 import './login.css';
 import './slider.css';
-import 'react-datepicker/dist/react-datepicker.css';
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import localfont from 'next/font/local';
 import { NextUIProviders } from '../library/NextUIProviders';
 import StyledComponentsRegistry from '@/library/StyledComponentRegistry';
@@ -31,27 +29,27 @@ export const metadata = {
       },
     ],
   },
-  openGraph: {
-    title: '플링',
-    description: '터치 단 한 번으로 랜덤 소개팅',
-    // url: 'https://nextjs.org',
-    siteName: '플링',
-    images: [
-      {
-        // url: 'https://nextjs.org/og.png', // Must be an absolute URL
-        width: 800,
-        height: 600,
-      },
-      {
-        // url: 'https://nextjs.org/og-alt.png', // Must be an absolute URL
-        width: 1800,
-        height: 1600,
-        alt: 'My custom alt',
-      },
-    ],
-    locale: 'ko_KR',
-    type: 'website',
-  },
+  // openGraph: {
+  //   title: '플링',
+  //   description: '터치 단 한 번으로 랜덤 소개팅',
+  //   // url: 'https://nextjs.org',
+  //   siteName: '플링',
+  //   images: [
+  //     {
+  //       // url: 'https://nextjs.org/og.png', // Must be an absolute URL
+  //       width: 800,
+  //       height: 600,
+  //     },
+  //     {
+  //       // url: 'https://nextjs.org/og-alt.png', // Must be an absolute URL
+  //       width: 1800,
+  //       height: 1600,
+  //       alt: 'My custom alt',
+  //     },
+  //   ],
+  //   locale: 'ko_KR',
+  //   type: 'website',
+  // },
 };
 
 export const viewport = {
@@ -67,7 +65,7 @@ export default function RootLayout({ children }) {
       <body className={hanbit.className}>
         <div className='w-screen h-screen flex bg-black/20'>
           {/* max-h-[940px] */}
-          <div className='main w-full max-w-[440px] min-w-[330px] min-h-[568px] text-center m-auto box-border flex flex-col h-screen overflow-x-hidden bg-white'>
+          <div className='main w-full max-w-[440px] min-w-[330px] min-h-[568px] text-center m-auto box-border flex flex-col h-screen overflow-x-hidden bg-white relative'>
             <NextUIProviders>
               <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
             </NextUIProviders>

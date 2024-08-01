@@ -69,7 +69,7 @@ const InstallPrompt = (props) => {
           <>
             <p>Fling은 앱에서 원활하게 사용하실 수 있습니다</p>
             <div className='text-start w-full flex flex-col gap-[5px]'>
-              <p className='flex gap-[5px]'>
+              <div className='flex gap-[5px]'>
                 <p>1.</p>
                 <Image
                   src='/install/share.svg'
@@ -78,8 +78,8 @@ const InstallPrompt = (props) => {
                   alt='shared-button'
                 />
                 <p>공유버튼 클릭</p>
-              </p>
-              <p className='flex gap-[5px]'>
+              </div>
+              <div className='flex gap-[5px]'>
                 <p>2.</p>
                 <Image
                   src='/install/plus-box.svg'
@@ -88,7 +88,7 @@ const InstallPrompt = (props) => {
                   alt='plus-button'
                 />
                 <p>"홈 화면에 추가하기" 클릭</p>
-              </p>
+              </div>
             </div>
           </>
         ) : (

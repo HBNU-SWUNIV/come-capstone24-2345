@@ -9,9 +9,6 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  // experimental: {
-  //   urlImports: ['https://cdn.sheetjs.com/xlsx-latest/package/xlsx.mjs'],
-  // },
 };
 
 export default withPWA(nextConfig);

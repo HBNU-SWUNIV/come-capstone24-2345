@@ -42,14 +42,24 @@ export default function MainSlider() {
     nextArrow: (
       <SlickButtonFix>
         <div className='size-[30px] relative opacity-80'>
-          <Image src='/direction/chevron-right-red.svg' fill />
+          <Image
+            src='/direction/chevron-right-red.svg'
+            width={25}
+            height={25}
+            alt='chevron-right'
+          />
         </div>
       </SlickButtonFix>
     ),
     prevArrow: (
       <SlickButtonFix>
         <div className='size-[30px] relative opacity-80'>
-          <Image src='/direction/chevron-left-red.svg' fill />
+          <Image
+            src='/direction/chevron-left-red.svg'
+            width={25}
+            height={25}
+            alt='chevron-left'
+          />
         </div>
       </SlickButtonFix>
     ),
@@ -60,7 +70,7 @@ export default function MainSlider() {
       <Slider {...settings}>
         <div className='w-full mb-[40px]'>
           <div className='w-full h-[270px] relative'>
-            <Image src={`/start/0.svg`} fill alt='' />
+            <Image src={`/start/0.svg`} fill alt='1page' />
           </div>
           <p className='text-title text-main-red my-[20px]'>
             {content[0].title}
@@ -71,7 +81,7 @@ export default function MainSlider() {
 
         <div className='w-full mb-[20px]'>
           <div className='w-full h-[270px] relative'>
-            <Image src={`/start/1.svg`} fill alt='' />
+            <Image src={`/start/1.svg`} fill alt='2page' />
           </div>
           <p className='text-title text-main-red my-[20px]'>
             {content[1].title}
@@ -82,7 +92,7 @@ export default function MainSlider() {
 
         <div className='w-full mb-[20px]'>
           <div className='w-full h-[270px] relative'>
-            <Image src={`/start/2.svg`} fill alt='' />
+            <Image src={`/start/2.svg`} fill alt='3page' />
           </div>
           <p className='text-title text-main-red my-[20px]'>
             {content[2].title}

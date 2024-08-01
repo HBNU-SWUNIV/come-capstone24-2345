@@ -3,12 +3,13 @@
 import Image from 'next/image';
 import React from 'react';
 import HobbySlider from './HobbySlider';
+import BottomNav from '../BottomNav';
 
 const ChatPage = () => {
   return (
-    <div className='w-full h-screen px-[40px]'>
-      <div className='size-full flex'>
-        <div className='w-full mt-[120px] text-start flex flex-col gap-[20px]'>
+    <div className='w-full h-full px-[40px] relative'>
+      <div className='w-full flex'>
+        <div className='w-full mt-[120px] text-start flex flex-col gap-[20px] pb-[100px]'>
           <span className='text-title'>닉네임 님</span>
 
           <div className='w-full flex gap-[20px]'>
@@ -89,22 +90,22 @@ const ChatPage = () => {
 
           <div className='w-full flex flex-col items-center gap-[20px]'>
             <p>
-              닉네임님과 성격이 <span className='text-main-red'>87%</span>{' '}
-              유사해요
+              <span>닉네임님과 성격이 </span>
+              <span className='text-main-red'>87%</span>
+              <span> 유사해요</span>
             </p>
-            <button className='full-btn px-[30px] py-[10px]'>대화하기</button>
+            <button className='flex gap-[4px] justify-between items-center full-btn px-[30px] py-[10px]'>
+              <p>대화하기</p>
+              <Image
+                src={'/direction/chevron-right.svg'}
+                width={15}
+                height={15}
+              />
+            </button>
           </div>
         </div>
-
-        {/* <div className='w-full absolute bottom-[50px]'> */}
-        {/* <Link
-            href={'/register/gender'}
-            className='flex justify-center items-center w-full h-[60px] my-[20px] full-btn'
-          >
-            <p>시작하기</p>
-          </Link> */}
-        {/* </div> */}
       </div>
+      {/* <BottomNav /> */}
     </div>
   );
 };

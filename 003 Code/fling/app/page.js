@@ -13,7 +13,7 @@ const StartPage = () => {
 
   return (
     <div className='w-full h-screen px-[40px] relative'>
-      <header className='absolute w-full h-[100px] flex justify-between items-center px-[30px] py-[25px] z-50 left-0'>
+      <header className='absolute w-full h-[100px] flex justify-between items-center px-[30px] py-[25px] z-[9999] left-0'>
         <Image src='/main-logo.svg' alt='main-logo' width={100} height={50} />
         <div className='flex gap-[10px]'>
           <button

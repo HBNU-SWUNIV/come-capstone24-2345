@@ -8,14 +8,14 @@ const HobbySlider = () => {
   const settings = {
     className: 'center',
     infinite: true,
-    centerPadding: '10px',
+    // centerPadding: '10px',
     // slidesToShow: 2,
     swipeToSlide: true,
-    afterChange: function (index) {
-      console.log(
-        `Slider Changed to: ${index + 1}, background: #222; color: #bada55`
-      );
-    },
+    // afterChange: function (index) {
+    //   console.log(
+    //     `Slider Changed to: ${index + 1}, background: #222; color: #bada55`
+    //   );
+    // },
     variableWidth: true,
     autoplay: true,
     autoplaySpeed: 2000,
