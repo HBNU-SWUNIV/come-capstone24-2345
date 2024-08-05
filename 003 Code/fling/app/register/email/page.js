@@ -39,6 +39,13 @@ const RegisterEmail = () => {
     return () => clearInterval(timerInterval);
   }, [codeSent, clickReSend]);
 
+  useEffect(() => {
+    if (codeNumRef.current[0]) {
+      codeNumRef.current[0].focus();
+      return;
+    }
+  }, [codeNumRef]);
+
   const handleInput = (e, index) => {
     if (e.target.value.length === 1 && index < codeNumRef.current.length - 1) {
       codeNumRef.current[index + 1].focus();
@@ -166,7 +173,9 @@ const RegisterEmail = () => {
             {code.map((_, index) => {
               return (
                 <input
-                  ref={(el) => (codeNumRef.current[index] = el)}
+                  ref={(el) => {
+                    codeNumRef.current[index] = el;
+                  }}
                   key={`emailCode${index}`}
                   onChange={(e) => {
                     handleInput(e, index);

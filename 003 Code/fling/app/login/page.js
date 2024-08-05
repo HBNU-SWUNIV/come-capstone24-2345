@@ -31,48 +31,54 @@ const LoginPage = () => {
       <div className='w-full h-full flex flex-col justify-center items-center gap-[20px]'>
         <Image src='/main-logo.svg' width={200} height={100} alt='main-logo' />
 
-        <div className='w-full flex flex-col mt-[10px]'>
-          <div className='relative w-full'>
-            <input
-              type='email'
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder=' '
-              className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn'
-            />
-
-            <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
-              아이디(학교 이메일)
-            </label>
-          </div>
-        </div>
-
-        <div className='w-full flex flex-col'>
-          <div className='relative w-full'>
-            <input
-              type='password'
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder=' '
-              className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn'
-            />
-
-            <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
-              비밀번호
-            </label>
-            <Link
-              href={'#'}
-              className='absolute bottom-[-30px] right-0 text-main-red text-subtitle'
-            >
-              비밀번호 찾기
-            </Link>
-          </div>
-        </div>
-
-        <button
-          onClick={handleLogin}
-          className='w-full h-[60px] mt-[40px] full-btn'
+        <form
+          className='w-full flex flex-col gap-[10px]'
+          onSubmit={handleLogin}
         >
-          로그인
-        </button>
+          <div className='w-full flex flex-col mt-[10px]'>
+            <div className='relative w-full'>
+              <input
+                type='email'
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder=' '
+                className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn'
+              />
+
+              <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
+                아이디(학교 이메일)
+              </label>
+            </div>
+          </div>
+
+          <div className='w-full flex flex-col'>
+            <div className='relative w-full'>
+              <input
+                type='password'
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder=' '
+                className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn'
+              />
+
+              <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
+                비밀번호
+              </label>
+              <Link
+                href={'#'}
+                className='absolute bottom-[-30px] right-0 text-main-red text-subtitle'
+              >
+                비밀번호 찾기
+              </Link>
+            </div>
+          </div>
+
+          <button
+            type='submit'
+            // onClick={handleLogin}
+            className='w-full h-[60px] mt-[40px] full-btn'
+          >
+            로그인
+          </button>
+        </form>
       </div>
     </div>
   );
