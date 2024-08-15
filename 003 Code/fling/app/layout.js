@@ -3,8 +3,8 @@ import './globals.css';
 import './login.css';
 import './slider.css';
 import localfont from 'next/font/local';
-import { NextUIProviders } from '../library/NextUIProviders';
-import StyledComponentsRegistry from '@/library/StyledComponentRegistry';
+import { NextUIProviders } from '../lib/NextUIProviders';
+import StyledComponentsRegistry from '@/lib/StyledComponentRegistry';
 
 // const hanbit = localfont({
 //   src: '../public/fonts/KCC-Hanbit.woff2',

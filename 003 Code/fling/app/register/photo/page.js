@@ -1,6 +1,6 @@
 'use client';
 
-import { setGlobalIDCardImg, setGlobalProfileImg } from '@/library/store';
+import { setGlobalIDCardImg, setGlobalProfileImg } from '@/lib/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';

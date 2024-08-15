@@ -1,6 +1,6 @@
 'use client';
 
-import { setGlobalMbti } from '@/library/store';
+import { setGlobalMbti } from '@/lib/store';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';

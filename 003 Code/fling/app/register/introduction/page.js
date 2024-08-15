@@ -1,6 +1,6 @@
 'use client';
 
-import { setGlobalIntroduction } from '@/library/store';
+import { setGlobalIntroduction } from '@/lib/store';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';

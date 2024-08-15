@@ -42,7 +42,7 @@ export const authOptions = {
   //jwt 만료일설정
   session: {
     strategy: 'jwt',
-    maxAge: 10 * 60, // 10분
+    maxAge: 60 * 60, // 10분
   },
 
   callbacks: {

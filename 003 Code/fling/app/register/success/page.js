@@ -1,5 +1,6 @@
 'use client';
 
+import axios from 'axios';
 import JSConfetti from 'js-confetti';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
@@ -35,8 +36,10 @@ const RegisterSuccess = () => {
     }
   }, [confettiRef]);
 
-  const handleLoginBtn = () => {
-    router.replace('/login');
+  const handleLoginBtn = async () => {
+    await axios.post('/api/user/info', registerUserInfo).then((res) => {
+      router.replace('/login');
+    });
   };
 
   return (

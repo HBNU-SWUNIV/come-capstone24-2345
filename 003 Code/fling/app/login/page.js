@@ -12,7 +12,8 @@ const LoginPage = () => {
 
   const router = useRouter();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     let res = await signIn('credentials', {
       email,
       password,
@@ -21,7 +22,7 @@ const LoginPage = () => {
 
     if (res.status === 200) {
       alert('로그인 되었습니다');
-      router.replace('/main');
+      router.replace('/chatting');
     } else {
       alert(res.error);
     }

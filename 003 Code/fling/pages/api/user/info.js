@@ -9,7 +9,7 @@ const userInfoHandler = async (req, res) => {
 
     let result = await db.collection('user_cred').insertOne(data);
 
-    res.status(200).send('회원가입을 축하드립니다!');
+    res.status(200).end();
   }
 };
 
