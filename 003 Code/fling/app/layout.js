@@ -4,7 +4,7 @@ import './login.css';
 import './slider.css';
 import localfont from 'next/font/local';
 import { NextUIProviders } from '../library/NextUIProviders';
-import StyledComponentsRegistry from '@/lib/StyledComponentRegistry';
+import StyledComponentsRegistry from '@/library/StyledComponentRegistry';
 
 // const hanbit = localfont({
 //   src: '../public/fonts/KCC-Hanbit.woff2',
