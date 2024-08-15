@@ -1,6 +1,6 @@
 'use client';
 
-import { setGlobalGender } from '@/lib/store';
+import { setGlobalGender } from '@/library/store';
 import axios from 'axios';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';

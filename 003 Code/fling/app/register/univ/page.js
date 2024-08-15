@@ -8,7 +8,7 @@ import DepartmentModal from './DepartmentModal';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
-import { setGlobalDepartment, setGlobalUniv } from '@/lib/store';
+import { setGlobalDepartment, setGlobalUniv } from '@/library/store';
 
 const RegisterUniv = () => {
   const [univList, setUnivList] = useState(null);

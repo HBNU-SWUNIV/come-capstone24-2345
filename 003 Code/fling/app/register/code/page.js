@@ -1,6 +1,6 @@
 'use client';
 
-import { setGlobalEventCode } from '@/lib/store';
+import { setGlobalEventCode } from '@/library/store';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';

@@ -5,7 +5,7 @@ import {
   setGlobalDrinkLimit,
   setGlobalHeight,
   setGlobalSmoking,
-} from '@/lib/store';
+} from '@/library/store';
 import { Slider, Button } from '@nextui-org/react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';

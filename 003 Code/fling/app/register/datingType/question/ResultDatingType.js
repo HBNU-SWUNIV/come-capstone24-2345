@@ -1,4 +1,4 @@
-import { setGlobalDatingType } from '@/lib/store';
+import { setGlobalDatingType } from '@/library/store';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useDispatch } from 'react-redux';
