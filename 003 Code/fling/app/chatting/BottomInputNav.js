@@ -10,11 +10,11 @@ import { db } from '@/firebase/firebaseDB';
 const BottomInputNav = (props) => {
   const [message, setMessage] = useState('');
 
-  const funcBtn = (funcName, funcKorean, func) => {
+  const funcBtn = (funcName, funcKorean) => {
     return (
       <div className='flex flex-col gap-[10px] justify-center items-center'>
         <button
-          onClick={func}
+          // onClick={func}
           className='w-fit flex justify-center items-center rounded-full bg-main-red p-[15px] active:scale-80 transition ease-in-out'
         >
           <Image

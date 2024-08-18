@@ -7,7 +7,7 @@ const ChatPage = async () => {
   let session = await getServerSession(authOptions);
 
   if (session) {
-    console.log(session.user);
+    // console.log(session.user);
     return <ClientComponent currUser={session.user} />;
   } else {
     redirect('/login');
