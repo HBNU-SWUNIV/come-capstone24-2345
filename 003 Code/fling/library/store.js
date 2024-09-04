@@ -25,6 +25,7 @@ const registerUserInfo = createSlice({
     introduction: '',
     profileImg: '',
     IDCardImg: '',
+    chatroomNum: '',
     role: 'normal',
   },
   reducers: {

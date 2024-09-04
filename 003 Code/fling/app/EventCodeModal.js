@@ -1,10 +1,10 @@
 'use client';
 
-import useOnClickOutside from '@/hooks/useOnClickOutside';
 import { easeInOut } from 'framer-motion';
 import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { AnimatePresence } from 'framer-motion';
+import useOnClickOutside from '../hooks/useOnClickOutside';
 
 const variants = {
   hidden: { opacity: 0, x: 0, y: 100 },

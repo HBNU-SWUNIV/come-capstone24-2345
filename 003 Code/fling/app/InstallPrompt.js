@@ -1,9 +1,8 @@
-// components/InstallPrompt.js
-import useOnClickOutside from '@/hooks/useOnClickOutside';
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { easeInOut } from 'framer-motion';
 import Image from 'next/image';
+import useOnClickOutside from '../hooks/useOnClickOutside';
 
 const InstallPrompt = (props) => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);

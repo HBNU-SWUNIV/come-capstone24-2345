@@ -81,45 +81,43 @@ const FoodiePage = () => {
                 </SelectItem>
               ))}
             </Select>
-            <div className='flex gap-[10px]'>
-              <Select
-                label='시/군/구'
-                placeholder='시/군/구를 선택해주세요'
-                variant='bordered'
-                className='w-full'
-              >
-                {si &&
-                  Object.keys(DaejeonData[si]).map((SiGunGu, idx) => (
-                    <SelectItem
-                      key={SiGunGu + idx}
-                      onClick={() => {
-                        setSiGunGu(SiGunGu);
-                      }}
-                    >
-                      {SiGunGu}
-                    </SelectItem>
-                  ))}
-              </Select>
-              <Select
-                label='읍/면/동'
-                placeholder='읍/면/동을 선택해주세요'
-                variant='bordered'
-                className='w-full'
-              >
-                {siGunGu &&
-                  DaejeonData[si][siGunGu].map((Dong, idx) => (
-                    <SelectItem
-                      key={Dong + idx}
-                      onClick={() => {
-                        setDong(Dong);
-                        setKeyword(`${si} ${siGunGu} ${Dong} 맛집`);
-                      }}
-                    >
-                      {Dong}
-                    </SelectItem>
-                  ))}
-              </Select>
-            </div>
+            <Select
+              label='시/군/구'
+              placeholder='시/군/구를 선택해주세요'
+              variant='bordered'
+              className='w-full'
+            >
+              {si &&
+                Object.keys(DaejeonData[si]).map((SiGunGu, idx) => (
+                  <SelectItem
+                    key={SiGunGu + idx}
+                    onClick={() => {
+                      setSiGunGu(SiGunGu);
+                    }}
+                  >
+                    {SiGunGu}
+                  </SelectItem>
+                ))}
+            </Select>
+            <Select
+              label='읍/면/동'
+              placeholder='읍/면/동을 선택해주세요'
+              variant='bordered'
+              className='w-full'
+            >
+              {siGunGu &&
+                DaejeonData[si][siGunGu].map((Dong, idx) => (
+                  <SelectItem
+                    key={Dong + idx}
+                    onClick={() => {
+                      setDong(Dong);
+                      setKeyword(`${si} ${siGunGu} ${Dong} 맛집`);
+                    }}
+                  >
+                    {Dong}
+                  </SelectItem>
+                ))}
+            </Select>
           </div>
 
           <Map // 로드뷰를 표시할 Container
@@ -127,7 +125,7 @@ const FoodiePage = () => {
               lat: 37.566826,
               lng: 126.9786567,
             }}
-            className='w-full h-[250px] rounded-[10px]'
+            className='w-full h-[250px] rounded-[10px] border-2 border-solid border-gray-300'
             level={1}
             onCreate={setMap}
           >
