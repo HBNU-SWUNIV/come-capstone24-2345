@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Calendar } from '@nextui-org/calendar';
-import useOnClickOutside from '@/hooks/useOnClickOutside';
+import useOnClickOutside from '../../../hooks/useOnClickOutside';
 import { motion } from 'framer-motion';
 
 const CalendarModal = (props) => {

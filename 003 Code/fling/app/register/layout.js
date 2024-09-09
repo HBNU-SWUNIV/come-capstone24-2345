@@ -1,8 +1,8 @@
 'use client';
 
-import store from '@/library/store';
 import React from 'react';
 import { Provider } from 'react-redux';
+import store from '../../library/store';
 
 const layout = ({ children }) => {
   function isPageOverscrolled() {

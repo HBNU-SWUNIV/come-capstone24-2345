@@ -1,4 +1,4 @@
-import { connectDB } from '@/util/database';
+import { connectDB } from '../../../util/database';
 
 const userInfoHandler = async (req, res) => {
   if (req.method == 'POST') {

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import useOnClickOutside from '@/hooks/useOnClickOutside';
+import useOnClickOutside from '../../../hooks/useOnClickOutside';
 import { Input } from '@nextui-org/react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';

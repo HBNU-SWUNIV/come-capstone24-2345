@@ -1,6 +1,6 @@
 'use client';
 
-import { setGlobalHobby } from '@/library/store';
+import { setGlobalHobby } from '../../../library/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
