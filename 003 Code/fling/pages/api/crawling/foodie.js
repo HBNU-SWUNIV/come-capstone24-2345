@@ -44,8 +44,6 @@ const crawlingHandler = (req, res) => {
       links.map((link) => link.href)
     );
 
-    // let places = [];
-
     for (let href of hrefs) {
       await page.goto(href, { waitUntil: 'domcontentloaded' });
 
@@ -54,7 +52,7 @@ const crawlingHandler = (req, res) => {
         anchors.map((element) => element.innerText)
       );
       category.shift();
-      let address = await page.$$eval('li.locat > a', (elements) =>
+      let address = await page.$$eval('span.profile_jibun > a', (elements) =>
         elements.map((element) => element.innerText)
       );
       address = address.join(' ');
@@ -64,50 +62,46 @@ const crawlingHandler = (req, res) => {
       );
 
       let result = await db.collection(`${city}_foodie`).insertOne({
-        city,
         type,
         data: { title, category, address, phone, tag },
       });
-      // places.push({ title, category, address, phone, tag });
     }
-
-    // fs.writeFileSync(`${fileName}.js`, JSON.stringify(places));
 
     browser.close();
   };
 
   if (req.method === 'GET') {
     (async () => {
-      await crawling('list.dc?query=대전%20이색카페', 'daejeon', 'cafe')();
+      await crawling('list.dc?query=대전%20이색카페', 'daejeon', '카페')();
 
       await crawling(
         'list.dc?query=대전%20술집&keyword=20대%2C데이트%2C술집',
         'daejeon',
-        'bar'
+        '술집'
       )();
 
       await crawling(
         'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C양식',
         'daejeon',
-        'western'
+        '양식'
       )();
 
       await crawling(
         'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C일식',
         'daejeon',
-        'japan'
+        '일식'
       )();
 
       crawling(
         'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C중식',
         'daejeon',
-        'china'
+        '중식'
       )();
 
       await crawling(
         'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C한식',
         'daejeon',
-        'korea'
+        '한식'
       )();
     })().then(() => res.end());
   }
