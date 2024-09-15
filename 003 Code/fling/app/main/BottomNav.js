@@ -14,7 +14,7 @@ const BottomNav = () => {
     setPath(pathArr[1]);
   }, [currPath]);
   return (
-    <nav className='w-full h-[80px] max-w-[440px] min-w-[330px] fixed bottom-0 left-1/2 transform -translate-x-1/2 rounded-t-[15px] flex px-[10px] bg-white shadow-inner z-[9999]'>
+    <nav className='w-full h-[80px] max-w-[440px] min-w-[330px] fixed bottom-0 left-1/2 transform -translate-x-1/2 rounded-t-[15px] flex px-[10px] bg-white shadow-inner z-[999999]'>
       <Link
         href={'/main'}
         className='w-1/5 flex flex-col justify-center items-center'
@@ -25,11 +25,11 @@ const BottomNav = () => {
           height={30}
           alt='home'
         />
-        <span
+        {/* <span
           className={`text-info text-main-red/50 ${path === 'home' ? null : 'hidden'}`}
         >
           홈
-        </span>
+        </span> */}
       </Link>
       <Link
         href={'/main/foodie'}
@@ -41,11 +41,11 @@ const BottomNav = () => {
           height={30}
           alt='foodie'
         />
-        <span
+        {/* <span
           className={`text-info text-main-red/50 ${path === 'foodie' ? null : 'hidden'}`}
         >
           장소추천
-        </span>
+        </span> */}
       </Link>
       <Link
         href={'/main/chat'}
@@ -74,11 +74,11 @@ const BottomNav = () => {
           height={30}
           alt='mypage'
         />
-        <span
+        {/* <span
           className={`text-info text-main-red/50 ${path === 'mypage' ? null : 'hidden'}`}
         >
           마이페이지
-        </span>
+        </span> */}
       </Link>
       <Link
         href={'/main/setting'}
@@ -90,11 +90,11 @@ const BottomNav = () => {
           height={30}
           alt='setting'
         />
-        <span
+        {/* <span
           className={`text-info text-main-red/50 ${path === 'setting' ? null : 'hidden'}`}
         >
           설정
-        </span>
+        </span> */}
       </Link>
     </nav>
   );

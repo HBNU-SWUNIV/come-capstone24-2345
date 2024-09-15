@@ -1,11 +1,10 @@
 import puppeteer from 'puppeteer';
 import { connectDB } from '../../../util/database';
 
-const crawlingHandler = (req, res) => {
+const crawlingHandler = async (req, res) => {
   const crawling = (query, city, type) => async () => {
     const client = await connectDB;
     const db = client.db('Fling');
-
     const browser = await puppeteer.launch({
       headless: false,
       args: [
@@ -19,91 +18,146 @@ const crawlingHandler = (req, res) => {
       height: 700,
     });
 
-    const context = browser.defaultBrowserContext();
-    await context.overridePermissions(`https://www.diningcode.com/${query}`, [
-      'geolocation',
-    ]);
+    try {
+      const crawlUrl = `https://www.diningcode.com/list.dc?query=${query.region}&keyword=${query.keywords.join('%2C')}`;
+      const context = browser.defaultBrowserContext();
+      await context.overridePermissions(crawlUrl, ['geolocation']);
 
-    await page.goto(`https://www.diningcode.com/${query}`);
+      await page.goto(crawlUrl);
 
-    await page.waitForSelector('div.Poi__List__Wrap');
+      await page.waitForSelector('div.Poi__List__Wrap');
 
-    while (true) {
-      const searchMoreBtn = await page.$(
-        'button[aria-label="search more in here"]'
-      );
-      if (searchMoreBtn) {
-        await searchMoreBtn.click();
-      } else {
-        break;
+      while (true) {
+        const searchMoreBtn = await page.$(
+          'button[aria-label="search more in here"]'
+        );
+        if (searchMoreBtn) {
+          await searchMoreBtn.click();
+        } else {
+          break;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // 1초 대기
       }
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // 1초 대기
+
+      const hrefs = await page.$$eval('div.Poi__List__Wrap a', (links) =>
+        links.map((link) => link.href)
+      );
+
+      for (let href of hrefs) {
+        await page.goto(href, { waitUntil: 'domcontentloaded' });
+
+        let title = await page.$eval('h1.tit', (title) => title.innerText);
+        let category = await page.$$eval('div.btxt a', (categorys) =>
+          categorys.length !== 0
+            ? categorys.map((category) => category.innerText)
+            : null
+        );
+        category.shift(); // 첫 인덱스는 지역명이기에 제거
+
+        let address = await page.$$eval('span.profile_jibun a', (addresses) =>
+          addresses.length !== 0
+            ? addresses.map((address) => address.innerText)
+            : null
+        );
+        if (address == null) {
+          address = await page.$$eval('li.locat a', (addresses) =>
+            addresses.length !== 0
+              ? addresses.map((address) => address.innerText)
+              : null
+          );
+        }
+        if (address) address = address.join(' ');
+
+        let phone = await page.$eval('li.tel', (tel) => tel.innerText);
+        let tag = await page.$$eval('li.tag a', (tags) =>
+          tags.length !== 0 ? tags.map((tag) => tag.innerText) : null
+        );
+
+        let img = await page.$$eval('div.store-pic img', (imgs) =>
+          imgs.length !== 0 ? imgs.map((img) => img.src) : null
+        );
+
+        let result = await db.collection(`${city}_foodie`).insertOne({
+          type,
+          data: { title, category, address, phone, tag, img },
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      await page.close();
+      await browser.close();
     }
-
-    const hrefs = await page.$$eval('div.Poi__List__Wrap a', (links) =>
-      links.map((link) => link.href)
-    );
-
-    for (let href of hrefs) {
-      await page.goto(href, { waitUntil: 'domcontentloaded' });
-
-      let title = await page.$eval('h1.tit', (element) => element.innerText);
-      let category = await page.$$eval('div.btxt > a', (anchors) =>
-        anchors.map((element) => element.innerText)
-      );
-      category.shift();
-      let address = await page.$$eval('span.profile_jibun > a', (elements) =>
-        elements.map((element) => element.innerText)
-      );
-      address = address.join(' ');
-      let phone = await page.$eval('li.tel', (element) => element.innerText);
-      let tag = await page.$$eval('li.tag a', (elements) =>
-        elements.map((element) => element.innerText)
-      );
-
-      let result = await db.collection(`${city}_foodie`).insertOne({
-        type,
-        data: { title, category, address, phone, tag },
-      });
-    }
-
-    browser.close();
   };
 
   if (req.method === 'GET') {
-    (async () => {
-      await crawling('list.dc?query=대전%20이색카페', 'daejeon', '카페')();
+    await crawling(
+      { region: '대전', keywords: ['20대', '데이트', '카페'] },
+      'daejeon',
+      '카페'
+    )();
+    await crawling(
+      { region: '대전', keywords: ['20대', '데이트', '술집'] },
+      'daejeon',
+      '술집'
+    )();
+    await crawling(
+      { region: '대전', keywords: ['20대', '데이트', '양식'] },
+      'daejeon',
+      '양식'
+    )();
+    await crawling(
+      { region: '대전', keywords: ['20대', '데이트', '중식'] },
+      'daejeon',
+      '중식'
+    )();
+    await crawling(
+      { region: '대전', keywords: ['20대', '데이트', '일식'] },
+      'daejeon',
+      '일식'
+    )();
+    await crawling(
+      { region: '대전', keywords: ['20대', '데이트', '한식'] },
+      'daejeon',
+      '한식'
+    )();
 
-      await crawling(
-        'list.dc?query=대전%20술집&keyword=20대%2C데이트%2C술집',
-        'daejeon',
-        '술집'
-      )();
+    res.status(200).send('Complete crawling');
+    // (async () => {
+    //   await crawling('list.dc?query=대전%20이색카페', 'daejeon', '카페')();
 
-      await crawling(
-        'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C양식',
-        'daejeon',
-        '양식'
-      )();
+    //   await crawling(
+    //     'list.dc?query=대전%20술집&keyword=20대%2C데이트%2C술집',
+    //     'daejeon',
+    //     '술집'
+    //   )();
 
-      await crawling(
-        'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C일식',
-        'daejeon',
-        '일식'
-      )();
+    //   await crawling(
+    //     'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C양식',
+    //     'daejeon',
+    //     '양식'
+    //   )();
 
-      crawling(
-        'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C중식',
-        'daejeon',
-        '중식'
-      )();
+    //   await crawling(
+    //     'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C일식',
+    //     'daejeon',
+    //     '일식'
+    //   )();
 
-      await crawling(
-        'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C한식',
-        'daejeon',
-        '한식'
-      )();
-    })().then(() => res.end());
+    //   await crawling(
+    //     'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C중식',
+    //     'daejeon',
+    //     '중식'
+    //   )();
+
+    //   await crawling(
+    //     'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C한식',
+    //     'daejeon',
+    //     '한식'
+    //   )();
+    // })().then(() => {
+    //   res.status(200).send('데이팅장소 수집 완료!');
+    // });
   }
 };
 

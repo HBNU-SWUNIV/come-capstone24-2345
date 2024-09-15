@@ -1,119 +1,132 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import {
-  CustomOverlayMap,
-  Map,
-  MapMarker,
-  useKakaoLoader,
-} from 'react-kakao-maps-sdk';
+import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { Select, SelectItem } from '@nextui-org/react';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import DaejeonData from './DaejeonInfo.json';
+import HeaderComponent from '../HeaderComponent';
+import { motion } from 'framer-motion';
+import useOnClickOutside from '../../../hooks/useOnClickOutside';
+import styled from 'styled-components';
+import Image from 'next/image';
 
 const FoodiePage = () => {
-  const [info, setInfo] = useState();
-  const [markers, setMarkers] = useState([]);
+  const [marker, setMarker] = useState();
   const [map, setMap] = useState();
+  const [mapState, setMapState] = useState({
+    center: {
+      lat: 36.35813,
+      lng: 127.3868,
+    },
+  });
 
   const [si, setSi] = useState();
   const [siGunGu, setSiGunGu] = useState();
   const [dong, setDong] = useState();
+  const [category, setCategory] = useState();
   const [matzip, setMatzip] = useState([]);
 
-  const [keyword, setKeyword] = useState('');
-  // const [category, setCategory] = useState();
+  const [isClickSearchInput, setIsClickSearchInput] = useState(false);
+  const [searchValue, setSearchValue] = useState();
+  const [activeSlide, setActiveSlide] = useState(0);
 
-  // useEffect(() => {
-  //   if (!map) return;
-  //   const ps = new kakao.maps.services.Places();
+  const modalRef = useRef();
 
-  //   ps.keywordSearch(keyword, (data, status, _pagination) => {
-  //     if (status === kakao.maps.services.Status.OK) {
-  //       // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-  //       // LatLngBounds 객체에 좌표를 추가합니다
-  //       const bounds = new kakao.maps.LatLngBounds();
-  //       let markers = [];
+  const SlickButtonFix = ({ currentSlide, slideCount, children, ...props }) => (
+    <span {...props}>{children}</span>
+  );
+  const sliderSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    beforeChange: (current, next) => {
+      setActiveSlide(next);
+    },
+    draggable: true,
+    nextArrow: (
+      <SlickButtonFix>
+        <div className='size-[25px] relative opacity-80 content-center'>
+          <Image
+            src='/direction/chevron-right-red.svg'
+            width={20}
+            height={20}
+            alt='chevron-right'
+          />
+        </div>
+      </SlickButtonFix>
+    ),
+    prevArrow: (
+      <SlickButtonFix>
+        <div className='size-[25px] relative opacity-80 content-center'>
+          <Image
+            src='/direction/chevron-left-red.svg'
+            width={20}
+            height={20}
+            alt='chevron-left'
+          />
+        </div>
+      </SlickButtonFix>
+    ),
+  };
 
-  //       for (let i = 0; i < data.length; i++) {
-  //         // @ts-ignore
-  //         markers.push({
-  //           position: {
-  //             lat: data[i].y,
-  //             lng: data[i].x,
-  //           },
-  //           content: {
-  //             place_name: data[i].place_name,
-  //             road_address_name: data[i].road_address_name,
-  //             phone: data[i].phone,
-  //             category_group_name: data[i].category_group_name,
-  //             category_name: data[i].category_name,
-  //           },
-  //         });
-  //         // @ts-ignore
-  //         bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-  //       }
-  //       setMarkers(markers);
-  //       console.log(markers);
-
-  //       // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-  //       map.setBounds(bounds);
-  //     }
-  //   });
-  // }, [map, keyword]);
+  useOnClickOutside(modalRef, () => {
+    setIsClickSearchInput(false);
+  });
 
   useEffect(() => {
     if (!map) return;
 
-    let markers = [];
-    const bounds = new kakao.maps.LatLngBounds();
-    if (matzip) {
-      matzip.forEach((element) => {
-        const geocoder = new kakao.maps.services.Geocoder();
-        geocoder.addressSearch(element.data.address, (result, status) => {
+    if (matzip.length !== 0) {
+      const geocoder = new kakao.maps.services.Geocoder();
+      geocoder.addressSearch(
+        matzip[activeSlide].data.address,
+        (result, status) => {
           if (status == kakao.maps.services.Status.OK) {
-            markers.push({
-              position: {
-                lat: result[0].y,
-                lng: result[0].x,
-              },
-              content: {
-                title: element.data.title,
-                address: element.data.address,
-                category: element.data.category,
-                phone: element.data.phone,
-                tag: element.data.tag,
-                type: element.type,
-              },
-            });
-            bounds.extend(new kakao.maps.LatLng(result[0].y, result[0].x));
+            setMapState({ center: { lat: result[0].y, lng: result[0].x } });
+            setMarker({ position: { lat: result[0].y, lng: result[0].x } });
           }
-        });
-      });
-      console.log(bounds);
-      setMarkers(markers);
+        }
+      );
     }
-  }, [map, matzip]);
+  }, [map, matzip, activeSlide]);
 
   const handleSearch = async () => {
-    setMarkers([]);
-    await axios.get(`/api/foodie/${si}/${siGunGu}/${dong}`).then((res) => {
-      // console.log(res.data);
-      setMatzip(res.data);
-    });
-    // setKeyword('대전광역시 유성구 봉명동 맛집');
+    setSearchValue(`${si} ${siGunGu} ${dong} ${category}`);
+    await axios
+      .get(`/api/foodie/${si}/${siGunGu}/${dong}?category=${category}`)
+      .then((res) => {
+        setMatzip(res.data);
+      });
+    setIsClickSearchInput(false);
   };
 
   return (
-    <div className='w-full h-screen px-[40px] relative'>
-      <div className='size-full flex flex-col items-center'>
-        <div className='w-full mt-[120px] flex flex-col gap-[20px]'>
-          <div className='w-full flex flex-col gap-[10px]'>
+    <>
+      <HeaderComponent
+        pageName={'장소추천'}
+        setIsClickSearchInput={setIsClickSearchInput}
+        isClickSearchInput={isClickSearchInput}
+        searchValue={searchValue}
+      />
+      {isClickSearchInput && (
+        <div className='bg-black/20 absolute w-full h-screen z-[99999] top-0 left-0 flex justify-center items-center'>
+          <motion.div
+            ref={modalRef}
+            className='bg-white w-[90%] flex flex-col gap-[10px] rounded-[15px] p-[20px]'
+          >
             <Select
               label='시'
               placeholder='시를 선택해주세요'
               variant='bordered'
-              className='flex-grow'
+              className='w-full'
+              value={si}
+              color='danger'
             >
               {Object.keys(DaejeonData).map((Si, idx) => (
                 <SelectItem
@@ -131,6 +144,8 @@ const FoodiePage = () => {
               placeholder='시/군/구를 선택해주세요'
               variant='bordered'
               className='w-full'
+              value={siGunGu}
+              color='danger'
             >
               {si &&
                 Object.keys(DaejeonData[si]).map((SiGunGu, idx) => (
@@ -149,6 +164,8 @@ const FoodiePage = () => {
               placeholder='읍/면/동을 선택해주세요'
               variant='bordered'
               className='w-full'
+              value={dong}
+              color='danger'
             >
               {siGunGu &&
                 DaejeonData[si][siGunGu].map((Dong, idx) => (
@@ -163,83 +180,145 @@ const FoodiePage = () => {
                   </SelectItem>
                 ))}
             </Select>
+            <Select
+              label='카테고리'
+              placeholder='카테고리를 선택해주세요'
+              variant='bordered'
+              className='w-full'
+              value={category}
+              color='danger'
+            >
+              {['카페', '술집', '양식', '일식', '중식', '한식'].map(
+                (element) => {
+                  return (
+                    <SelectItem
+                      key={si + siGunGu + dong + element}
+                      onClick={() => setCategory(element)}
+                    >
+                      {element}
+                    </SelectItem>
+                  );
+                }
+              )}
+            </Select>
             <button onClick={handleSearch} className='full-btn w-full h-[50px]'>
               검색
             </button>
-          </div>
-
-          <div className='w-full flex flex-col gap-[30px]'>
-            <Map // 로드뷰를 표시할 Container
-              center={{
-                lat: 36.35813,
-                lng: 127.3868,
-              }}
-              // isPanto={true}
-              className='w-full h-[250px] rounded-[10px] border-2 border-solid border-gray-300 sticky top-[120px]'
-              level={6}
-              // onCreate={setMap}
-            >
-              {markers &&
-                markers.map((marker) => (
-                  <>
-                    <MapMarker
-                      key={`marker-${marker.content}-${marker.position}`}
-                      position={marker.position}
-                      onClick={() => setInfo(marker)}
-                      className='w-full rounded-[5px] text-center'
-                    />
-                    {/* <CustomOverlayMap
-                      key={`overlay-${marker.content}-${marker.position}`}
-                      position={{
-                        lat: marker.position.lat,
-                        lng: marker.position.lng,
-                      }}
-                      // yAnchor={2.2}
-                    >
-                      {info && info.content.title === marker.content.title && (
-                        <div
-                          key={`info-${marker.content.title}`}
-                          className='w-fit bg-white h-auto flex flex-col px-[10px] py-[5px] focus-btn'
-                        >
-                          <span>{marker.content.title}</span>
-                          <span className='text-info'>
-                            {marker.content.tag
-                              .map((tag) => `#${tag}`)
-                              .join(' ')}
-                          </span>
-                        </div>
-                      )}
-                    </CustomOverlayMap> */}
-                  </>
-                ))}
-            </Map>
-            {/* <div className='w-full flex gap-[10px]'>
-            <button className='focus-btn w-[70px] py-[5px]'>음식점</button>
-            <button className='focus-btn w-[70px] py-[5px]'>카페</button>
-          </div> */}
-            <section className='w-full flex-grow overflow-y-scroll flex flex-col gap-[10px] mb-[120px]'>
-              {markers.map((marker) => {
-                return (
-                  <button
-                    key={marker.content.title}
-                    className='w-full h-auto focus-btn flex flex-col px-[20px] py-[10px]'
-                  >
-                    <p className='text-subtitle text-black'>
-                      {marker.content.title}
-                    </p>
-                    <p className='text-info'>{marker.content.category}</p>
-                    {/* <p className='text-info text-black'>
-                    {marker.content.phone !== '' ? marker.content.phone : '-'}
-                  </p> */}
-                  </button>
-                );
-              })}
-            </section>
+          </motion.div>
+        </div>
+      )}
+      <div className='w-full h-screen px-[40px] relative'>
+        <div className='size-full flex flex-col items-center'>
+          <div className='w-full mt-[120px] flex flex-col gap-[20px]'>
+            <div className='w-full flex flex-col gap-[30px]'>
+              <Map // 로드뷰를 표시할 Container
+                center={mapState.center}
+                isPanto={true}
+                className='max-w-[440px] min-w-[330px] w-full h-[calc(100vh_-_140px)] absolute top-[60px] left-1/2 transform -translate-x-1/2'
+                level={4}
+                onCreate={setMap}
+              >
+                {marker && <MapMarker position={marker.position} />}
+              </Map>
+              <section className='max-w-[440px] min-w-[330px] w-[95%] h-[160px] bg-main-red absolute bottom-[120px] left-1/2 transform -translate-x-1/2 rounded-[15px] px-[30px] py-[10px] border border-solid border-gray-100 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-0'>
+                {matzip.length === 0 ? (
+                  <div className='size-full content-center'>
+                    <span>검색된 결과가 없습니다</span>
+                  </div>
+                ) : (
+                  <SliderContainer className='size-full content-center'>
+                    <Slider {...sliderSettings}>
+                      {matzip.map((element) => {
+                        return (
+                          <div className='w-full' key={element}>
+                            <div className='size-full relative flex items-center'>
+                              {element.data.img !== null ? (
+                                <Image
+                                  src={element.data.img[0]}
+                                  width={120}
+                                  height={120}
+                                  alt={`${element.data.title}-img`}
+                                  className='rounded-[10px]'
+                                />
+                              ) : null}
+                              <div className='w-full flex-1 flex flex-col text-start pl-[20px] pr-[10px]'>
+                                <div className='w-full flex justify-between items-center mb-[5px]'>
+                                  <div className='flex gap-x-[10px] flex-wrap items-end'>
+                                    <span>{element.data.title}</span>
+                                    <span className='text-info'>
+                                      ({element.data.category.join(', ')})
+                                    </span>
+                                  </div>
+                                  <span className='text-info text-end'>
+                                    {activeSlide + 1}/{matzip.length}
+                                  </span>
+                                </div>
+                                <span className='text-subtitle'>
+                                  {element.data.address}
+                                </span>
+                                <span className='text-subtitle'>
+                                  {element.data.phone}
+                                </span>
+                                <span className='text-info'>
+                                  {element.data.tag
+                                    .map((item) => `#${item}`)
+                                    .join(' ')}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </Slider>
+                  </SliderContainer>
+                )}
+              </section>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
 export default FoodiePage;
+
+const SliderContainer = styled.div`
+  .slick-prev:before,
+  .slick-next:before {
+    display: none;
+  }
+
+  li {
+    list-style: none;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 3px;
+    padding: 0;
+    position: relative;
+  }
+
+  li button {
+    border: none;
+    background: rgba(233, 64, 87, 0.5);
+    color: transparent;
+    cursor: pointer;
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  li button::before {
+    content: '';
+  }
+
+  li.slick-active button {
+    border-radius: 100%;
+    background: rgb(233, 64, 87);
+  }
+`;

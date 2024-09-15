@@ -1,5 +1,6 @@
 import Script from 'next/script';
 import React from 'react';
+import HeaderComponent from '../HeaderComponent';
 
 const FoodieLayout = ({ children }) => {
   return (

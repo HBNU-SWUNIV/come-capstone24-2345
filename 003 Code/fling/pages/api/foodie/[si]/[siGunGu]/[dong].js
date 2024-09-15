@@ -2,7 +2,7 @@ import { connectDB } from '../../../../../util/database';
 
 const handlerFoodieQuery = async (req, res) => {
   if (req.method === 'GET') {
-    const { si, siGunGu, dong } = req.query;
+    const { si, siGunGu, dong, category } = req.query;
 
     const client = await connectDB;
     const db = await client.db('Fling');
@@ -11,11 +11,12 @@ const handlerFoodieQuery = async (req, res) => {
       const result = await db
         .collection('daejeon_foodie')
         .find({
+          type: { $regex: category },
           'data.address': { $regex: `${si} ${siGunGu} ${dong}` },
         })
         .toArray();
 
-      res.send(result);
+      res.send([...new Set(result)]);
     }
   }
 };
