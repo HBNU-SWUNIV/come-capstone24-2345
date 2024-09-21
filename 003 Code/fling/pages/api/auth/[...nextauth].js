@@ -42,7 +42,7 @@ export const authOptions = {
   //jwt 만료일설정
   session: {
     strategy: 'jwt',
-    maxAge: 60 * 60, // 10분
+    maxAge: 60 * 60 * 24 * 7, // 일주일
   },
 
   callbacks: {
@@ -62,6 +62,10 @@ export const authOptions = {
         token.user.datingType = user.datingType;
         token.user.mbti = user.mbti;
         token.user.smoking = user.smoking;
+        token.user.birth = user.birth;
+        token.user.introduction = user.introduction;
+        token.user.univCert = user.univCert;
+        token.user.army = user.army;
       }
       return token;
     },

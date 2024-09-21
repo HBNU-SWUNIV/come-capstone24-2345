@@ -10,8 +10,7 @@ const BottomNav = () => {
   const currPath = usePathname();
   const router = useRouter();
   useEffect(() => {
-    let pathArr = currPath.split('/main/');
-    setPath(pathArr[1]);
+    setPath(currPath);
   }, [currPath]);
   return (
     <nav className='w-full h-[80px] max-w-[440px] min-w-[330px] fixed bottom-0 left-1/2 transform -translate-x-1/2 rounded-t-[15px] flex px-[10px] pb-[10px] bg-white shadow-inner z-[999999]'>
@@ -20,18 +19,21 @@ const BottomNav = () => {
         className='w-1/5 flex flex-col justify-center items-center cursor-pointer'
       >
         <Image
-          src={`/bottomNav/${path === 'home' ? '' : 'un'}checked/home.svg`}
+          src={`/bottomNav/${path === '/main' ? '' : 'un'}checked/main.svg`}
           width={30}
           height={30}
           alt='home'
         />
       </a>
       <a
-        onClick={() => router.replace('/main/foodie')}
+        onClick={() => {
+          router.replace('/main/foodie');
+          router.refresh();
+        }}
         className='w-1/5 flex flex-col justify-center items-center cursor-pointer'
       >
         <Image
-          src={`/bottomNav/${path === 'foodie' ? '' : 'un'}checked/foodie.svg`}
+          src={`/bottomNav/${path === '/main/foodie' ? '' : 'un'}checked/foodie.svg`}
           width={30}
           height={30}
           alt='foodie'
@@ -42,7 +44,7 @@ const BottomNav = () => {
         className='w-1/5 flex flex-col justify-center items-center cursor-pointer'
       >
         <Image
-          src={`/bottomNav/${path === 'chat' ? '' : 'un'}checked/chat.svg`}
+          src={`/bottomNav/${path === '/main/chat' ? '' : 'un'}checked/chat.svg`}
           width={30}
           height={30}
           alt='chat'
@@ -54,7 +56,7 @@ const BottomNav = () => {
         className='w-1/5 flex flex-col justify-center items-center cursor-pointer'
       >
         <Image
-          src={`/bottomNav/${path === 'mypage' ? '' : 'un'}checked/mypage.svg`}
+          src={`/bottomNav/${path === '/main/mypage' ? '' : 'un'}checked/mypage.svg`}
           width={30}
           height={30}
           alt='mypage'
@@ -65,7 +67,7 @@ const BottomNav = () => {
         className='w-1/5 flex flex-col justify-center items-center cursor-pointer'
       >
         <Image
-          src={`/bottomNav/${path === 'setting' ? '' : 'un'}checked/setting.svg`}
+          src={`/bottomNav/${path === '/main/setting' ? '' : 'un'}checked/setting.svg`}
           width={30}
           height={30}
           alt='setting'
