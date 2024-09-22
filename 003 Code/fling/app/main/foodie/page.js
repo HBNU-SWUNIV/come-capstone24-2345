@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
+import { useKakaoLoader } from './../../../hooks/useKakaoLoader';
 import { Select, SelectItem } from '@nextui-org/react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -34,6 +35,7 @@ const FoodiePage = () => {
   const [searchValue, setSearchValue] = useState();
   const [activeSlide, setActiveSlide] = useState(0);
 
+  const mapContainerRef = useRef();
   const modalRef = useRef();
 
   const SlickButtonFix = ({ currentSlide, slideCount, children, ...props }) => (
@@ -80,6 +82,10 @@ const FoodiePage = () => {
   });
 
   useEffect(() => {
+    useKakaoLoader();
+  }, []);
+
+  useEffect(() => {
     if (!map) return;
 
     if (matzip.length !== 0) {
@@ -95,6 +101,24 @@ const FoodiePage = () => {
       );
     }
   }, [map, matzip, activeSlide]);
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY}&autoload=false&libraries=services,clusterer`;
+    document.head.appendChild(script);
+
+    script.onload = () => {
+      kakao.maps.load(() => {
+        const center = new kakao.maps.LatLng(37.50802, 127.062835);
+        const options = {
+          center,
+          level: 3,
+        };
+        const map = new kakao.maps.Map(mapContainerRef.current, options);
+        setMap(map);
+      });
+    };
+  }, [mapContainerRef]);
 
   const handleSearch = async () => {
     setSearchValue(`${si} ${siGunGu} ${dong} ${category}`);
@@ -212,6 +236,7 @@ const FoodiePage = () => {
           <div className='w-full mt-[120px] flex flex-col gap-[20px]'>
             <div className='w-full flex flex-col gap-[30px]'>
               <Map // 로드뷰를 표시할 Container
+                ref={mapContainerRef}
                 center={mapState.center}
                 isPanto={true}
                 className='max-w-[440px] min-w-[330px] w-full h-[calc(100vh_-_140px)] absolute top-[60px] left-1/2 transform -translate-x-1/2'

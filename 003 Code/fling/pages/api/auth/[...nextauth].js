@@ -48,7 +48,16 @@ export const authOptions = {
   callbacks: {
     //jwt 만들 때 실행되는 코드
     //user변수는 DB의 유저정보담겨있고 token.user에 저장하면 jwt에 들어감
-    jwt: async ({ token, user }) => {
+    jwt: async ({ token, user, trigger, session }) => {
+      if (trigger === 'update' && session !== null) {
+        token.user.height = session.height;
+        token.user.religion = session.religion;
+        token.user.mbti = session.mbti;
+        token.user.smoking = session.smoking;
+        token.user.drinkLimit = session.drinkLimit;
+        token.user.introduction = session.introduction;
+        token.user.hobby = session.hobby;
+      }
       if (user) {
         token.user = {};
         token.user.email = user.email;
@@ -59,6 +68,7 @@ export const authOptions = {
         token.user.gender = user.gender;
         token.user.height = user.height;
         token.user.hobby = user.hobby;
+        token.user.religion = user.religion;
         token.user.datingType = user.datingType;
         token.user.mbti = user.mbti;
         token.user.smoking = user.smoking;
