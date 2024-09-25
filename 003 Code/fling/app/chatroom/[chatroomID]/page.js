@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth';
 import ClientComponent from './ClientComponent';
-import { authOptions } from '../../pages/api/auth/[...nextauth]';
+import { authOptions } from '../../../pages/api/auth/[...nextauth]';
 import { redirect } from 'next/navigation';
 
 const ChatPage = async () => {

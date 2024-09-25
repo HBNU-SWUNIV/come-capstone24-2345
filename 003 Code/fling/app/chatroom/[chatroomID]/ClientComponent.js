@@ -1,10 +1,10 @@
 'use client';
 
-import useOnClickOutside from '../../hooks/useOnClickOutside';
+import useOnClickOutside from '../../../hooks/useOnClickOutside';
 import React, { useEffect, useRef, useState } from 'react';
 import BottomInputNav from './BottomInputNav';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { db } from '../../firebase/firebaseDB';
+import { db } from '../../../firebase/firebaseDB';
 
 const ClientComponent = ({ currUser }) => {
   const [chatData, setChatData] = useState([]);

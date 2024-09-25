@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { easeInOut } from 'framer-motion';
 import Image from 'next/image';
 import { collection, doc, setDoc, addDoc } from 'firebase/firestore';
-import { db } from '../../firebase/firebaseDB';
+import { db } from '../../../firebase/firebaseDB';
 
 const BottomInputNav = (props) => {
   const [message, setMessage] = useState('');

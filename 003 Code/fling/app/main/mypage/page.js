@@ -4,7 +4,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import styled from 'styled-components';
-import useOnClickOutside from '../../../hooks/useOnClickOutside';
 import { useRouter } from 'next/navigation';
 import { Divider } from '@nextui-org/react';
 
@@ -12,47 +11,15 @@ const MypagePage = () => {
   const { data: session, status } = useSession();
   const date = new Date();
 
-  const [isClickModifyInfo, setIsClickModifyInfo] = useState(false);
-  const [isClickModifyIntro, setIsClickModifyIntro] = useState(false);
-  const [isClickModifyHobby, setIsClickModifyHobby] = useState(false);
-
   const [sessionInfo, setSessionInfo] = useState(null);
 
   const router = useRouter();
-  // const [info, setInfo] = useState({
-  //   height: 0,
-  //   religion: null,
-  //   mbti: [],
-  //   smoking: false,
-  //   drinkLimit: 0,
-  // });
-  // const [modifyHeight, setModifyHeight] = useState();
-  // const [modifyReligion, setModifyReligion] = useState()
-  // const [modifyMBTI, setModifyMBTI] = useState()
-  // const [modifySmoking, setModifySmoking] = useState()
-  // const [modifyDrinkLimit, setModifyDrinkLimit] = useState()
-
-  const modalRef = useRef();
-
-  useOnClickOutside(modalRef, () => {
-    setIsClickModifyInfo(false);
-    setIsClickModifyIntro(false);
-    setIsClickModifyHobby(false);
-  });
 
   useEffect(() => {
     if (status === 'authenticated') {
-      console.log(session);
       setSessionInfo(session.user);
     }
   }, [session, status]);
-
-  const handleMyInfo = (e) => {
-    e.preventDefault();
-  };
-
-  const handleMyIntroduction = () => {};
-  const handleMyHobby = () => {};
 
   const infoComponent = (key, value) => {
     return (
@@ -68,46 +35,41 @@ const MypagePage = () => {
   if (sessionInfo) {
     return (
       <div className='w-full h-fit bg-gray-100 px-[40px]'>
-        <div className='size-full flex flex-col gap-[20px] items-center pt-[270px]'>
+        <div className='size-full flex flex-col gap-[20px] items-center pt-[230px]'>
           <div className='absolute top-[60px] w-full bg-white flex flex-col gap-[10px] px-[40px] py-[20px]'>
             <div className='w-full flex gap-[20px]'>
               <div className='size-[100px] bg-black text-white rounded-full'>
                 이미지
               </div>
-              <div className='text-start'>
+              <div className='text-start flex flex-col justify-around'>
                 <div className='flex gap-[5px]'>
                   <span>{sessionInfo.nickname}님</span>
-                  {/* <Divider orientation='vertical' /> */}
                   <span>
                     {date.getFullYear() - sessionInfo.birth.year + 1}살
                   </span>
                 </div>
-                <div className='flex gap-[5px] text-info'>
+                <div className='h-fit flex gap-[5px] text-subtitle text-gray-500'>
                   <span>{sessionInfo.univ}</span>
-                  <span></span>
+                  <Divider orientation='vertical' />
                   <span>{sessionInfo.department}</span>
                 </div>
+                <div className='w-full h-[20px] flex items-center gap-[5px]'>
+                  <div className='size-[20px] relative'>
+                    <Image
+                      src={`/main/mypage/check-${sessionInfo.univCert.toString()}.svg`}
+                      fill
+                      alt={`check-${sessionInfo.univCert.toString()}`}
+                    />
+                  </div>
+                  <span
+                    className={
+                      sessionInfo.univCert ? 'text-[#4ECB71]' : 'text-main-red'
+                    }
+                  >
+                    {sessionInfo.univCert ? '대학인증 완료' : '대학인증 미완료'}
+                  </span>
+                </div>
               </div>
-            </div>
-            <div className='w-full h-[40px] flex flex-col gap-[10px]'>
-              <div className='size-full flex gap-[10px] justify-center items-center'>
-                <Image
-                  src={`/main/mypage/check-${sessionInfo.univCert.toString()}.svg`}
-                  width={25}
-                  height={25}
-                  alt={`check-${sessionInfo.univCert.toString()}`}
-                />
-                <span
-                  className={
-                    sessionInfo.univCert ? 'text-[#4ECB71]' : 'text-main-red'
-                  }
-                >
-                  {sessionInfo.univCert ? '대학인증 완료' : '대학인증 미완료'}
-                </span>
-              </div>
-              {/* {sessionInfo.univCert ? null : (
-              <button className='w-full h-[60px] full-btn'>대학인증하기</button>
-            )} */}
             </div>
           </div>
 

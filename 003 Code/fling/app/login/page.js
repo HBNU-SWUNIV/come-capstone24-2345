@@ -22,7 +22,7 @@ const LoginPage = () => {
 
     if (res.status === 200) {
       alert('로그인 되었습니다');
-      router.replace('/chatting');
+      router.replace('/main');
     } else {
       alert(res.error);
     }
