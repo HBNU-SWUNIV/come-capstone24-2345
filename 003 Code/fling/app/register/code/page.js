@@ -1,6 +1,6 @@
 'use client';
 
-import { setGlobalEventCode } from '@/library/store';
+// import { setGlobalEventCode } from './../../../library/store';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -17,7 +17,7 @@ const CodePage = () => {
 
   const handleNext = () => {
     // DB에서 이번주 선정자들에 속하는지 확인 후 맞으면 아래코드 진행
-    dispatch(setGlobalEventCode(code));
+    // dispatch(setGlobalEventCode(code));
     router.replace('/register');
   };
   return (
