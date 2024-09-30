@@ -66,8 +66,10 @@ const InstallPrompt = (props) => {
       >
         {isIOS ? (
           <>
-            <p>Fling은 앱에서 원활하게 사용하실 수 있습니다</p>
-            <div className='text-start w-full flex flex-col gap-[5px]'>
+            <p className='text-subtitle'>
+              Fling은 앱에서 원활하게 사용하실 수 있습니다
+            </p>
+            <div className='text-start text-info w-full flex flex-col gap-[5px]'>
               <div className='flex gap-[5px]'>
                 <p>1.</p>
                 <Image
@@ -92,7 +94,9 @@ const InstallPrompt = (props) => {
           </>
         ) : (
           <>
-            <p>Fling은 앱에서 원활하게 사용하실 수 있습니다</p>
+            <p className='text-subtitle'>
+              Fling은 앱에서 원활하게 사용하실 수 있습니다
+            </p>
             <button
               className='full-btn px-[20px] h-[40px]'
               onClick={handleInstallClick}

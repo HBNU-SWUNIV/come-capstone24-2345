@@ -21,7 +21,7 @@ const LoginPage = () => {
     });
 
     if (res.status === 200) {
-      alert('로그인 되었습니다');
+      alert('로그인 성공!');
       router.replace('/main');
     } else {
       alert(res.error);
