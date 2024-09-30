@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Input } from '@nextui-org/react';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -37,45 +38,38 @@ const LoginPage = () => {
           onSubmit={handleLogin}
         >
           <div className='w-full flex flex-col mt-[10px]'>
-            <div className='relative w-full'>
-              <input
-                type='email'
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder=' '
-                className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn'
-              />
-
-              <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
-                아이디(학교 이메일)
-              </label>
-            </div>
+            <Input
+              type='email'
+              variant='bordered'
+              label='학교 이메일'
+              value={email}
+              onValueChange={setEmail}
+              classNames={{
+                inputWrapper: 'border border-solid border-slate-200',
+              }}
+            />
           </div>
 
-          <div className='w-full flex flex-col'>
-            <div className='relative w-full'>
-              <input
-                type='password'
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder=' '
-                className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn'
-              />
-
-              <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
-                비밀번호
-              </label>
-              <Link
-                href={'#'}
-                className='absolute bottom-[-30px] right-0 text-main-red text-subtitle'
-              >
-                비밀번호 찾기
-              </Link>
-            </div>
+          <div className='w-full flex flex-col items-end gap-[10px]'>
+            <Input
+              type='password'
+              variant='bordered'
+              label='비밀번호'
+              value={password}
+              onValueChange={setPassword}
+              classNames={{
+                inputWrapper: 'border border-solid border-slate-200',
+              }}
+            />
+            <Link href={'#'} className='text-main-red text-subtitle'>
+              비밀번호 찾기
+            </Link>
           </div>
 
           <button
             type='submit'
             // onClick={handleLogin}
-            className='w-full h-[60px] mt-[40px] full-btn'
+            className='w-full h-[60px] mt-[20px] full-btn'
           >
             로그인
           </button>
