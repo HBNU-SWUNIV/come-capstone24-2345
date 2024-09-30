@@ -6,50 +6,15 @@ import localfont from 'next/font/local';
 import { NextUIProviders } from '../library/NextUIProviders';
 import StyledComponentsRegistry from '../library/StyledComponentRegistry';
 
-// const hanbit = localfont({
-//   src: '../public/fonts/KCC-Hanbit.woff2',
-//   weight: 'normal',
-// });
-
-// const WantedSans = localfont({
-//   src: [
-//     {
-//       path: '../public/fonts/WantedSansStd-Black.ttf',
-//       weight: '400',
-//       style: 'normal',
-//     },
-//     {
-//       path: '../public/fonts/WantedSansStd-Bold.ttf',
-//       weight: '700',
-//       style: 'normal',
-//     },
-//     {
-//       path: '../public/fonts/WantedSansStd-SemiBold.ttf',
-//       weight: '600',
-//       style: 'normal',
-//     },
-//     {
-//       path: '../public/fonts/WantedSansStd-Medium.ttf',
-//       weight: '500',
-//       style: 'normal',
-//     },
-//     {
-//       path: '../public/fonts/WantedSansStd-Regular.ttf',
-//       weight: '400',
-//       style: 'normal',
-//     },
-//   ],
-// });
-
-const HancomMalang = localfont({
+const Pretendard = localfont({
   src: [
     {
-      path: '../public/fonts/HancomMalangMalang-Bold.ttf',
+      path: '../public/fonts/Pretendard-Bold.woff2',
       weight: '700',
       style: 'normal',
     },
     {
-      path: '../public/fonts/HancomMalangMalang-Regular.ttf',
+      path: '../public/fonts/Pretendard-Regular.woff2',
       weight: '400',
       style: 'normal',
     },
@@ -107,7 +72,7 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang='ko'>
-      <body className={HancomMalang.className}>
+      <body className={Pretendard.className}>
         <div className='w-screen h-screen flex bg-black/10'>
           {/* max-h-[940px] */}
           <div className='main w-full max-w-[440px] min-w-[330px] min-h-[568px] text-center m-auto box-border flex flex-col h-screen overflow-x-hidden bg-white relative'>

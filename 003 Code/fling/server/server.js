@@ -74,6 +74,7 @@ app.prepare().then(() => {
         await mongoDB.collection('selected_groups').insertOne({ group });
       }
 
+      await mongoDB.collection('form').deleteMany({});
       console.log('그룹화 완료');
     }
   });
@@ -141,7 +142,6 @@ app.prepare().then(() => {
       });
     });
 
-    await mongoDB.collection('form').deleteMany({});
     transporter.close();
   });
 
