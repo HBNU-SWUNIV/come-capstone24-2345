@@ -46,7 +46,7 @@ const editMyInfo = () => {
 
   if (info) {
     return (
-      <div className='w-full h-[calc(100vh_+_20px)] bg-gray-100 py-[80px] px-[40px] text-start flex flex-col gap-[20px] overflow-y-scroll'>
+      <div className='w-full h-[calc(100vh_+_20px)] bg-gray-50 py-[80px] px-[40px] text-start flex flex-col gap-[20px] overflow-y-scroll'>
         <div className='flex justify-between items-center'>
           <div className='flex gap-[10px] items-end'>
             <span>나의 정보</span>
@@ -63,7 +63,7 @@ const editMyInfo = () => {
             }}
           />
         </div>
-        <div className='w-full flex flex-col bg-white items-center justify-between gap-[5px] px-[20px] py-[10px] rounded-[15px]'>
+        <div className='w-full flex flex-col bg-white items-center justify-between gap-[5px] px-[20px] py-[10px] rounded-[15px] card-border'>
           <Input
             isRequired
             variant='underlined'
@@ -373,7 +373,10 @@ const editMyInfo = () => {
             }}
           />
         </div>
-        <button onClick={handleEditInfo} className='w-full h-[60px] full-btn'>
+        <button
+          onClick={handleEditInfo}
+          className='full-btn w-full px-[20px] py-[10px]'
+        >
           수정하기
         </button>
       </div>

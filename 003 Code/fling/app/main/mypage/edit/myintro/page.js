@@ -47,9 +47,9 @@ const editMyIntro = () => {
 
   if (info) {
     return (
-      <div className='w-full h-[calc(100vh_+_60px)] bg-gray-100 py-[80px] px-[40px] text-start flex flex-col gap-[20px] overflow-y-scroll'>
+      <div className='w-full h-[calc(100vh_+_60px)] bg-gray-50 py-[80px] px-[40px] text-start flex flex-col gap-[20px] overflow-y-scroll'>
         <div className='flex justify-between items-center'>
-          <span>나의 정보</span>
+          <span>나의 한 줄 소개</span>
           <Image
             src='/main/mypage/close.svg'
             width={25}
@@ -61,7 +61,7 @@ const editMyIntro = () => {
             }}
           />
         </div>
-        <div className='w-full flex flex-col bg-white items-center justify-between gap-[5px] px-[20px] py-[10px] rounded-[15px]'>
+        <div className='w-full flex flex-col bg-white items-center justify-between gap-[5px] px-[20px] py-[10px] rounded-[15px] card-border'>
           <Input
             isClearable
             variant='underlined'
@@ -87,7 +87,7 @@ const editMyIntro = () => {
             title='간단한 자기소개 작성 Tip'
             classNames={{
               title: '!text-subtitle px-[10px]',
-              content: 'bg-white text-info p-[20px] rounded-[15px]',
+              content: 'bg-white text-info p-[20px] rounded-[15px] card-border',
             }}
           >
             <div className='flex flex-col gap-[15px]'>
@@ -119,7 +119,10 @@ const editMyIntro = () => {
             </div>
           </AccordionItem>
         </Accordion>
-        <button onClick={handleEditInfo} className='w-full h-[60px] full-btn'>
+        <button
+          onClick={handleEditInfo}
+          className='full-btn w-full px-[20px] py-[10px]'
+        >
           수정하기
         </button>
       </div>
