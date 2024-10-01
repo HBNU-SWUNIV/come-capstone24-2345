@@ -1,17 +1,18 @@
-const next = require('next');
-const express = require('express');
-const cron = require('node-cron');
-const { MongoClient } = require('mongodb');
-const { default: axios } = require('axios');
-const nodemailer = require('nodemailer');
+import next from 'next';
+import express from 'express';
+import cron from 'node-cron';
+import { MongoClient } from 'mongodb';
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+import { db as firebaseDB } from '../firebase/firebaseDB.js';
+import { collection } from 'firebase/firestore';
 
-require('dotenv').config();
+dotenv.config();
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
-
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const randomPosition = Math.floor(Math.random() * (i + 1));
@@ -148,6 +149,17 @@ app.prepare().then(() => {
     });
 
     transporter.close();
+  });
+
+  server.get('/firebase', async (req, res) => {
+    const ref = await collection(
+      firebaseDB,
+      'chatrooms',
+      'zr0elCgYsCM3ia1XbhHa',
+      'messages'
+    );
+    console.log(ref);
+    console.log('==');
   });
 
   server.all('*', (req, res) => {

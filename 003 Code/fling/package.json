@@ -2,8 +2,9 @@
   "name": "fling",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "node server/server.js",
+    "dev": "nodemon",
     "build": "next build",
     "start": "NODE_ENV=production node server/server.js",
     "lint": "next lint"
