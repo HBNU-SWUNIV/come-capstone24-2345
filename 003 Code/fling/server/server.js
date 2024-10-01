@@ -1,18 +1,22 @@
-import next from 'next';
-import express from 'express';
-import cron from 'node-cron';
-import { MongoClient } from 'mongodb';
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-import { db as firebaseDB } from '../firebase/firebaseDB.js';
-import { collection } from 'firebase/firestore';
+const next = require('next');
+const express = require('express');
+const cron = require('node-cron');
+const { MongoClient } = require('mongodb');
+const nodemailer = require('nodemailer');
+const dotenv = require('dotenv');
+const admin = require('firebase-admin');
 
 dotenv.config();
+admin.initializeApp({
+  credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_ADMIN)),
+});
+const firebaseDB = admin.firestore();
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
+
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const randomPosition = Math.floor(Math.random() * (i + 1));
@@ -22,6 +26,15 @@ function shuffle(array) {
     array[randomPosition] = temp;
   }
   return array;
+}
+
+async function getAllDocumentIds(collectionPath) {
+  const collectionRef = firebaseDB.collection(collectionPath);
+  const snapshot = await collectionRef.get();
+
+  const documentIds = snapshot.docs.map((doc) => doc.id);
+
+  return documentIds;
 }
 
 app.prepare().then(() => {
@@ -70,17 +83,30 @@ app.prepare().then(() => {
 
       await mongoDB.collection('selected_groups').deleteMany({});
 
+      const ids = await getAllDocumentIds('chatrooms');
+
+      for (let id of ids) {
+        await firebaseDB.collection('chatrooms').doc(id).delete();
+      }
+
       for (const group of groups) {
         const chatroomID = Math.random()
           .toString(20)
           .substring(2, 12)
           .toUpperCase();
+
+        const emails = group.map((item) => item.email);
+
+        await firebaseDB.collection('chatrooms').doc(chatroomID).set({
+          member: emails,
+        });
+
         await mongoDB
           .collection('selected_groups')
           .insertOne({ group, chatroomID });
       }
 
-      await mongoDB.collection('form').deleteMany({});
+      // await mongoDB.collection('form').deleteMany({});
       console.log('그룹화 완료');
     }
   });
@@ -149,17 +175,6 @@ app.prepare().then(() => {
     });
 
     transporter.close();
-  });
-
-  server.get('/firebase', async (req, res) => {
-    const ref = await collection(
-      firebaseDB,
-      'chatrooms',
-      'zr0elCgYsCM3ia1XbhHa',
-      'messages'
-    );
-    console.log(ref);
-    console.log('==');
   });
 
   server.all('*', (req, res) => {

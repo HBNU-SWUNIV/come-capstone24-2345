@@ -6,7 +6,7 @@ export async function middleware(request) {
   if (request.nextUrl.pathname === '/') {
     const session = await getToken({ req: request });
     if (session !== null) {
-      return NextResponse.redirect(new URL('/main', request.url));
+      return NextResponse.redirect(new URL('/main/home', request.url));
     }
   }
 

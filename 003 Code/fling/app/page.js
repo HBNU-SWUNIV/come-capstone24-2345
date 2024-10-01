@@ -52,16 +52,16 @@ const StartPage = () => {
       <header className='absolute w-full h-[100px] flex justify-between items-center px-[30px] py-[25px] z-[9999] left-0'>
         <Image src='/main-logo.svg' alt='main-logo' width={100} height={50} />
         <div className='flex h-[20px] gap-[10px] items-center'>
-          <a
+          <button
             onClick={() => {
               setIsClickInstallBtn(true);
             }}
             className={`text-info text-main-red`}
           >
             인앱 설치
-          </a>
+          </button>
           <Divider orientation='vertical' />
-          <a
+          <button
             onClick={() => {
               // setIsEventCodeModalOpen(true);
               onOpen();
@@ -69,7 +69,7 @@ const StartPage = () => {
             className='text-info text-main-red'
           >
             코드 신청
-          </a>
+          </button>
         </div>
       </header>
 
