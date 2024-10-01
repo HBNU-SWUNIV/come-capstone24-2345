@@ -34,7 +34,7 @@ const MypagePage = () => {
 
   if (sessionInfo) {
     return (
-      <div className='w-full h-fit bg-gray-100 px-[40px]'>
+      <div className='w-full h-fit bg-gray-50 px-[40px]'>
         <div className='size-full flex flex-col gap-[20px] items-center pt-[230px]'>
           <div className='absolute top-[60px] w-full bg-white flex flex-col gap-[10px] px-[40px] py-[20px]'>
             <div className='w-full flex gap-[20px]'>
@@ -73,7 +73,7 @@ const MypagePage = () => {
             </div>
           </div>
 
-          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px]'>
+          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px] card-border'>
             <div className='w-full flex justify-between items-center'>
               <span>나의 정보</span>
               <button
@@ -106,7 +106,7 @@ const MypagePage = () => {
             </div>
           </div>
 
-          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px]'>
+          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px] card-border'>
             <div className='w-full flex justify-between items-center'>
               <span>한 줄 소개</span>
               <button
@@ -127,7 +127,7 @@ const MypagePage = () => {
             </span>
           </div>
 
-          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px]'>
+          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px] card-border'>
             <div className='w-full flex justify-between items-center'>
               <span>연애 유형</span>
             </div>
@@ -141,7 +141,7 @@ const MypagePage = () => {
             </div>
           </div>
 
-          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px]'>
+          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px] card-border'>
             <div className='w-full flex justify-between items-center'>
               <span>취미</span>
               <button

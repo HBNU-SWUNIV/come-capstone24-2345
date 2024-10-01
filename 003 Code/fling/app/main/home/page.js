@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import HeaderComponent from './HeaderComponent';
+import HeaderComponent from './../HeaderComponent';
 import { Accordion, AccordionItem } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';

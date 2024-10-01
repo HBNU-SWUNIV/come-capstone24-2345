@@ -23,7 +23,7 @@ const LoginPage = () => {
 
     if (res.status === 200) {
       alert('로그인 성공!');
-      router.replace('/main');
+      router.replace('/main/home');
     } else {
       alert(res.error);
     }

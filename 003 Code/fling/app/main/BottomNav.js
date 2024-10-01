@@ -1,78 +1,82 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 const BottomNav = () => {
-  const [path, setPath] = useState('');
-  const currPath = usePathname();
+  const currPath = usePathname().split('/')[2];
   const router = useRouter();
-  useEffect(() => {
-    setPath(currPath);
-  }, [currPath]);
   return (
     <nav className='w-full h-[80px] max-w-[440px] min-w-[330px] fixed bottom-0 left-1/2 transform -translate-x-1/2 rounded-t-[15px] flex px-[10px] pt-[15px] pb-[10px] bg-white border-t-2 border-solid border-slate-200 z-[999999]'>
-      <a
-        onClick={() => router.replace('/main')}
+      <Link
+        href={'/main/home'}
+        replace={true}
+        scroll={false}
         className='w-1/5 flex flex-col justify-start items-center cursor-pointer'
       >
         <Image
-          src={`/bottomNav/${path === '/main' ? '' : 'un'}checked/main.svg`}
+          src={`/bottomNav/${currPath === 'home' ? '' : 'un'}checked/main.svg`}
           width={30}
           height={30}
           alt='home'
         />
-      </a>
-      <a
-        onClick={() => {
-          router.replace('/main/foodie');
-          router.refresh();
-        }}
+      </Link>
+      <Link
+        href={'/main/foodie'}
+        replace={true}
+        scroll={false}
         className='w-1/5 flex flex-col justify-start items-center cursor-pointer'
       >
         <Image
-          src={`/bottomNav/${path === '/main/foodie' ? '' : 'un'}checked/foodie.svg`}
+          src={`/bottomNav/${currPath === 'foodie' ? '' : 'un'}checked/foodie.svg`}
           width={30}
           height={30}
           alt='foodie'
         />
-      </a>
-      <a
-        onClick={() => router.replace('/main/chat')}
+      </Link>
+      <Link
+        href={'/main/chat'}
+        replace={true}
+        scroll={false}
         className='w-1/5 flex flex-col justify-start items-center cursor-pointer'
       >
         <Image
-          src={`/bottomNav/${path === '/main/chat' ? '' : 'un'}checked/chat.svg`}
+          src={`/bottomNav/${currPath === 'chat' ? '' : 'un'}checked/chat.svg`}
           width={30}
           height={30}
           alt='chat'
         />
         {/* <div className='size-[5px] bg-main-red rounded-full'></div> */}
-      </a>
-      <a
-        onClick={() => router.replace('/main/mypage')}
+      </Link>
+      <Link
+        href={'/main/mypage'}
+        replace={true}
+        scroll={false}
         className='w-1/5 flex flex-col justify-start items-center cursor-pointer'
       >
         <Image
-          src={`/bottomNav/${path === '/main/mypage' ? '' : 'un'}checked/mypage.svg`}
+          src={`/bottomNav/${currPath === 'mypage' ? '' : 'un'}checked/mypage.svg`}
           width={30}
           height={30}
           alt='mypage'
         />
-      </a>
-      <a
-        onClick={() => router.replace('/main/setting')}
+      </Link>
+      <Link
+        href={'/main/setting'}
+        replace={true}
+        scroll={false}
         className='w-1/5 flex flex-col justify-start items-center cursor-pointer'
       >
         <Image
-          src={`/bottomNav/${path === '/main/setting' ? '' : 'un'}checked/setting.svg`}
+          src={`/bottomNav/${currPath === 'setting' ? '' : 'un'}checked/setting.svg`}
           width={30}
           height={30}
           alt='setting'
         />
-      </a>
+      </Link>
     </nav>
   );
 };
