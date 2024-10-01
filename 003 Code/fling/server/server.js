@@ -70,8 +70,13 @@ app.prepare().then(() => {
       await mongoDB.collection('selected_groups').deleteMany({});
 
       for (const group of groups) {
-        console.log(group);
-        await mongoDB.collection('selected_groups').insertOne({ group });
+        const chatroomID = Math.random()
+          .toString(20)
+          .substring(2, 12)
+          .toUpperCase();
+        await mongoDB
+          .collection('selected_groups')
+          .insertOne({ group, chatroomID });
       }
 
       await mongoDB.collection('form').deleteMany({});

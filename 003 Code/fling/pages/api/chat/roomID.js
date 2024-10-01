@@ -7,8 +7,12 @@ const handleRoomID = async (req, res) => {
     const client = await connectDB;
     const db = await client.db('Fling');
 
-    let result = await db.collection('user_cred').findOne({ email });
-    res.status(200).send({ chatroomID: result.chatroomID });
+    const doc = await db.collection('selected_groups').findOne({
+      group: { $elemMatch: { email } },
+    });
+
+    const chatroomID = doc.chatroomID;
+    res.status(200).send({ chatroomID });
   }
 };
 

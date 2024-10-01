@@ -35,6 +35,10 @@
   @apply rounded-lg border border-solid border-[#E8E6EA] text-[#E8E6EA];
 }
 
+.card-border {
+  @apply border border-solid border-slate-200;
+}
+
 :root {
   --main-pink: rgba(220, 170, 255, 1);
   --main-pink-70: rgba(220, 170, 255, 0.7);

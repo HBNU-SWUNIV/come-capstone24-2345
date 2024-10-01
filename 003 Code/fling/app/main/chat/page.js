@@ -12,6 +12,7 @@ const ChatPage = () => {
   const date = new Date();
 
   const [sessionInfo, setSessionInfo] = useState(null);
+  const [otherUserInfo, setOtherUserInfo] = useState(null);
   const [chatroomID, setChatroomID] = useState();
 
   const router = useRouter();
@@ -23,7 +24,7 @@ const ChatPage = () => {
   }, [session, status]);
 
   useEffect(() => {
-    let fetchChatroomID = async () => {
+    const fetchChatroomID = async () => {
       await axios
         .post('/api/chat/roomID', { email: sessionInfo.email })
         .then((res) => {
@@ -31,14 +32,29 @@ const ChatPage = () => {
         });
     };
 
+    const fetchOtherUserInfo = async () => {
+      await axios
+        .post('/api/group/otherUserInfo', { email: sessionInfo.email })
+        .then((res) => {
+          setOtherUserInfo(res.data);
+        });
+    };
+
     if (sessionInfo) {
       fetchChatroomID();
+      if (otherUserInfo === null) {
+        fetchOtherUserInfo();
+      }
     }
   }, [sessionInfo]);
 
   useEffect(() => {
-    chatroomID && console.log(chatroomID);
+    console.log(chatroomID);
   }, [chatroomID]);
+
+  useEffect(() => {
+    console.log(otherUserInfo);
+  }, [otherUserInfo]);
 
   const infoComponent = (key, value) => {
     return (
@@ -59,9 +75,9 @@ const ChatPage = () => {
     }
   };
 
-  if (sessionInfo) {
+  if (otherUserInfo) {
     return (
-      <div className='w-full h-fit bg-gray-100 px-[40px]'>
+      <div className='w-full h-fit bg-gray-50 px-[40px]'>
         <div className='size-full flex flex-col gap-[20px] items-center pt-[230px]'>
           <div className='absolute top-[60px] w-full bg-white flex flex-col gap-[10px] px-[40px] py-[20px]'>
             <div className='w-full flex gap-[20px]'>
@@ -69,129 +85,91 @@ const ChatPage = () => {
                 이미지
               </div>
               <div className='text-start flex flex-col justify-around'>
-                <div className='flex gap-[5px]'>
-                  <span>{sessionInfo.nickname}님</span>
+                <div className='flex h-fit gap-[10px]'>
+                  <span>{otherUserInfo.nickname}님</span>
+                  <Divider orientation='vertical' />
                   <span>
-                    {date.getFullYear() - sessionInfo.birth.year + 1}살
+                    {date.getFullYear() - otherUserInfo.birth.year + 1}살
                   </span>
                 </div>
                 <div className='h-fit flex gap-[5px] text-subtitle text-gray-500'>
-                  <span>{sessionInfo.univ}</span>
-                  <Divider orientation='vertical' />
-                  <span>{sessionInfo.department}</span>
+                  <span>{otherUserInfo.univ}</span>
+                  <span>{otherUserInfo.department}</span>
                 </div>
-                <div className='w-full h-[20px] flex items-center gap-[5px]'>
-                  <div className='size-[20px] relative'>
+                <div className='w-full h-[20px] flex items-center gap-[10px]'>
+                  <div className='size-[18px] relative'>
                     <Image
-                      src={`/main/mypage/check-${sessionInfo.univCert.toString()}.svg`}
+                      src={`/main/mypage/check-${otherUserInfo.univCert.toString()}.svg`}
                       fill
-                      alt={`check-${sessionInfo.univCert.toString()}`}
+                      alt={`check-${otherUserInfo.univCert.toString()}`}
                     />
                   </div>
                   <span
                     className={
-                      sessionInfo.univCert ? 'text-[#4ECB71]' : 'text-main-red'
+                      otherUserInfo.univCert
+                        ? 'text-[#4ECB71]'
+                        : 'text-main-red'
                     }
                   >
-                    {sessionInfo.univCert ? '대학인증 완료' : '대학인증 미완료'}
+                    {otherUserInfo.univCert
+                      ? '대학인증 완료'
+                      : '대학인증 미완료'}
                   </span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px]'>
-            <button
-              className='focus-btn px-[20px] py-[10px]'
-              onClick={handleGoToChatroom}
-            >
-              채팅방 이동
-            </button>
+          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px] card-border'>
             <div className='w-full flex justify-between items-center'>
-              <span>나의 정보</span>
-              <button
-                className='flex gap-[5px] px-[10px] py-[5px] justify-center items-center btn'
-                onClick={() => router.replace('/main/mypage/edit/myinfo')}
-              >
-                <Image
-                  src='/main/mypage/pencil.svg'
-                  width={15}
-                  height={15}
-                  alt='수정'
-                />
-                <span className='text-info'>수정</span>
-              </button>
+              <span>{otherUserInfo.nickname}님의 정보</span>
             </div>
             <div className='flex flex-col gap-[10px]'>
-              {infoComponent('학교', sessionInfo.univ)}
-              {infoComponent('학과', sessionInfo.department)}
-              {infoComponent('키', `${sessionInfo.height}cm`)}
-              {infoComponent('종교', '무교')}
-              {infoComponent('MBTI', sessionInfo.mbti.join(''))}
+              {infoComponent('학교', otherUserInfo.univ)}
+              {infoComponent('학과', otherUserInfo.department)}
+              {infoComponent('키', `${otherUserInfo.height}cm`)}
+              {infoComponent('종교', otherUserInfo.religion)}
+              {infoComponent('MBTI', otherUserInfo.mbti.join(''))}
               {infoComponent(
                 '흡연/음주',
-                `${sessionInfo.smoking === 'smoking' ? '흡연자' : '비흡연자'} / ${sessionInfo.drinkLimit === 0 ? '술을 못하는 편' : `${sessionInfo.drinkLimit}병 정도`}`
+                `${otherUserInfo.smoking ? '흡연자' : '비흡연자'} / ${otherUserInfo.drinkLimit === 0 ? '술을 못하는 편' : `${otherUserInfo.drinkLimit}병 정도`}`
               )}
               {infoComponent(
                 '군필여부',
-                `${sessionInfo.army ? '군필자' : '미필자'}`
+                `${otherUserInfo.army ? '군필자' : '미필자'}`
               )}
             </div>
           </div>
 
-          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px]'>
+          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px] card-border'>
             <div className='w-full flex justify-between items-center'>
-              <span>한 줄 소개</span>
-              <button
-                className='flex gap-[5px] px-[10px] py-[5px] justify-center items-center btn'
-                onClick={() => router.replace('/main/mypage/edit/myintro')}
-              >
-                <Image
-                  src='/main/mypage/pencil.svg'
-                  width={15}
-                  height={15}
-                  alt='수정'
-                />
-                <span className='text-info'>수정</span>
-              </button>
+              <span>{otherUserInfo.nickname}님의 한 줄 소개</span>
             </div>
-            <span className='text-subtitle text-start'>
-              {sessionInfo.introduction}
+            <span className='text-subtitle text-start break-keep'>
+              {otherUserInfo.introduction}
             </span>
           </div>
 
-          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px]'>
+          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px] card-border'>
             <div className='w-full flex justify-between items-center'>
-              <span>연애 유형</span>
+              <span>{otherUserInfo.nickname}님의 연애 유형</span>
             </div>
             <div className='flex flex-col gap-[10px]'>
               <span className='text-subtitle text-start'>
-                {sessionInfo.datingType.type}
+                {otherUserInfo.datingType.type}
               </span>
-              <span className='text-info text-start'>
-                {sessionInfo.datingType.description}
+              <span className='text-info text-start break-keep'>
+                {otherUserInfo.datingType.description}
               </span>
             </div>
           </div>
 
-          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px]'>
+          <div className='w-full bg-white flex flex-col gap-[20px] p-[20px] rounded-[15px] card-border'>
             <div className='w-full flex justify-between items-center'>
-              <span>취미</span>
-              <button
-                className='flex gap-[5px] px-[10px] py-[5px] justify-center items-center btn'
-                onClick={() => router.replace('/main/mypage/edit/myhobby')}
-              >
-                <Image
-                  src='/main/mypage/pencil.svg'
-                  width={15}
-                  height={15}
-                  alt='수정'
-                />
-                <span className='text-info'>수정</span>
-              </button>
+              <span>{otherUserInfo.nickname}님의 취미</span>
             </div>
             <div className='text-subtitle text-start w-full flex flex-wrap gap-[5px]'>
-              {sessionInfo.hobby.map((hobby) => {
+              {otherUserInfo.hobby.map((hobby) => {
                 return (
                   <button
                     key={hobby}
@@ -209,6 +187,13 @@ const ChatPage = () => {
               })}
             </div>
           </div>
+
+          <button
+            className='full-btn w-full px-[20px] py-[10px]'
+            onClick={handleGoToChatroom}
+          >
+            채팅방 이동
+          </button>
 
           <div className='w-full h-[100px]'></div>
         </div>
