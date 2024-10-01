@@ -19,7 +19,7 @@
     "@reduxjs/toolkit": "^2.2.5",
     "aws-sdk": "^2.1634.0",
     "axios": "^1.7.2",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "bootstrap": "^5.3.3",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",

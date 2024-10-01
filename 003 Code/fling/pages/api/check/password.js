@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 const CheckPassword = async (req, res) => {
   if (req.method == 'POST') {

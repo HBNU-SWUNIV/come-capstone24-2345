@@ -8,7 +8,9 @@ const admin = require('firebase-admin');
 
 dotenv.config();
 admin.initializeApp({
-  credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_ADMIN)),
+  credential: admin.credential.cert(
+    JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_ADMIN)
+  ),
 });
 const firebaseDB = admin.firestore();
 
@@ -125,8 +127,8 @@ app.prepare().then(() => {
       secure: false,
       port: 465,
       auth: {
-        user: process.env.NODEMAILER_USER,
-        pass: process.env.NODEMAILER_PASS,
+        user: process.env.NEXT_PUBLIC_NODEMAILER_USER,
+        pass: process.env.NEXT_PUBLIC_NODEMAILER_PASS,
       },
     });
 
@@ -146,7 +148,7 @@ app.prepare().then(() => {
       const womanEventCode = element.group[1].eventCode;
 
       const manMailOptions = {
-        from: process.env.NODEMAILER_USER,
+        from: process.env.NEXT_PUBLIC_NODEMAILER_USER,
         to: manEmail,
         subject: '[플링] 선정된 유저 이벤트코드 발송 건',
         html: `<h2>안녕하세요 플링에 선정되셔서 메일을 전송합니다!</h2>
@@ -155,7 +157,7 @@ app.prepare().then(() => {
       };
 
       const womanMailOptions = {
-        from: process.env.NODEMAILER_USER,
+        from: process.env.NEXT_PUBLIC_NODEMAILER_USER,
         to: womanEmail,
         subject: '[플링] 선정된 유저 이벤트코드 발송 건',
         html: `<h2>안녕하세요 플링에 선정되셔서 메일을 전송합니다!</h2>

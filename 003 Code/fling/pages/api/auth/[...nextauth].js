@@ -1,7 +1,7 @@
 import { connectDB } from '../../../util/database';
 import NextAuth from 'next-auth';
 import CredentialProvider from 'next-auth/providers/credentials';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 
 export const authOptions = {

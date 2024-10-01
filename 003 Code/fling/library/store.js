@@ -1,16 +1,4 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from './../pages/api/auth/[...nextauth]';
-
-const { createSlice, configureStore } = require('@reduxjs/toolkit');
-
-const session = getServerSession(authOptions);
-
-const sessionUserInfo = createSlice({
-  name: 'sessionUserInfo',
-  initialState: {
-    ...session.user,
-  },
-});
+import { createSlice, configureStore } from '@reduxjs/toolkit';
 
 const registerUserInfo = createSlice({
   name: 'registerUserInfo',
@@ -130,6 +118,5 @@ export const {
 export default configureStore({
   reducer: {
     registerUserInfo: registerUserInfo.reducer,
-    sessionUserInfo: sessionUserInfo.reducer,
   },
 });
