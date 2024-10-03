@@ -39,6 +39,9 @@ export const metadata = {
       },
     ],
   },
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
   // openGraph: {
   //   title: '플링',
   //   description: '터치 단 한 번으로 랜덤 소개팅',

@@ -10,7 +10,10 @@ const nextConfig = {
     styledComponents: true,
   },
   images: {
-    domains: ['d12zq4w4guyljn.cloudfront.net'],
+    domains: [
+      'd12zq4w4guyljn.cloudfront.net',
+      'firebasestorage.googleapis.com',
+    ],
   },
 };
 

@@ -7,14 +7,22 @@ const handleOtherInfo = async (req, res) => {
     const client = await connectDB;
     const db = await client.db('Fling');
 
-    let result;
-    if (email) {
-      result = await db.collection('user_cred').findOne({ email });
-      if (result) {
-        res.status(200).send({ nickname: result.nickname });
-      } else {
-        res.status(500).end();
-      }
+    const doc = await db.collection('selected_groups').findOne({
+      group: { $elemMatch: { email } },
+    });
+
+    if (doc) {
+      const group = doc.group;
+
+      const emailsArr = group.map((item) => item.email);
+      const otherEmail = emailsArr.filter((item) => item !== email)[0];
+
+      const otherUserDoc = await db
+        .collection('user_cred')
+        .findOne({ email: otherEmail });
+      res.status(200).send({ nickname: otherUserDoc.nickname });
+    } else {
+      res.status(500).end();
     }
   }
 };
