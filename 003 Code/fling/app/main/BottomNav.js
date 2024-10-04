@@ -10,7 +10,7 @@ const BottomNav = () => {
   const currPath = usePathname().split('/')[2];
   const router = useRouter();
   return (
-    <nav className='w-full h-[80px] max-w-[440px] min-w-[330px] fixed bottom-0 left-1/2 transform -translate-x-1/2 rounded-t-[15px] flex px-[10px] pt-[15px] pb-[10px] bg-white border-t-2 border-solid border-slate-200 z-[999999]'>
+    <nav className='w-full h-[80px] max-w-[440px] min-w-[330px] fixed bottom-0 left-1/2 transform -translate-x-1/2 rounded-t-[15px] flex px-[10px] pt-[10px] pb-[10px] bg-white border-t-2 border-solid border-slate-200 z-[999999]'>
       <Link
         href={'/main/home'}
         replace={true}

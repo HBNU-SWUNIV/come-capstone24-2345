@@ -13,9 +13,23 @@ const ChatPage = () => {
 
   const [sessionInfo, setSessionInfo] = useState(null);
   const [otherUserInfo, setOtherUserInfo] = useState(null);
+  const [otherUserImg, setOtherUserImg] = useState();
   const [chatroomID, setChatroomID] = useState();
 
   const router = useRouter();
+
+  const fetchOtherUserImg = async () => {
+    if (otherUserInfo.email) {
+      await axios
+        .post('/api/chat/profileImg', { email: otherUserInfo.email })
+        .then((res) => {
+          setOtherUserImg(res.data);
+        })
+        .catch((err) => {
+          alert(err.response.data);
+        });
+    }
+  };
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -49,11 +63,9 @@ const ChatPage = () => {
   }, [sessionInfo]);
 
   useEffect(() => {
-    console.log(chatroomID);
-  }, [chatroomID]);
-
-  useEffect(() => {
-    console.log(otherUserInfo);
+    if (otherUserInfo) {
+      fetchOtherUserImg();
+    }
   }, [otherUserInfo]);
 
   const infoComponent = (key, value) => {
@@ -81,8 +93,15 @@ const ChatPage = () => {
         <div className='size-full flex flex-col gap-[20px] items-center pt-[230px]'>
           <div className='absolute top-[60px] w-full bg-white flex flex-col gap-[10px] px-[40px] py-[20px]'>
             <div className='w-full flex gap-[20px]'>
-              <div className='size-[100px] bg-black text-white rounded-full'>
-                이미지
+              <div className='size-[100px] card-border text-white rounded-medium relative'>
+                {otherUserImg ? (
+                  <Image
+                    src={otherUserImg}
+                    alt='profile'
+                    fill
+                    className='rounded-large p-[3px] size-full'
+                  />
+                ) : null}
               </div>
               <div className='text-start flex flex-col justify-around'>
                 <div className='flex h-fit gap-[10px]'>

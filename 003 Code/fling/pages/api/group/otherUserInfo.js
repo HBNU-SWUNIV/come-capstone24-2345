@@ -21,6 +21,7 @@ const handleOtherUserInfo = async (req, res) => {
         .findOne({ email: otherUserEmail });
 
       const data = {
+        email: otherUserEmail,
         gender: otherUserInfo.gender,
         birth: otherUserInfo.birth,
         univ: otherUserInfo.univ,

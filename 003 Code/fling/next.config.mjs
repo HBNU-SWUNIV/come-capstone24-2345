@@ -13,6 +13,7 @@ const nextConfig = {
     domains: [
       'd12zq4w4guyljn.cloudfront.net',
       'firebasestorage.googleapis.com',
+      's3.ap-northeast-2.amazonaws.com',
     ],
   },
 };

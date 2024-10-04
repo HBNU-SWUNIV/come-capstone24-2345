@@ -466,7 +466,7 @@ const ClientComponent = ({ currUser }) => {
               </ModalHeader>
               <ModalBody>
                 {imgUrl && (
-                  <div className='w-full h-[350px] relative'>
+                  <div className='w-full h-[300px] relative'>
                     <Image
                       src={imgUrl}
                       fill
@@ -512,7 +512,7 @@ const ClientComponent = ({ currUser }) => {
               <ModalHeader className='flex flex-col gap-1'>이미지</ModalHeader>
               <ModalBody>
                 {clickViewImgSrc && (
-                  <div className='w-full h-[350px] relative'>
+                  <div className='w-full h-[300px] relative'>
                     <Image
                       src={clickViewImgSrc}
                       fill
