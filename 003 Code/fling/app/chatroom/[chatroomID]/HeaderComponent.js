@@ -42,7 +42,7 @@ const HeaderComponent = (props) => {
   };
 
   return (
-    <header className='w-full h-[60px] max-w-[440px] min-w-[330px] fixed top-0 left-1/2 transform -translate-x-1/2 z-[9999] flex gap-[20px] items-center px-[30px] py-[25px] bg-white rounded-b-[10px] border-b-2 border-solid border-slate-200'>
+    <header className='w-full h-[60px] max-w-[440px] min-w-[330px] fixed top-0 left-1/2 transform -translate-x-1/2 z-[9999] flex gap-[20px] items-center px-[20px] py-[25px] bg-white rounded-b-[10px] border-b-2 border-solid border-slate-200'>
       <button className='relative size-[25px]' onClick={handlePrev}>
         <Image src='/chatting/left.svg' alt='prev' fill />
       </button>

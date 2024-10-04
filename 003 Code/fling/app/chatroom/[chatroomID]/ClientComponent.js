@@ -2,8 +2,10 @@
 
 import useOnClickOutside from '../../../hooks/useOnClickOutside';
 import React, { useEffect, useRef, useState } from 'react';
+import { signOut } from 'next-auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Textarea, Switch } from '@nextui-org/react';
+import { CheckboxGroup, Checkbox } from '@nextui-org/react';
 import {
   Modal,
   ModalContent,
@@ -22,11 +24,16 @@ import {
   addDoc,
 } from 'firebase/firestore';
 import { db, storage } from '../../../firebase/firebaseDB';
-import { usePathname } from 'next/navigation';
-import styled from 'styled-components';
+import imageCompression from 'browser-image-compression';
+import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { easeInOut } from 'framer-motion';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+
+import ImgSvg from './../../../public/chatroom/image.svg';
+import CameraSvg from './../../../public/chatroom/camera.svg';
+import ReportSvg from './../../../public/chatroom/report.svg';
+import OutRoomSvg from './../../../public/chatroom/out-room.svg';
+import axios from 'axios';
 
 const ClientComponent = ({ currUser }) => {
   const [chatData, setChatData] = useState([]);
@@ -36,6 +43,18 @@ const ClientComponent = ({ currUser }) => {
     isOpen: isSubmitImgOpen,
     onOpen: onSubmitImgOpen,
     onOpenChange: onSubmitImgOpenChange,
+  } = useDisclosure();
+
+  const {
+    isOpen: isReportOpen,
+    onOpen: onReportOpen,
+    onOpenChange: onReportOpenChange,
+  } = useDisclosure();
+
+  const {
+    isOpen: isRoomOutOpen,
+    onOpen: onRoomOutOpen,
+    onOpenChange: onRoomOutOpenChange,
   } = useDisclosure();
 
   const {
@@ -49,14 +68,27 @@ const ClientComponent = ({ currUser }) => {
   const [message, setMessage] = useState('');
   const [isClickPlusBtn, setIsClickPlusBtn] = useState(false);
   const [isEnterSubmit, setIsEnterSubmit] = useState(false);
+  const [reportOptions, setReportOptions] = useState([]);
+  const [reportEtc, setReportEtc] = useState('');
+  const [isSubmitReport, setIsSubmitReport] = useState(false);
 
   const chatroomID = usePathname().split('/')[2];
   const chatRef = useRef();
   const bottomNavRef = useRef();
+  const router = useRouter();
 
   useOnClickOutside(bottomNavRef, () => {
     setIsClickPlusBtn(false);
   });
+
+  useEffect(() => {
+    if (typeof window != 'undefined') {
+      const localStorageEnterSubmit = localStorage.getItem('isEnterSubmit');
+      if (localStorageEnterSubmit !== null) {
+        setIsEnterSubmit(JSON.parse(localStorageEnterSubmit));
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const messagesRef = collection(db, 'chatrooms', chatroomID, 'messages');
@@ -92,13 +124,25 @@ const ClientComponent = ({ currUser }) => {
   }, [imgFile]);
 
   useEffect(() => {
+    if (!isReportOpen) {
+      setReportOptions([]);
+      setReportEtc('');
+      setIsSubmitReport(false);
+    }
+  }, [isReportOpen]);
+
+  useEffect(() => {
     chatRef.current && chatRef.current.focus();
   }, [chatData]);
 
   const OtherChat = (message, imgSrc, currSecond) => {
     const date = currSecond.toDate();
+    const year = date.getFullYear().toString().slice(2);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
     const hour = date.getHours();
     const min = date.getMinutes();
+
     return (
       <div
         key={message + currSecond}
@@ -122,13 +166,21 @@ const ClientComponent = ({ currUser }) => {
             📷 사진 보기
           </button>
         )}
-        <span className='text-info'>{`${hour < 10 ? `0${hour}` : hour}:${min < 10 ? `0${min}` : min}`}</span>
+        <div className='text-info text-start '>
+          <p className='text-gray-400'>{`${year}.${month < 10 ? `0${month}` : month}.${day < 10 ? `0${day}` : day}`}</p>
+          <p className='text-gray-600'>
+            {`${hour < 10 ? `0${hour}` : hour}:${min < 10 ? `0${min}` : min}`}
+          </p>
+        </div>
       </div>
     );
   };
 
   const MyChat = (message, imgSrc, currSecond) => {
     const date = currSecond.toDate();
+    const year = date.getFullYear().toString().slice(2);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
     const hour = date.getHours();
     const min = date.getMinutes();
     return (
@@ -136,7 +188,12 @@ const ClientComponent = ({ currUser }) => {
         key={message + currSecond}
         className='w-full flex justify-end items-end gap-[10px] mb-[20px]'
       >
-        <span className='text-info'>{`${hour < 10 ? `0${hour}` : hour}:${min < 10 ? `0${min}` : min}`}</span>
+        <div className='text-info text-end '>
+          <p className='text-gray-400'>{`${year}.${month < 10 ? `0${month}` : month}.${day < 10 ? `0${day}` : day}`}</p>
+          <p className='text-gray-600'>
+            {`${hour < 10 ? `0${hour}` : hour}:${min < 10 ? `0${min}` : min}`}
+          </p>
+        </div>
         {message && (
           <div
             className={`max-w-4/5 border border-main-red border-solid bg-main-red rounded-[15px] text-start px-[20px] py-[10px] relative`}
@@ -190,14 +247,7 @@ const ClientComponent = ({ currUser }) => {
 
   const handleImg = (e) => {
     if (e.target.files) {
-      const file = e.target.files[0];
-      if (file.type.includes('svg')) {
-        alert('svg 이미지 파일은 지원하지 않습니다');
-        setImgFile(null);
-        setImgUrl(null);
-        return;
-      }
-
+      let file = e.target.files[0];
       setImgUrl(URL.createObjectURL(file));
       setImgFile(file);
     } else {
@@ -207,11 +257,18 @@ const ClientComponent = ({ currUser }) => {
 
   const handleImgSubmit = async (onClose) => {
     if (imgFile) {
+      const compressedImgBlob = await imageCompression(imgFile, {
+        maxSizeMB: 1,
+      });
+      const compressedImgFile = new File([compressedImgBlob], imgFile.name, {
+        type: imgFile.type,
+      });
+
       const storageRef = ref(
         storage,
         `images/${chatroomID}/${currUser.email}${new Date()}}`
       );
-      await uploadBytes(storageRef, imgFile);
+      await uploadBytes(storageRef, compressedImgFile);
       const url = await getDownloadURL(storageRef);
 
       const docData = {
@@ -234,6 +291,28 @@ const ClientComponent = ({ currUser }) => {
     onClose();
   };
 
+  const handleReport = async () => {
+    await axios
+      .post('/api/chat/report', {
+        options: reportOptions,
+        etc: reportEtc,
+        email: currUser.email,
+      })
+      .then(() => {
+        setIsSubmitReport(true);
+        setReportOptions([]);
+        setReportEtc('');
+      });
+  };
+
+  const handleRoomOut = async () => {
+    let withdraw = await axios.post('/api/setting/withdraw', {
+      email: currUser.email,
+    });
+    signOut();
+    router.replace('/');
+  };
+
   return (
     <div className='w-full h-dvh bg-gray-50 relative flex flex-col'>
       <div className='w-full flex-1 overflow-y-scroll px-[40px] pt-[80px]'>
@@ -244,11 +323,15 @@ const ClientComponent = ({ currUser }) => {
             return OtherChat(data.message, data.imgSrc, data.date);
           }
         })}
-        <div ref={chatRef} className='w-full h-[20px]' tabIndex={0}></div>
+        <div
+          ref={chatRef}
+          className='w-full h-[20px] focus:outline-none'
+          tabIndex={0}
+        ></div>
       </div>
 
       <motion.nav
-        transition={easeInOut}
+        // layout
         ref={bottomNavRef}
         className='w-full h-fit bg-white flex flex-col gap-[20px] rounded-t-[15px] border-t-2 border-solid border-slate-200'
       >
@@ -280,62 +363,95 @@ const ClientComponent = ({ currUser }) => {
           </button>
         </div>
 
-        <motion.div
-          layout
-          transition={
-            {
-              // type: 'spring',
-              // stiffness: 700,
-              // damping: 30,
-            }
-          }
-          className='w-full h-fit px-[50px] bg-white'
-        >
+        <motion.div className='w-full h-fit px-[50px] bg-white'>
           {isClickPlusBtn && (
-            // <AnimatePresence>
-            <div className='w-full flex flex-col gap-[20px] mb-[50px]'>
-              <div className='w-full flex gap-[20px]'>
+            <div className='w-full flex flex-col gap-[20px] mb-[50px] items-center'>
+              <div className='w-full flex justify-around'>
                 <input
                   id='input-image'
                   type='file'
-                  accept='image/*'
+                  accept='image/jpeg, image/png, image/webp, image/bmp'
                   onChange={handleImg}
-                  className='full-btn w-[20px] aspect-square rounded-full hidden'
+                  hidden
                 />
                 <label
                   htmlFor='input-image'
-                  className='flex-1 full-btn aspect-square rounded-full cursor-pointer'
+                  className='flex-1 flex flex-col justify-center items-center gap-[10px] cursor-pointer'
                 >
-                  이미지
+                  <Image
+                    src={ImgSvg}
+                    width={30}
+                    height={30}
+                    alt='image'
+                    className='full-btn p-[10px] box-content'
+                  />
+                  <span className='text-info'>이미지</span>
                 </label>
                 <input
-                  id='input-capture'
+                  id='input-image'
                   type='file'
-                  capture
-                  className='hidden'
+                  accept='image/jpeg, image/png, image/webp, image/bmp'
+                  onChange={handleImg}
+                  hidden
+                  capture='user'
                 />
                 <label
-                  htmlFor='input-capture'
-                  className='flex-1 full-btn aspect-square rounded-full'
+                  htmlFor='input-image'
+                  className='flex-1 flex flex-col justify-center items-center gap-[10px] cursor-pointer'
                 >
-                  캡쳐
+                  <Image
+                    src={CameraSvg}
+                    width={30}
+                    height={30}
+                    alt='image'
+                    className='full-btn p-[10px] box-content'
+                  />
+                  <span className='text-info'>카메라</span>
                 </label>
-                <button className='flex-1 full-btn aspect-square rounded-full'></button>
-                <button className='flex-1 full-btn aspect-square rounded-full'></button>
+                <button
+                  onClick={onReportOpen}
+                  className='flex-1 flex flex-col justify-center items-center gap-[10px]'
+                >
+                  <Image
+                    src={ReportSvg}
+                    width={30}
+                    height={30}
+                    alt='report'
+                    className='full-btn p-[10px] box-content'
+                  />
+                  <span className='text-info'>신고하기</span>
+                </button>
+                <button
+                  onClick={onRoomOutOpen}
+                  className='flex-1 flex flex-col justify-center items-center gap-[10px]'
+                >
+                  <Image
+                    src={OutRoomSvg}
+                    width={30}
+                    height={30}
+                    alt='out-room'
+                    className='full-btn p-[10px] box-content'
+                  />
+                  <span className='text-info'>나가기</span>
+                </button>
               </div>
               <Switch
                 isSelected={isEnterSubmit}
-                onValueChange={setIsEnterSubmit}
+                onValueChange={(value) => {
+                  setIsEnterSubmit(value);
+                  setIsEnterSubmit(value);
+                  localStorage.setItem('isEnterSubmit', JSON.stringify(value));
+                }}
                 color='danger'
               >
                 <span className='text-subtitle'>Enter키로 메세지 전송하기</span>
               </Switch>
             </div>
-            // </AnimatePresence>
           )}
         </motion.div>
       </motion.nav>
 
+      {/* 이미지 전송하는 모달창 */}
       <Modal
         isOpen={isSubmitImgOpen}
         placement={'center'}
@@ -383,6 +499,7 @@ const ClientComponent = ({ currUser }) => {
         </ModalContent>
       </Modal>
 
+      {/* 유저가 보낸 이미지 보는 모달창 */}
       <Modal
         isOpen={isViewImgOpen}
         placement={'center'}
@@ -401,6 +518,9 @@ const ClientComponent = ({ currUser }) => {
                       fill
                       className='object-contain'
                       alt={clickViewImgSrc}
+                      // priority
+                      placeholder='blur'
+                      blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg=='
                     />
                   </div>
                 )}
@@ -418,17 +538,115 @@ const ClientComponent = ({ currUser }) => {
         </ModalContent>
       </Modal>
 
-      {/* <BottomInputNav
-          isClickPlusBtn={isClickPlusBtn}
-          setIsClickPlusBtn={setIsClickPlusBtn}
-          plusBtnRef={plusBtnRef}
-          chatroomID={chatroomID}
-          currUser={currUser}
-        /> */}
+      {/* 신고하기 모달창 */}
+      <Modal
+        isOpen={isReportOpen}
+        placement={'center'}
+        onOpenChange={onReportOpenChange}
+        className='w-4/5'
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className='flex flex-col gap-1'>
+                신고하기
+              </ModalHeader>
+              <ModalBody>
+                {isSubmitReport ? (
+                  <p className='text-info'>정상적으로 제출되었습니다</p>
+                ) : (
+                  <>
+                    <CheckboxGroup
+                      color='danger'
+                      value={reportOptions}
+                      onValueChange={setReportOptions}
+                      className='text-info'
+                    >
+                      <Checkbox value='부적절한 메세지'>
+                        <p>부적절한 메세지</p>
+                        <p className='text-info text-gray-500'>
+                          욕설, 외설적인 내용 또는 불쾌감을 주는 메시지
+                        </p>
+                      </Checkbox>
+                      <Checkbox value='욕설 및 혐오발언'>
+                        <p>차별 또는 혐오 발언</p>
+                        <p className='text-info text-gray-500'>
+                          인종, 성별, 종교, 성적 지향 등에 대한 차별이나 혐오
+                          표현
+                        </p>
+                      </Checkbox>
+                      <Checkbox value='부적절한 닉네임'>
+                        <p>부적절한 닉네임</p>
+                        <p className='text-info text-gray-500'>
+                          욕설, 성적인 표현, 혐오 표현 등이 포함된 닉네임
+                        </p>
+                      </Checkbox>
+                    </CheckboxGroup>
+                    <Textarea
+                      label='기타'
+                      minRows={1}
+                      maxRows={2}
+                      value={reportEtc}
+                      onValueChange={setReportEtc}
+                    />
+                  </>
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <button onClick={onClose} className='btn px-[20px] py-[5px]'>
+                  닫기
+                </button>
+                {!isSubmitReport && (
+                  <button
+                    onClick={() => {
+                      handleReport(onClose);
+                    }}
+                    className='full-btn px-[20px] py-[5px]'
+                  >
+                    제출
+                  </button>
+                )}
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* 채팅방 나가기 모달창 */}
+      <Modal
+        isOpen={isRoomOutOpen}
+        placement={'center'}
+        onOpenChange={onRoomOutOpenChange}
+        className='w-4/5'
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className='flex flex-col gap-1'>
+                채팅방 나가기
+              </ModalHeader>
+              <ModalBody className='text-info'>
+                <p>채팅방을 나가시면 모든 대화내역이 사라집니다</p>
+                <p>또한 계정도 삭제되며, 해당 서비스를 이용할 수 없습니다</p>
+                <p>웹앱 사용신청을 다시하여 선정되어야 사용가능합니다</p>
+              </ModalBody>
+              <ModalFooter>
+                <button onClick={onClose} className='btn px-[20px] py-[5px]'>
+                  취소
+                </button>
+                <button
+                  onClick={handleRoomOut}
+                  className='full-btn px-[20px] py-[5px]'
+                >
+                  나가기
+                </button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
 
 export default ClientComponent;
-
-const InputNav = styled.div``;
