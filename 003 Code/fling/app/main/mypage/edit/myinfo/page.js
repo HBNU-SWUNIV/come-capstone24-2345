@@ -25,6 +25,7 @@ const editMyInfo = () => {
         drinkLimit: session.user.drinkLimit,
         army: session.user.army,
       };
+      console.log(myinfo);
       setInfo(myinfo);
       setDefaultInfo(session.user);
     }
@@ -46,7 +47,7 @@ const editMyInfo = () => {
 
   if (info) {
     return (
-      <div className='w-full h-[calc(100vh_+_20px)] bg-gray-50 py-[80px] px-[40px] text-start flex flex-col gap-[20px] overflow-y-scroll'>
+      <div className='w-full h-dvh bg-gray-50 pt-[80px] pb-[100px] px-[40px] text-start flex flex-col gap-[20px] overflow-y-scroll'>
         <div className='flex justify-between items-center'>
           <div className='flex gap-[10px] items-end'>
             <span>나의 정보</span>
@@ -171,7 +172,6 @@ const editMyInfo = () => {
             }}
           />
           <Input
-            type='numeric'
             label='MBTI'
             startContent={
               <div className='w-full flex gap-[5px] text-info py-[5px]'>
@@ -180,11 +180,11 @@ const editMyInfo = () => {
                     onClick={() =>
                       setInfo((prev) => ({
                         ...prev,
-                        mbti: ['I', ...prev.mbti.slice(1)],
+                        mbti: { type: ['I', ...prev.mbti.type.slice(1)] },
                       }))
                     }
                     className={`aspect-square ${
-                      info.mbti[0] === 'I' ? 'focus-btn' : 'btn'
+                      info.mbti.type[0] === 'I' ? 'focus-btn' : 'btn'
                     }`}
                   >
                     I
@@ -193,11 +193,11 @@ const editMyInfo = () => {
                     onClick={() =>
                       setInfo((prev) => ({
                         ...prev,
-                        mbti: ['E', ...prev.mbti.slice(1)],
+                        mbti: { type: ['E', ...prev.mbti.type.slice(1)] },
                       }))
                     }
                     className={`aspect-square ${
-                      info.mbti[0] === 'E' ? 'focus-btn' : 'btn'
+                      info.mbti.type[0] === 'E' ? 'focus-btn' : 'btn'
                     }`}
                   >
                     E
@@ -208,11 +208,17 @@ const editMyInfo = () => {
                     onClick={() =>
                       setInfo((prev) => ({
                         ...prev,
-                        mbti: [prev.mbti[0], 'N', ...prev.mbti.slice(2)],
+                        mbti: {
+                          type: [
+                            prev.mbti.type[0],
+                            'N',
+                            ...prev.mbti.type.slice(2),
+                          ],
+                        },
                       }))
                     }
                     className={`aspect-square ${
-                      info.mbti[1] === 'N' ? 'focus-btn' : 'btn'
+                      info.mbti.type[1] === 'N' ? 'focus-btn' : 'btn'
                     }`}
                   >
                     N
@@ -221,11 +227,17 @@ const editMyInfo = () => {
                     onClick={() =>
                       setInfo((prev) => ({
                         ...prev,
-                        mbti: [prev.mbti[0], 'S', ...prev.mbti.slice(2)],
+                        mbti: {
+                          type: [
+                            prev.mbti.type[0],
+                            'S',
+                            ...prev.mbti.type.slice(2),
+                          ],
+                        },
                       }))
                     }
                     className={`aspect-square ${
-                      info.mbti[1] === 'S' ? 'focus-btn' : 'btn'
+                      info.mbti.type[1] === 'S' ? 'focus-btn' : 'btn'
                     }`}
                   >
                     S
@@ -236,11 +248,17 @@ const editMyInfo = () => {
                     onClick={() =>
                       setInfo((prev) => ({
                         ...prev,
-                        mbti: [...prev.mbti.slice(0, 2), 'F', prev.mbti[3]],
+                        mbti: {
+                          type: [
+                            ...prev.mbti.type.slice(0, 2),
+                            'F',
+                            prev.mbti.type[3],
+                          ],
+                        },
                       }))
                     }
                     className={`aspect-square ${
-                      info.mbti[2] === 'F' ? 'focus-btn' : 'btn'
+                      info.mbti.type[2] === 'F' ? 'focus-btn' : 'btn'
                     }`}
                   >
                     F
@@ -249,11 +267,17 @@ const editMyInfo = () => {
                     onClick={() =>
                       setInfo((prev) => ({
                         ...prev,
-                        mbti: [...prev.mbti.slice(0, 2), 'T', prev.mbti[3]],
+                        mbti: {
+                          type: [
+                            ...prev.mbti.type.slice(0, 2),
+                            'T',
+                            prev.mbti.type[3],
+                          ],
+                        },
                       }))
                     }
                     className={`aspect-square ${
-                      info.mbti[2] === 'T' ? 'focus-btn' : 'btn'
+                      info.mbti.type[2] === 'T' ? 'focus-btn' : 'btn'
                     }`}
                   >
                     T
@@ -264,11 +288,11 @@ const editMyInfo = () => {
                     onClick={() =>
                       setInfo((prev) => ({
                         ...prev,
-                        mbti: [...prev.mbti.slice(0, 3), 'P'],
+                        mbti: { type: [...prev.mbti.type.slice(0, 3), 'P'] },
                       }))
                     }
                     className={`aspect-square ${
-                      info.mbti[3] === 'P' ? 'focus-btn' : 'btn'
+                      info.mbti.type[3] === 'P' ? 'focus-btn' : 'btn'
                     }`}
                   >
                     P
@@ -277,11 +301,11 @@ const editMyInfo = () => {
                     onClick={() =>
                       setInfo((prev) => ({
                         ...prev,
-                        mbti: [...prev.mbti.slice(0, 3), 'J'],
+                        mbti: { type: [...prev.mbti.type.slice(0, 3), 'J'] },
                       }))
                     }
                     className={`aspect-square ${
-                      info.mbti[3] === 'J' ? 'focus-btn' : 'btn'
+                      info.mbti.type[3] === 'J' ? 'focus-btn' : 'btn'
                     }`}
                   >
                     J

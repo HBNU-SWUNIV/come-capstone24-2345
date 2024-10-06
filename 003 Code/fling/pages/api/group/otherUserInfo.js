@@ -20,27 +20,31 @@ const handleOtherUserInfo = async (req, res) => {
         .collection('user_cred')
         .findOne({ email: otherUserEmail });
 
-      const data = {
-        email: otherUserEmail,
-        gender: otherUserInfo.gender,
-        birth: otherUserInfo.birth,
-        univ: otherUserInfo.univ,
-        univCert: otherUserInfo.univCert,
-        department: otherUserInfo.department,
-        nickname: otherUserInfo.nickname,
-        mbti: otherUserInfo.mbti,
-        height: otherUserInfo.height,
-        drinkLimit: otherUserInfo.drinkLimit,
-        smoking: otherUserInfo.smoking,
-        army: otherUserInfo.army,
-        hobby: otherUserInfo.hobby,
-        datingType: otherUserInfo.datingType,
-        introduction: otherUserInfo.introduction,
-        religion: otherUserInfo.religion,
-      };
-      res.status(200).send(data);
+      if (otherUserInfo) {
+        const data = {
+          email: otherUserEmail,
+          gender: otherUserInfo.gender,
+          birth: otherUserInfo.birth,
+          univ: otherUserInfo.univ,
+          univCert: otherUserInfo.univCert,
+          department: otherUserInfo.department,
+          nickname: otherUserInfo.nickname,
+          mbti: otherUserInfo.mbti,
+          height: otherUserInfo.height,
+          drinkLimit: otherUserInfo.drinkLimit,
+          smoking: otherUserInfo.smoking,
+          army: otherUserInfo.army,
+          hobby: otherUserInfo.hobby,
+          datingType: otherUserInfo.datingType,
+          introduction: otherUserInfo.introduction,
+          religion: otherUserInfo.religion,
+        };
+        res.status(200).send(data);
+      } else {
+        res.status(400).send('상대방이 아직 가입하지 않았어요');
+      }
     } else {
-      res.status(400).send('해당 유저가 존재하지 않음');
+      res.status(400).send('상대방이 아직 가입하지 않았어요');
     }
   }
 };

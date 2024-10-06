@@ -27,16 +27,12 @@ const editMyIntro = () => {
     }
   }, [session, status]);
 
-  useEffect(() => {
-    console.log(info);
-  }, [info]);
-
   const handleEditInfo = async () => {
     await axios
       .post('/api/edit/myintro', { defaultInfo, info })
       .then((res) => {
-        alert('수정되었습니다!');
         update({ ...res.data.defaultInfo, ...res.data.modifyInfo });
+        alert('수정되었습니다!');
         router.replace('/main/mypage');
       })
       .catch((err) => {
@@ -47,7 +43,7 @@ const editMyIntro = () => {
 
   if (info) {
     return (
-      <div className='w-full h-[calc(100vh_+_60px)] bg-gray-50 py-[80px] px-[40px] text-start flex flex-col gap-[20px] overflow-y-scroll'>
+      <div className='w-full h-dvh bg-gray-50 pt-[80px] pb-[100px] px-[40px] text-start flex flex-col gap-[20px] overflow-y-scroll'>
         <div className='flex justify-between items-center'>
           <span>나의 한 줄 소개</span>
           <Image

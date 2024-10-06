@@ -90,7 +90,7 @@ const editMyHobby = () => {
     };
 
     return (
-      <div className='w-full h-[calc(100vh_+_60px)] bg-gray-50 py-[80px] px-[40px] text-start flex flex-col gap-[20px] overflow-y-scroll'>
+      <div className='w-full h-dvh bg-gray-50 pt-[80px] pb-[100px] px-[40px] text-start flex flex-col gap-[20px] overflow-y-scroll'>
         <div className='flex justify-between items-center'>
           <span>나의 취미</span>
           <Image
@@ -111,7 +111,7 @@ const editMyHobby = () => {
                 <button
                   key={hobby}
                   onClick={() => handleHobbyButton(hobby)}
-                  className={`flex justify-center items-center gap-[5px] px-[12px] py-[8px] ${isExist(hobby) ? 'focus-btn' : 'btn'}`}
+                  className={`flex justify-center items-center gap-[5px] px-[12px] py-[8px] ${isExist(hobby) ? 'focus-btn' : 'btn'} text-subtitle text-gray-600`}
                 >
                   <Image
                     src={`/register/hobby/unchecked/${hobby[1]}.svg`}

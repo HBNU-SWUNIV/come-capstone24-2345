@@ -73,7 +73,15 @@ const MypagePage = () => {
         <span className='text-subtitle text-gray-700 flex-1 text-start'>
           {key}
         </span>
-        <div className='text-subtitle w-[75%] text-start'>{value}</div>
+
+        <div className='text-subtitle w-[75%] text-start flex flex-col'>
+          <span>{value}</span>
+          {key === 'MBTI' && (
+            <span className='text-info text-gray-500 flex-1 text-start break-keep'>
+              {sessionInfo.mbti.description}
+            </span>
+          )}
+        </div>
       </div>
     );
   };
@@ -211,7 +219,7 @@ const MypagePage = () => {
               {infoComponent('학과', sessionInfo.department)}
               {infoComponent('키', `${sessionInfo.height}cm`)}
               {infoComponent('종교', '무교')}
-              {infoComponent('MBTI', sessionInfo.mbti.join(''))}
+              {infoComponent('MBTI', sessionInfo.mbti.type.join(''))}
               {infoComponent(
                 '흡연/음주',
                 `${sessionInfo.smoking === 'smoking' ? '흡연자' : '비흡연자'} / ${sessionInfo.drinkLimit === 0 ? '술을 못하는 편' : `${sessionInfo.drinkLimit}병 정도`}`

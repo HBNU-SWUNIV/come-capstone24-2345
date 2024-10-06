@@ -27,6 +27,7 @@ const ChatPage = () => {
         })
         .catch((err) => {
           alert(err.response.data);
+          return;
         });
     }
   };
@@ -51,6 +52,10 @@ const ChatPage = () => {
         .post('/api/group/otherUserInfo', { email: sessionInfo.email })
         .then((res) => {
           setOtherUserInfo(res.data);
+        })
+        .catch((err) => {
+          // alert(err.response.data);
+          return;
         });
     };
 
@@ -74,7 +79,14 @@ const ChatPage = () => {
         <span className='text-subtitle text-gray-700 flex-1 text-start'>
           {key}
         </span>
-        <div className='text-subtitle w-[75%] text-start'>{value}</div>
+        <div className='text-subtitle w-[75%] text-start flex flex-col'>
+          <span>{value}</span>
+          {key === 'MBTI' && (
+            <span className='text-info text-gray-500 flex-1 text-start break-keep'>
+              {sessionInfo.mbti.description}
+            </span>
+          )}
+        </div>
       </div>
     );
   };
@@ -148,7 +160,7 @@ const ChatPage = () => {
               {infoComponent('학과', otherUserInfo.department)}
               {infoComponent('키', `${otherUserInfo.height}cm`)}
               {infoComponent('종교', otherUserInfo.religion)}
-              {infoComponent('MBTI', otherUserInfo.mbti.join(''))}
+              {infoComponent('MBTI', otherUserInfo.mbti.type.join(''))}
               {infoComponent(
                 '흡연/음주',
                 `${otherUserInfo.smoking ? '흡연자' : '비흡연자'} / ${otherUserInfo.drinkLimit === 0 ? '술을 못하는 편' : `${otherUserInfo.drinkLimit}병 정도`}`
@@ -215,6 +227,16 @@ const ChatPage = () => {
           </button>
 
           <div className='w-full h-[100px]'></div>
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div className='w-full h-dvh bg-gray-50 px-[40px]'>
+        <div className='size-full flex flex-col justify-center items-center'>
+          <span className='w-4/5 subtitle break-keep'>
+            이런, 아직 상대방이 가입하지 않았어요 🥲
+          </span>
         </div>
       </div>
     );
