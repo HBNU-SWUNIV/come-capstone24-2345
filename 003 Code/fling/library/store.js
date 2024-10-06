@@ -14,105 +14,142 @@ const registerUserInfo = createSlice({
     department: '',
     nickname: '',
     mbti: '',
-    height: '',
-    drinkLimit: '',
-    smoking: '',
-    army: null,
+    height: 0,
+    drinkLimit: 0,
+    smoking: false,
+    army: false,
     hobby: null,
     datingType: null,
-    waitMatching: false,
     univCert: false,
     introduction: '',
     profileImg: '',
-    IDCardImg: '',
-    chatroomNum: '',
+    studentIDImg: '',
+    chatroomID: '',
+    religion: '',
     role: 'normal',
   },
   reducers: {
-    setGlobalEventCode: (state, action) => {
+    setStoreEventCode: (state, action) => {
       state.eventCode = action.payload;
     },
-    setGlobalGender: (state, action) => {
+    setStoreReligion: (state, action) => {
+      state.religion = action.payload;
+    },
+    setStoreGender: (state, action) => {
       state.gender = action.payload;
     },
-    setGlobalName: (state, action) => {
+    setStoreName: (state, action) => {
       state.name = action.payload;
     },
-    setGlobalBirth: (state, action) => {
+    setStoreBirth: (state, action) => {
       state.birth = action.payload;
     },
-    setGlobalUniv: (state, action) => {
+    setStoreUniv: (state, action) => {
       state.univ = action.payload;
     },
-    setGlobalDepartment: (state, action) => {
+    setStoreDepartment: (state, action) => {
       state.department = action.payload;
     },
-    setGlobalEmail: (state, action) => {
+    setStoreEmail: (state, action) => {
       state.email = action.payload;
     },
-    setGlobalEmailCert: (state, action) => {
+    setStoreEmailCert: (state, action) => {
       state.emailCert = action.payload;
     },
-    setGlobalNickname: (state, action) => {
+    setStoreNickname: (state, action) => {
       state.nickname = action.payload;
     },
-    setGlobalPassword: (state, action) => {
+    setStorePassword: (state, action) => {
       state.password = action.payload;
     },
-    setGlobalMbti: (state, action) => {
+    setStoreMbti: (state, action) => {
       state.mbti = action.payload;
     },
-    setGlobalHeight: (state, action) => {
+    setStoreHeight: (state, action) => {
       state.height = action.payload;
     },
-    setGlobalDrinkLimit: (state, action) => {
+    setStoreDrinkLimit: (state, action) => {
       state.drinkLimit = action.payload;
     },
-    setGlobalSmoking: (state, action) => {
+    setStoreSmoking: (state, action) => {
       state.smoking = action.payload;
     },
-    setGlobalArmy: (state, action) => {
+    setStoreArmy: (state, action) => {
       state.army = action.payload;
     },
-    setGlobalHobby: (state, action) => {
+    setStoreHobby: (state, action) => {
       state.hobby = action.payload;
     },
-    setGlobalDatingType: (state, action) => {
+    setStoreDatingType: (state, action) => {
       state.datingType = action.payload;
     },
-    setGlobalProfileImg: (state, action) => {
+    setStoreProfileImg: (state, action) => {
       state.profileImg = action.payload;
     },
-    setGlobalIDCardImg: (state, action) => {
-      state.IDCardImg = action.payload;
+    setStoreStudentIDImg: (state, action) => {
+      state.studentIDImg = action.payload;
     },
-    setGlobalIntroduction: (state, action) => {
+    setStoreIntroduction: (state, action) => {
       state.introduction = action.payload;
+    },
+    setStoreChatroomID: (state, action) => {
+      state.chatroomID = action.payload;
+    },
+    setStoreInitialize: (state, action) => {
+      if (typeof action.payload === 'boolean' && action.payload) {
+        state.eventCode = '';
+        state.email = '';
+        state.emailCert = false;
+        state.password = '';
+        state.gender = '';
+        state.name = '';
+        state.birth = null;
+        state.univ = '';
+        state.department = '';
+        state.nickname = '';
+        state.mbti = '';
+        state.height = 0;
+        state.drinkLimit = 0;
+        state.smoking = false;
+        state.army = false;
+        state.hobby = null;
+        state.datingType = null;
+        state.univCert = false;
+        state.introduction = '';
+        state.profileImg = '';
+        state.studentIDImg = '';
+        state.chatroomID = '';
+        state.religion = '';
+        state.role = 'normal';
+      }
     },
   },
 });
 
 export const {
-  setGlobalEventCode,
-  setGlobalGender,
-  setGlobalName,
-  setGlobalBirth,
-  setGlobalUniv,
-  setGlobalDepartment,
-  setGlobalEmail,
-  setGlobalEmailCert,
-  setGlobalNickname,
-  setGlobalPassword,
-  setGlobalMbti,
-  setGlobalHeight,
-  setGlobalDrinkLimit,
-  setGlobalSmoking,
-  setGlobalArmy,
-  setGlobalHobby,
-  setGlobalDatingType,
-  setGlobalProfileImg,
-  setGlobalIDCardImg,
-  setGlobalIntroduction,
+  setStoreEventCode,
+  setStoreGender,
+  setStoreName,
+  setStoreBirth,
+  setStoreUniv,
+  setStoreDepartment,
+  setStoreEmail,
+  setStoreEmailCert,
+  setStoreNickname,
+  setStorePassword,
+  setStoreMbti,
+  setStoreHeight,
+  setStoreDrinkLimit,
+  setStoreSmoking,
+  setStoreArmy,
+  setStoreHobby,
+  setStoreDatingType,
+  setStoreProfileImg,
+  setStoreStudentIDImg,
+  setStoreIntroduction,
+  setStoreChatroomID,
+  setStoreReligion,
+  setStoreInitialize,
 } = registerUserInfo.actions;
 
 export default configureStore({

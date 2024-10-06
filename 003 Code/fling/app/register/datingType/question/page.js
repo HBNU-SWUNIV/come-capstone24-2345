@@ -83,17 +83,12 @@ const RegisterDatingTypeQuestion = () => {
     }
   };
   return (
-    <div className='w-full h-screen px-[40px] relative'>
-      <div className='size-full flex flex-col items-center'>
-        {/* <motion.div
-        variants={variants}
-        initial='hidden'
-        animate='enter'
-        transition={easeInOut}
-        className='size-full flex flex-col items-center'
-      > */}
+    <div className='w-full h-dvh px-[40px] pt-[80px] pb-[120px]'>
+      <div className='size-full flex flex-col gap-[20px] relative'>
+        <div className='w-full text-start'>
+          <span className='text-title text-main-red'>Q{page}</span>
+        </div>
         {questions()}
-        {/* </motion.div> */}
       </div>
     </div>
   );

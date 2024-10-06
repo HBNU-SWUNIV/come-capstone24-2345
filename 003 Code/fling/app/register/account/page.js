@@ -1,204 +1,259 @@
 'use client';
 
-import { setGlobalNickname, setGlobalPassword } from '../../../library/store';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import { Input } from '@nextui-org/react';
+import { EyeFilledIcon } from './EyeFilledIcon';
+import { EyeSlashFilledIcon } from './EyeSlashFilledIcon';
+import { Divider } from '@nextui-org/divider';
+import { setStoreNickname, setStorePassword } from '../../../library/store';
 
 const RegisterAccount = () => {
   const [nickname, setNickname] = useState('');
-  const [clickCheckNickname, setClickCheckNickname] = useState(0);
-  const [isCheckedNickname, setIsCheckedNickname] = useState(false);
   const [password, setPassword] = useState('');
-  const [checkPassword, setCheckPassword] = useState('');
+  const [rePassword, setRePassword] = useState('');
+  const [isCheckedNickname, setIsCheckedNickname] = useState(false);
+  const [isInvalidNickname, setIsInvalidNickname] = useState(false);
+  const [isInvalidPassword, setIsInvalidPassword] = useState(false);
+  const [isInvalidRePassword, setIsInvalidRePassword] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.registerUserInfo.email);
+  const userEmail = useSelector((state) => state.registerUserInfo.email);
+  const userNickname = useSelector((state) => state.registerUserInfo.nickname);
+  const userPassword = useSelector((state) => state.registerUserInfo.password);
+
   const router = useRouter();
 
-  // useEffect(() => {
-  //   if (userId === '') {
-  //     alert('잘못된 접근방식입니다');
-  //     alert('초기화면으로 돌아갑니다');
-  //     router.replace('/test');
-  //   }
-  // }, []);
   useEffect(() => {
-    console.log(isCheckedNickname);
-  }, [isCheckedNickname]);
+    const passwordPattern = new RegExp(
+      '^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,}$'
+    );
 
-  const handleNickname = (e) => {
-    setClickCheckNickname(0);
-    setNickname(e.target.value);
-  };
+    passwordPattern.test(password)
+      ? setIsInvalidPassword(false)
+      : setIsInvalidPassword(true);
+  }, [password]);
 
-  const checkNickname = async () => {
-    await axios
-      .post('/api/check/nickname', { nickname })
-      .then((result) => {
-        setNickname(result.data.nickname);
-        setIsCheckedNickname(true);
-      })
-      .catch((err) => {
+  useEffect(() => {
+    const nicknameRegex = /[a-zA-Z가-힣]+/; // 한글이나 영어가 최소 한글자
+    const koreanRegex = /[ㄱ-ㅎㅏ-ㅣ]/g; // 자음이나 모음이 단독으로
+    const spaceRegex = /\s/; // 공백체크
+
+    nicknameRegex.test(nickname) &&
+    (nickname.match(koreanRegex) === null ||
+      nickname.match(koreanRegex).length === 0) &&
+    !spaceRegex.test(nickname)
+      ? setIsInvalidNickname(false)
+      : setIsInvalidNickname(true);
+
+    //한글
+    if (nickname.length > 8) {
+      setIsInvalidNickname(true);
+    }
+  }, [nickname]);
+
+  useEffect(() => {
+    rePassword && password === rePassword
+      ? setIsInvalidRePassword(false)
+      : setIsInvalidRePassword(true);
+  }, [rePassword]);
+
+  useEffect(() => {
+    if (userEmail && userNickname && userPassword) {
+      router.replace('/register/mbti');
+    }
+  }, [userEmail, userNickname, userPassword]);
+
+  const handleNickname = async (e) => {
+    e.preventDefault();
+    if (nickname === '') {
+      alert('닉네임을 입력해주세요');
+    } else {
+      try {
+        const result = await axios.post('/api/register/nickname', { nickname });
+        if (result.status === 200) {
+          setIsInvalidNickname(false);
+          setIsCheckedNickname(true);
+        }
+      } catch (err) {
+        setIsInvalidNickname(true);
         setIsCheckedNickname(false);
         alert(err.response.data);
-      });
+      }
+    }
   };
 
-  const handlePassword = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleCheckPassword = (e) => {
-    setCheckPassword(e.target.value);
-  };
-
-  const handleNext = async () => {
-    if (clickCheckNickname < 1) {
-      alert('닉네임 중복확인을 해주세요');
-    } else if (!isCheckedNickname) {
-      alert('사용할 수 없는 닉네임입니다');
+  const handleAccount = async (e) => {
+    e.preventDefault();
+    if (
+      nickname &&
+      password &&
+      rePassword &&
+      !isInvalidNickname &&
+      !isInvalidPassword &&
+      !isInvalidRePassword &&
+      isCheckedNickname
+    ) {
+      try {
+        const result = await axios.post('/api/register/password', { password });
+        const hashedPW = result.data;
+        setIsLoading(true);
+        dispatch(setStorePassword(hashedPW));
+        dispatch(setStoreNickname(nickname));
+      } catch (err) {
+        alert(err.response.data);
+      }
+    } else if (!userEmail) {
+      alert('잘못된 접근입니다');
+      router.replace('/');
     } else {
-      await axios
-        .post('/api/check/password', { password, checkPassword })
-        .then((result) => {
-          dispatch(setGlobalPassword(result.data));
-          dispatch(setGlobalNickname(nickname));
-          router.replace('/register/mbti');
-        })
-        .catch((err) => {
-          alert(err.response.data);
-        });
+      alert('모두 조건에 맞게 입력해주세요');
     }
   };
 
   return (
-    <div className='w-full h-screen px-[40px] relative overflow-y-scroll'>
-      <div className='size-full flex flex-col items-center'>
-        <div className='w-full mt-[120px] text-start'>
-          <span className='text-title'>계정생성</span>
+    <div className='w-full h-dvh px-[40px] pt-[80px]'>
+      <div className='size-full flex flex-col gap-[20px] relative'>
+        <div className='text-start w-3/5  flex flex-col gap-[10px]'>
+          <p className='text-title text-main-red'>계정 생성</p>
         </div>
-
-        <div className='w-full mt-[20px] flex flex-col gap-[20px]'>
-          <form className='w-full flex flex-col gap-[10px]'>
-            <div className='flex gap-[20px]'>
-              <div className='relative w-full'>
-                <input
-                  placeholder=' '
-                  onChange={handleNickname}
-                  // maxLength={8}
-                  className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn'
-                />
-
-                <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
-                  닉네임
-                </label>
-              </div>
-              <button
-                className='w-full full-btn'
-                onClick={(e) => {
-                  e.preventDefault();
-                  checkNickname();
-                  setClickCheckNickname((prev) => prev + 1);
-                }}
-              >
-                중복확인
-              </button>
-            </div>
-            <div className='flex flex-col text-info text-start pl-[10px]'>
-              <span className='text-main-red mb-[5px]'>
-                {clickCheckNickname > 0
-                  ? isCheckedNickname
-                    ? '사용가능한 닉네임이에요'
-                    : '사용할 수 없는 닉네임이에요'
-                  : null}
-              </span>
-              <span className='text-black/50'>
-                닉네임은 최소 4자, 최대 8자까지 가능합니다
-              </span>
-              <span className='text-black/50'>
-                닉네임은 한글이나 영어가 최소 한 글자 이상 포함되어야 합니다
-              </span>
-            </div>
-          </form>
-
-          <form className='w-full flex flex-col gap-[20px] mb-[10px]'>
-            <div className='w-full flex flex-col gap-[10px]'>
-              <div className='relative w-full'>
-                <input
-                  placeholder=' '
-                  value={userId}
-                  disabled
-                  className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn bg-transparent'
-                />
-
-                <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
-                  아이디
-                </label>
-              </div>
-              <span className='text-start text-info pl-[10px] text-black/50'>
-                아이디는 학교 이메일을 사용해요
-              </span>
-            </div>
-
-            <div className='w-full flex flex-col gap-[10px]'>
-              <div className='relative w-full'>
-                <input
-                  type='password'
-                  placeholder=' '
-                  onChange={handlePassword}
-                  className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn'
-                />
-
-                <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
-                  비밀번호
-                </label>
-              </div>
-              <div className='text-start text-info pl-[10px] text-black/50'>
-                <p>숫자, 특수기호를 최소 하나 이상 조합해야 해요</p>
-                <p>최소 8자 이상이어야 해요</p>
-              </div>
-            </div>
-
-            <div className='w-full flex flex-col gap-[10px]'>
-              <div className='relative w-full'>
-                <input
-                  type='password'
-                  placeholder=' '
-                  onChange={handleCheckPassword}
-                  className='floating-label-input block w-full h-[50px] focus:outline-none px-[20px] py-[30px] btn'
-                />
-
-                <label className='floating-label absolute left-[20px] top-[20px] text-gray-500 pointer-events-none transition-all duration-200 ease-in-out'>
-                  비밀번호 재입력
-                </label>
-              </div>
-              <span className='text-main-red text-info text-start pl-[10px]'>
-                {password !== '' && checkPassword !== ''
-                  ? password === checkPassword
-                    ? '비밀번호가 일치합니다'
-                    : '비밀번호가 일치하지 않습니다'
-                  : null}
-              </span>
-            </div>
-          </form>
-        </div>
-
-        {/* <div className='w-[calc(100%_-_80px)]'> */}
-        <div className='w-full'>
-          <button
-            onClick={handleNext}
-            disabled={
-              nickname === '' || password === '' || checkPassword === ''
+        <form onSubmit={handleNickname} className='w-full flex gap-[10px]'>
+          <Input
+            variant='bordered'
+            label='닉네임 (최소4자 최대8자)'
+            minLength={4}
+            maxLength={8}
+            isRequired
+            isInvalid={!nickname ? false : isInvalidNickname}
+            errorMessage='사용할 수 없는 닉네임입니다'
+            description={
+              isCheckedNickname
+                ? '사용가능한 닉네임입니다'
+                : `한글이나 영어를 최소 한글자 이상, 특수기호O, 공백X`
             }
-            // onClick={handleSecondPageNext}
-            className={`w-full h-[60px] my-[20px] ${nickname === '' || password === '' || checkPassword === '' ? 'disabled-btn' : 'full-btn'}`}
+            value={nickname}
+            color={
+              !nickname
+                ? ''
+                : isCheckedNickname && !isInvalidNickname
+                  ? 'success'
+                  : ''
+            }
+            onValueChange={(value) => {
+              setNickname(value);
+              setIsCheckedNickname(false);
+            }}
+            className='flex-1'
+            classNames={{
+              inputWrapper: `border border-solid ${isCheckedNickname && !isInvalidNickname ? 'border-success' : 'border-slate-200'}`,
+              errorMessage: 'text-start',
+              description: `text-start ${isCheckedNickname && !isInvalidNickname && 'text-success'}`,
+            }}
+          />
+          <button
+            type='submit'
+            disabled={!isInvalidNickname && nickname.length > 3 ? false : true}
+            className={`${!isInvalidNickname && nickname.length > 3 ? 'full-btn' : 'btn'} text-subtitle h-[56px] w-1/5`}
           >
-            다음
+            중복확인
           </button>
-        </div>
+        </form>
+
+        {isCheckedNickname && (
+          <>
+            <Divider className='my-[5px]' />
+
+            <form
+              id='input-account'
+              onSubmit={handleAccount}
+              className='w-full flex flex-col gap-[20px]'
+            >
+              <Input
+                variant='bordered'
+                label='이메일'
+                isRequired
+                value={userEmail}
+                disabled
+                description='아이디는 학교 이메일을 사용'
+                className='pointer-events-none'
+                classNames={{
+                  inputWrapper: 'border border-solid border-slate-200',
+                  description: 'text-start',
+                }}
+              />
+
+              <Input
+                variant='bordered'
+                label='비밀번호'
+                isRequired
+                value={password}
+                isInvalid={password === '' ? false : isInvalidPassword}
+                errorMessage='사용할 수 없는 비밀번호입니다'
+                onValueChange={setPassword}
+                color={
+                  !password ? '' : !isInvalidPassword ? 'success' : 'danger'
+                }
+                endContent={
+                  <button
+                    className='focus:outline-none'
+                    type='button'
+                    onClick={() => setIsVisible((prev) => !prev)}
+                    aria-label='toggle password visibility'
+                  >
+                    {isVisible ? (
+                      <EyeSlashFilledIcon className='text-xl text-default-400 pointer-events-none' />
+                    ) : (
+                      <EyeFilledIcon className='text-xl text-default-400 pointer-events-none' />
+                    )}
+                  </button>
+                }
+                type={isVisible ? 'text' : 'password'}
+                description='숫자, 특수기호를 최소 하나 이상 조합 및 8자 이상'
+                classNames={{
+                  label: `${!password && 'text-default-600'}`,
+                  inputWrapper: `border border-solid ${!isInvalidPassword && 'border-success'}`,
+                  description: 'text-start',
+                  errorMessage: 'text-start',
+                }}
+              />
+
+              <Input
+                variant='bordered'
+                label='비밀번호 재입력'
+                isRequired
+                value={rePassword}
+                isInvalid={rePassword === '' ? false : isInvalidRePassword}
+                errorMessage='비밀번호가 일치하지 않습니다'
+                onValueChange={setRePassword}
+                color={
+                  !rePassword ? '' : !isInvalidRePassword ? 'success' : 'danger'
+                }
+                type='password'
+                classNames={{
+                  label: `${!rePassword && 'text-default-600'}`,
+                  inputWrapper: `border border-solid ${!isInvalidRePassword && 'border-success'}`,
+                  description: 'text-start',
+                  errorMessage: 'text-start',
+                }}
+              />
+            </form>
+          </>
+        )}
+
+        <label htmlFor='input-account' onClick={handleAccount}>
+          <button
+            type='submit'
+            disabled={nickname && password && rePassword ? false : true}
+            className={`absolute bottom-[40px] left-0 ${nickname && password && rePassword && password === rePassword ? 'full-btn' : 'btn'} w-full h-[50px] content-center cursor-pointer`}
+          >
+            {isLoading ? '확인중...' : '다음'}
+          </button>
+        </label>
       </div>
     </div>
   );

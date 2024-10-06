@@ -16,6 +16,7 @@
     "@nextui-org/radio": "^2.1.5",
     "@nextui-org/react": "^2.4.1",
     "@nextui-org/switch": "^2.0.34",
+    "@nextui-org/table": "^2.0.40",
     "@reduxjs/toolkit": "^2.2.5",
     "aws-sdk": "^2.1634.0",
     "axios": "^1.7.2",

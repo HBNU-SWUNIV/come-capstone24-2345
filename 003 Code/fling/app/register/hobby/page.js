@@ -1,13 +1,14 @@
 'use client';
 
-import { setGlobalHobby } from '../../../library/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setStoreHobby } from '../../../library/store';
 
 const RegisterHobby = () => {
-  const [userHobby, setUserHobby] = useState([]);
+  const [hobby, setHobby] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const hobbyList = [
     ['영화', 'movie'],
@@ -41,76 +42,73 @@ const RegisterHobby = () => {
 
   const router = useRouter();
   const dispatch = useDispatch();
+  const userHobby = useSelector((state) => state.registerUserInfo.hobby);
 
-  useEffect(() => {
-    console.log(userHobby);
-  }, [userHobby]);
+  const isExist = (value) =>
+    hobby.some((item) => JSON.stringify(item) === JSON.stringify(value));
 
-  const isArrInHobby = (arr) =>
-    userHobby.some((item) => JSON.stringify(item) === JSON.stringify(arr));
-
-  const handleButton = (e, hobby) => {
-    if (isArrInHobby(hobby)) {
-      setUserHobby(
-        userHobby.filter(
-          (item) => JSON.stringify(item) !== JSON.stringify(hobby)
-        )
+  const handleHobby = (value) => {
+    if (isExist(value)) {
+      setHobby((prev) =>
+        prev.filter((item) => JSON.stringify(item) !== JSON.stringify(value))
       );
     } else {
-      setUserHobby([...userHobby, hobby]);
+      setHobby((prev) => [...prev, value]);
     }
   };
 
-  const handleNext = () => {
-    if (userHobby.length === 0) {
-      alert('최소 한 가지 이상의 취미를 선택해주세요');
-    } else {
-      dispatch(setGlobalHobby(userHobby));
+  useEffect(() => {
+    if (userHobby) {
       router.replace('/register/etc');
+    }
+  }, [userHobby]);
+
+  const handleSubmit = () => {
+    if (hobby.length !== 0) {
+      setIsLoading(true);
+      dispatch(setStoreHobby(hobby));
+    } else {
+      alert('취미를 한 가지 이상 선택해주세요');
     }
   };
 
   return (
-    <div className='w-full h-screen px-[40px] relative'>
-      <div className='size-full flex flex-col items-center'>
-        <div className='w-full mt-[120px] text-start'>
-          <span className='text-title'>취미</span>
-          <div className='my-[10px] text-subtitle opacity-70'>
-            <p>회원님의 취미를 매칭 상대에게 알릴 수 있게</p>
-            <p>한 가지 이상 선택해주세요</p>
-          </div>
+    <div className='w-full h-dvh px-[40px] pt-[80px] pb-[120px]'>
+      <div className='size-full flex flex-col gap-[20px] relative'>
+        <div className='text-start w-3/5 flex flex-col gap-[10px]'>
+          <p className='text-title text-main-red'>취미</p>
+          <p className='text-subtitle break-keep text-gray-500'>
+            회원님의 취미를 한 가지 이상 선택해주세요
+          </p>
         </div>
 
-        <div className='w-full mt-[20px] flex justify-center flex-wrap gap-[5px]'>
-          {hobbyList.map((element) => {
+        <div className='w-full flex-1 flex justify-center flex-wrap gap-[5px] card-border rounded-medium p-[10px] overflow-y-scroll'>
+          {hobbyList.map((item) => {
             return (
               <button
-                key={element[1]}
-                onClick={(e) => handleButton(e, element)}
-                className={`flex justify-center items-center gap-[5px] px-[12px] py-[8px] ${isArrInHobby(element) ? 'focus-btn' : 'btn'} `}
+                key={item[1]}
+                onClick={() => handleHobby(item)}
+                className={`flex justify-center items-center gap-[5px] px-[10px] h-[40px] ${isExist(item) ? 'focus-btn' : 'btn'}`}
               >
                 <Image
-                  // src={`/register/hobby/${isArrInHobby(element) ? 'checked' : 'unchecked'}/${element[1]}.svg`}
-                  src={`/register/hobby/unchecked/${element[1]}.svg`}
-                  alt={element[1]}
+                  src={`/register/hobby/unchecked/${item[1]}.svg`}
+                  alt={item[1]}
                   width={20}
                   height={20}
                 />
-                <span>{element[0]}</span>
+                <span>{item[0]}</span>
               </button>
             );
           })}
         </div>
 
-        <div className='w-full'>
-          <button
-            disabled={userHobby.length === 0}
-            onClick={handleNext}
-            className={`w-full h-[60px] my-[20px] ${userHobby.length === 0 ? 'disabled-btn' : 'full-btn'}`}
-          >
-            다음
-          </button>
-        </div>
+        <button
+          onClick={handleSubmit}
+          disabled={hobby.length === 0}
+          className={`absolute bottom-[-80px] w-full left-0 ${hobby.length === 0 ? 'btn' : 'full-btn'} h-[50px] content-center cursor-pointer`}
+        >
+          {isLoading ? '확인중...' : '다음'}
+        </button>
       </div>
     </div>
   );

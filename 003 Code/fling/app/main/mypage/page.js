@@ -128,7 +128,7 @@ const MypagePage = () => {
     return (
       <div className='w-full h-fit bg-gray-50 px-[40px]'>
         <div className='size-full flex flex-col gap-[20px] items-center pt-[230px]'>
-          <div className='absolute top-[60px] w-full bg-white flex flex-col gap-[10px] px-[40px] py-[20px] border-b border-solid border-slate-200'>
+          <div className='absolute top-0 pt-[80px] w-full bg-white flex flex-col gap-[10px] px-[40px] py-[20px] border-b border-solid border-slate-200'>
             <div className='w-full flex gap-[20px]'>
               <div className='size-[100px] card-border text-white rounded-medium relative'>
                 {userImg ? (

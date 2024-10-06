@@ -1,15 +1,15 @@
-const CheckDatingType = (req, res) => {
-  if (req.method == 'POST') {
-    const data = req.body;
+const handleDatingType = (req, res) => {
+  if (req.method === 'POST') {
+    const tendency = req.body.tendency;
 
-    if (data.tendency.includes(null)) {
+    if (tendency.includes(null)) {
       res.status(400).send('선택하지 않은 질문이 있습니다');
     } else {
       let score = 0;
       let type;
       let description;
 
-      data.tendency.map((element) => {
+      tendency.map((element) => {
         switch (element) {
           case 0:
             score += 3;
@@ -23,7 +23,6 @@ const CheckDatingType = (req, res) => {
         }
       });
 
-      console.log(score);
       if (score <= 6) {
         type = '독립적인 유형';
         description =
@@ -50,4 +49,4 @@ const CheckDatingType = (req, res) => {
   }
 };
 
-export default CheckDatingType;
+export default handleDatingType;

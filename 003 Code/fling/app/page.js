@@ -1,14 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import EventCodeModal from './EventCodeModal';
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button,
   useDisclosure,
 } from '@nextui-org/react';
 import { Input } from '@nextui-org/react';
@@ -21,7 +19,6 @@ import InstallPrompt from './InstallPrompt';
 import axios from 'axios';
 
 const StartPage = () => {
-  const [isEventCodeModalOpen, setIsEventCodeModalOpen] = useState(false);
   const [isClickInstallBtn, setIsClickInstallBtn] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [gender, setGender] = useState('man');
@@ -63,7 +60,6 @@ const StartPage = () => {
           <Divider orientation='vertical' />
           <button
             onClick={() => {
-              // setIsEventCodeModalOpen(true);
               onOpen();
             }}
             className='text-info text-main-red'
@@ -174,10 +170,6 @@ const StartPage = () => {
           )}
         </ModalContent>
       </Modal>
-
-      {/* {isEventCodeModalOpen && (
-        <EventCodeModal setIsEventCodeModalOpen={setIsEventCodeModalOpen} />
-      )} */}
 
       <div className='size-full flex flex-col justify-center items-center relative'>
         <div className='w-full min-h-[300px] h-1/2 relative top-[-50px] flex flex-col justify-evenly items-center'>

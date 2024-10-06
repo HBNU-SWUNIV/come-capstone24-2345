@@ -1,32 +1,26 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const RegisterDatingType = () => {
-  const router = useRouter();
-  const handleNext = () => {
-    router.replace('/register/datingType/question');
-  };
   return (
-    <div className='w-full h-screen px-[40px] relative'>
-      <div className='size-full flex flex-col items-center'>
-        <div className='w-full mt-[120px] text-start'>
-          <span className='text-title'>연애유형 테스트</span>
-          <div className='my-[10px] opacity-70 text-subtitle'>
-            <p>회원님의 연애유형을</p>
-            <p>6가지의 간단한 질문을 통해 알아보려 해요</p>
-            <p>아래 버튼을 눌러 해당 질문에 답을 택해주세요</p>
-          </div>
+    <div className='w-full h-dvh px-[40px] pt-[80px] pb-[120px]'>
+      <div className='size-full flex flex-col gap-[20px] relative'>
+        <div className='text-start w-4/5 flex flex-col gap-[10px]'>
+          <p className='text-title text-main-red'>연애유형 테스트</p>
+          <p className='text-subtitle break-keep text-gray-500'>
+            회원님의 연애유형을 6가지의 간단한 질문을 통해 알아보려고 해요
+          </p>
+          <p className='text-subtitle text-gray-500'>
+            각 질문에 답을 선택해주세요
+          </p>
         </div>
 
-        <div className='absolute bottom-[50px] w-[calc(100%_-_80px)]'>
-          <button
-            onClick={handleNext}
-            className={`w-full h-[60px] my-[20px] full-btn`}
-          >
-            테스트 시작
-          </button>
-        </div>
+        <Link
+          href={'/register/datingType/question'}
+          replace
+          className={`absolute bottom-[-80px] w-full left-0 h-[50px] full-btn content-center cursor-pointer`}
+        >
+          테스트하기
+        </Link>
       </div>
     </div>
   );

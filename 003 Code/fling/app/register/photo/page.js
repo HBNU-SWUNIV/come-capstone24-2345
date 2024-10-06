@@ -1,195 +1,231 @@
 'use client';
 
-import {
-  setGlobalIDCardImg,
-  setGlobalProfileImg,
-} from '../../../library/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
+import { Accordion, AccordionItem } from '@nextui-org/react';
+import imageCompression from 'browser-image-compression';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import {
+  setStoreProfileImg,
+  setStoreStudentIDImg,
+} from '../../../library/store';
+import { storage } from '../../../firebase/firebaseDB';
 
 const RegisterPhoto = () => {
-  const [profileSrc, setProfileSrc] = useState(null);
-  const [studentIDSrc, setStudentIDSrc] = useState(null);
+  const [profileImgFile, setProfileImgFile] = useState(null);
+  const [studentIDImgFile, setStudentIDImgFile] = useState(null);
+  const [profileImgSrc, setProfileImgSrc] = useState(null);
+  const [studentIDImgSrc, setStudentIDImgSrc] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
   const dispatch = useDispatch();
-  const userInfo = useSelector((state) => state.registerUserInfo);
+  const userEmail = useSelector((state) => state.registerUserInfo.email);
+  const userProfileImg = useSelector(
+    (state) => state.registerUserInfo.profileImg
+  );
+  const userStudentIDImg = useSelector(
+    (state) => state.registerUserInfo.studentIDImg
+  );
 
-  const handlePhoto = async (e, photoType) => {
-    let file = e.target.files[0];
-    if (file.type.includes('svg')) {
-      alert('svg 이미지 파일은 지원하지 않습니다');
+  const handleProfileImg = (e) => {
+    if (e.target.files) {
+      let file = e.target.files[0];
+      setProfileImgFile(file);
+      setProfileImgSrc(URL.createObjectURL(file));
+    } else {
       return;
     }
-    let arr = file.name.split('.');
-    let fileExtension = arr[arr.length - 1];
-
-    let renamedFile = new File(
-      [file],
-      `${userInfo.email}_${photoType}.${fileExtension}`,
-      {
-        type: file.type,
-      }
-    );
-
-    if (photoType === 'profile') {
-      setProfileSrc(renamedFile);
-    } else if (photoType === 'studentID') {
-      setStudentIDSrc(renamedFile);
-    }
   };
 
-  async function uploadPhoto(data) {
-    if (data !== null) {
-      let file = data;
-      let fileName = encodeURIComponent(file.name);
-      let res = await fetch(`/api/check/profile?file=${fileName}`);
-      res = await res.json();
-
-      let formData = new FormData();
-      Object.entries({ ...res.fields, file }).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
-      let uploadResult = await fetch(res.url, {
-        method: 'POST',
-        body: formData,
-      });
-
-      return { uploadResult, fileName };
-    }
-  }
-
-  const handleNext = async () => {
-    if (profileSrc && studentIDSrc) {
-      let profileRes = await uploadPhoto(profileSrc);
-      let studentIDRes = await uploadPhoto(studentIDSrc);
-
-      if (profileRes.uploadResult.ok && studentIDRes.uploadResult.ok) {
-        let profileURL =
-          profileRes.uploadResult.url + '/' + profileRes.fileName;
-        let studentIDURL =
-          studentIDRes.uploadResult.url + '/' + studentIDRes.fileName;
-        dispatch(setGlobalProfileImg(profileURL));
-        dispatch(setGlobalIDCardImg(studentIDURL));
-        router.replace('/register/account');
-      } else {
-        alert('업로드 과정에서 에러가 발생했습니다');
-      }
+  const handleStudentIDImg = (e) => {
+    if (e.target.files) {
+      let file = e.target.files[0];
+      setStudentIDImgFile(file);
+      setStudentIDImgSrc(URL.createObjectURL(file));
     } else {
-      alert('프로필이나 학생증사진을 등록해주세요');
+      return;
     }
   };
+
+  useEffect(() => {
+    if (userEmail && userProfileImg && userStudentIDImg) {
+      router.replace('/register/account');
+    }
+  }, [userEmail, userProfileImg, userStudentIDImg]);
+
+  const handleSubmit = async () => {
+    if (profileImgFile && studentIDImgFile) {
+      setIsLoading(true);
+      const compressedProfileBlob = await imageCompression(profileImgFile, {
+        maxSizeMB: 1,
+      });
+      const compressedStudentIDBlob = await imageCompression(studentIDImgFile, {
+        maxSizeMB: 1,
+      });
+
+      const compressedProfileFile = new File(
+        [compressedProfileBlob],
+        profileImgFile.name,
+        { type: profileImgFile.type }
+      );
+      const compressedStudentIDFile = new File(
+        [compressedStudentIDBlob],
+        studentIDImgFile.name,
+        { type: studentIDImgFile.type }
+      );
+
+      const storageProfileRef = ref(storage, `images/profile/${userEmail}`);
+      const storageStudentIDRef = ref(storage, `images/studentID/${userEmail}`);
+
+      await uploadBytes(storageProfileRef, compressedProfileFile);
+      await uploadBytes(storageStudentIDRef, compressedStudentIDFile);
+
+      const profileURL = await getDownloadURL(storageProfileRef);
+      const studentIDURL = await getDownloadURL(storageStudentIDRef);
+
+      setIsLoading(true);
+      dispatch(setStoreProfileImg(profileURL));
+      dispatch(setStoreStudentIDImg(studentIDURL));
+    } else if (!userEmail) {
+      alert('잘못된 접근입니다');
+      router.replace('/');
+    } else {
+      setIsLoading(false);
+      alert('프로필 사진과 학생증 사진 모두 등록해주세요');
+    }
+  };
+
   return (
-    <div className='w-full h-screen px-[40px] relative'>
-      <div className='size-full flex flex-col items-center'>
-        <div className='w-full mt-[120px] text-start'>
-          <span className='text-title'>본인 확인</span>
-          <div className='my-[10px] opacity-70 text-subtitle'>
-            <p>회원님의 얼굴이 나오는 사진과</p>
-            <p>대학교 학생증 사진을 제출해주세요</p>
+    <div className='w-full h-dvh px-[40px] pt-[80px] pb-[120px]'>
+      <div className='size-full flex flex-col gap-[20px] relative'>
+        <div className='text-start w-full flex flex-col gap-[10px]'>
+          <p className='text-title text-main-red'>본인 확인</p>
+          <div className='flex flex-col gap-[5px] text-gray-500'>
+            <p className='text-subtitle'>회원님이 등록할 프로필 사진과</p>
+            <p className='text-subtitle'>대학교 학생증 사진을 제출해주세요</p>
           </div>
         </div>
 
-        <div className='w-full mt-[20px] flex justify-center gap-[15px]'>
-          <div className='w-full flex flex-col justify-center gap-[10px]'>
-            <span>프로필사진</span>
-            <div
-              className={`w-full flex justify-center items-center aspect-square ${profileSrc ? 'focus-btn' : 'btn'} relative`}
-            >
-              {profileSrc ? (
-                <Image
-                  className='object-contain rounded-[15px]'
-                  src={profileSrc ? URL.createObjectURL(profileSrc) : ''}
-                  alt='profile'
-                  fill
+        <div className='w-full flex-1 flex gap-[20px] flex-col items-center overflow-y-scroll'>
+          <div className='w-full flex gap-[20px]'>
+            <div className='flex-1 flex flex-col gap-[10px]'>
+              <div className='w-full aspect-square card-border bg-gray-50 rounded-medium relative'>
+                {profileImgSrc ? (
+                  <Image
+                    src={profileImgSrc}
+                    alt='profile'
+                    fill
+                    className='rounded-large p-[3px] size-full object-contain'
+                  />
+                ) : null}
+                <input
+                  type='file'
+                  id='profile-img'
+                  hidden
+                  onChange={handleProfileImg}
+                  accept='image/jpeg, image/png, image/webp, image/bmp'
                 />
-              ) : null}
-              <label
-                htmlFor='profile'
-                className='focus-btn cursor-pointer absolute right-[10px] bottom-[10px] p-[2px] bg-white'
-              >
-                <Image
-                  src={'/register/photo/add-photo.svg'}
-                  alt='add-photo'
-                  width={25}
-                  height={25}
-                />
-              </label>
+                <label
+                  htmlFor='profile-img'
+                  className='absolute bottom-[10px] right-[10px] p-[3px] rounded-medium box-content card-border bg-white cursor-pointer'
+                >
+                  <Image
+                    src='/register/photo/add-photo.svg'
+                    width={15}
+                    height={15}
+                    alt='add'
+                  />
+                </label>
+              </div>
+              <span className='text-info'>프로필</span>
             </div>
-            <input
-              type='file'
-              id='profile'
-              accept='image/*, image/heic'
-              className='hidden'
-              onChange={(e) => handlePhoto(e, 'profile')}
-            />
-          </div>
-          <div className='w-full flex flex-col justify-center gap-[10px]'>
-            <span>학생증사진</span>
-            <div
-              className={`w-full flex justify-center items-center aspect-square ${studentIDSrc ? 'focus-btn' : 'btn'} relative`}
-            >
-              {studentIDSrc ? (
-                <Image
-                  className='object-contain rounded-[15px]'
-                  src={studentIDSrc ? URL.createObjectURL(studentIDSrc) : ''}
-                  alt='profile'
-                  fill
+
+            <div className='flex-1 flex flex-col gap-[10px]'>
+              <div className='w-full aspect-square card-border bg-gray-50 rounded-medium relative'>
+                {studentIDImgSrc ? (
+                  <Image
+                    src={studentIDImgSrc}
+                    alt='studentID'
+                    fill
+                    className='rounded-large p-[3px] size-full object-contain'
+                  />
+                ) : null}
+                <input
+                  type='file'
+                  id='student-id-img'
+                  hidden
+                  onChange={handleStudentIDImg}
+                  accept='image/jpeg, image/png, image/webp, image/bmp'
                 />
-              ) : null}
-              <label
-                htmlFor='studentID'
-                className='focus-btn cursor-pointer absolute right-[10px] bottom-[10px] p-[2px] bg-white'
-              >
-                <Image
-                  src={'/register/photo/add-photo.svg'}
-                  alt='add-photo'
-                  width={25}
-                  height={25}
-                />
-              </label>
+                <label
+                  htmlFor='student-id-img'
+                  className='absolute bottom-[10px] right-[10px] p-[3px] rounded-medium box-content card-border bg-white cursor-pointer'
+                >
+                  <Image
+                    src='/register/photo/add-photo.svg'
+                    width={15}
+                    height={15}
+                    alt='add'
+                  />
+                </label>
+              </div>
+              <span className='text-info'>학생증</span>
             </div>
-            <input
-              type='file'
-              id='studentID'
-              accept='image/*, image/heic'
-              className='hidden'
-              onChange={(e) => handlePhoto(e, 'studentID')}
-            />
           </div>
-        </div>
 
-        <fieldset className='text-start w-full border border-[#E8E6EA] border-solid rounded-[15px] p-[20px] mt-[20px]'>
-          <legend className='px-[10px] text-main-red'>프로필사진 참고</legend>
-          <div className='flex flex-col gap-[10px] text-info'>
-            <p className='text-black/50'>프로필은 본인확인이 가능한 정면사진</p>
-            <p className='text-black/50'>프로필 사진은 AI 변환처리 돼요</p>
-            <p className='text-black/50'>등록한 사진은 공개되지 않아요</p>
-          </div>
-        </fieldset>
-
-        <fieldset className='text-start w-full border border-[#E8E6EA] border-solid rounded-[15px] p-[20px] mt-[20px]'>
-          <legend className='px-[10px] text-main-red'>학생증사진 참고</legend>
-          <div className='flex flex-col gap-[10px] text-info'>
-            <p className='text-black/50'>
-              실물 학생증과 모바일 학생증만 가능해요
-            </p>
-            <p className='text-black/50'>이름과 얼굴 사진이 나와야 해요</p>
-          </div>
-        </fieldset>
-
-        <div className='w-full'>
-          <button
-            // disabled={MBTI.includes('')}
-            onClick={handleNext}
-            className={`w-full h-[60px] my-[20px] full-btn`}
+          <Accordion
+            isCompact
+            className='px-0'
+            itemClasses={{
+              title: '!text-subtitle px-[10px]',
+              content:
+                'bg-white text-info text-start p-[20px] rounded-[15px] card-border',
+            }}
           >
-            다음
-          </button>
+            <AccordionItem
+              key='1'
+              aria-label='student-id-card caution'
+              title='학생증 참고사항'
+            >
+              <div className='flex flex-col gap-[10px]'>
+                <p>실물 학생증 촬영또는 모바일 학생증 캡쳐만 가능</p>
+                <p>이름과 얼굴이 뚜렷하게 보여야 함</p>
+              </div>
+            </AccordionItem>
+          </Accordion>
+          <Accordion
+            isCompact
+            className='px-0'
+            itemClasses={{
+              title: '!text-subtitle px-[10px]',
+              content:
+                'bg-white text-info text-start p-[20px] rounded-[15px] card-border',
+            }}
+          >
+            <AccordionItem
+              key='1'
+              aria-label='profile image caution'
+              title='프로필 사진 참고사항'
+            >
+              <div className='flex flex-col gap-[10px]'>
+                <p>올리신 프로필은 매칭된 상대방에게 보입니다</p>
+                <p>프로필 이미지는 자유롭게 가능합니다</p>
+              </div>
+            </AccordionItem>
+          </Accordion>
         </div>
+
+        <button
+          onClick={handleSubmit}
+          disabled={profileImgFile && studentIDImgFile ? false : true}
+          className={`absolute bottom-[-80px] w-full left-0 h-[50px] ${profileImgFile && studentIDImgFile ? 'full-btn' : 'btn'} content-center cursor-pointer`}
+        >
+          {isLoading ? '전송중....' : '다음'}
+        </button>
       </div>
     </div>
   );
