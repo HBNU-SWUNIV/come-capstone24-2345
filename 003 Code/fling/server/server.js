@@ -6,6 +6,16 @@ const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 const admin = require('firebase-admin');
 
+const https = require('https');
+const fs = require('fs');
+const { parse } = require('url');
+const path = require('path');
+
+const options = {
+  key: fs.readFileSync(path.join(__dirname, '../localhost-key.pem'), 'utf-8'),
+  cert: fs.readFileSync(path.join(__dirname, '../localhost.pem'), 'utf-8'),
+};
+
 dotenv.config();
 admin.initializeApp({
   credential: admin.credential.cert(
@@ -179,6 +189,18 @@ app.prepare().then(() => {
     transporter.close();
   });
 
+  /** Next.js Routing */
+  // server.get('/', (req, res) => {
+  //   const parsedUrl = parse(req.url, true);
+  //   const { pathname, query } = parsedUrl;
+  //   app.render(req, res, pathname, query);
+  // });
+
+  // server.use('/api', (req, res, next) => {
+  //   // Next.js API 라우터로 요청 전달
+  //   return handle(req, res);
+  // });
+
   server.all('*', (req, res) => {
     return handle(req, res);
   });
@@ -187,4 +209,14 @@ app.prepare().then(() => {
     if (err) throw err;
     console.log('> Ready on http://localhost:', port);
   });
+
+  https
+    .createServer(options, async (req, res) => {
+      const parsedUrl = parse(req.url, true);
+      handle(req, res, parsedUrl);
+    })
+    .listen(port + 1, (err) => {
+      if (err) throw err;
+      console.log('> Ready on https://localhost:', port + 1);
+    });
 });

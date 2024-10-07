@@ -39,6 +39,7 @@ const ClientComponent = ({ currUser }) => {
   const [chatData, setChatData] = useState([]);
   const [imgFile, setImgFile] = useState(null);
   const [imgUrl, setImgUrl] = useState(null);
+  const [isLoadingImgSubmit, setIsLoadingImgSubmit] = useState(false);
   const {
     isOpen: isSubmitImgOpen,
     onOpen: onSubmitImgOpen,
@@ -74,6 +75,7 @@ const ClientComponent = ({ currUser }) => {
 
   const chatroomID = usePathname().split('/')[2];
   const chatRef = useRef();
+  const inputRef = useRef();
   const bottomNavRef = useRef();
   const router = useRouter();
 
@@ -85,7 +87,10 @@ const ClientComponent = ({ currUser }) => {
     if (typeof window != 'undefined') {
       const localStorageEnterSubmit = localStorage.getItem('isEnterSubmit');
       if (localStorageEnterSubmit !== null) {
-        setIsEnterSubmit(JSON.parse(localStorageEnterSubmit));
+        const data = JSON.parse(localStorageEnterSubmit);
+        if (data.email === currUser.email) {
+          setIsEnterSubmit(data.state);
+        }
       }
     }
   }, []);
@@ -230,6 +235,7 @@ const ClientComponent = ({ currUser }) => {
         .then(() => {
           setMessage('');
           chatRef.current && chatRef.current.focus();
+          inputRef.current && inputRef.current.focus();
         })
         .catch((err) => {
           alert('일시적인 오류로 전송하지 못하였습니다');
@@ -256,6 +262,7 @@ const ClientComponent = ({ currUser }) => {
   };
 
   const handleImgSubmit = async (onClose) => {
+    setIsLoadingImgSubmit(true);
     if (imgFile) {
       const compressedImgBlob = await imageCompression(imgFile, {
         maxSizeMB: 1,
@@ -281,8 +288,11 @@ const ClientComponent = ({ currUser }) => {
         .then(() => {
           setMessage('');
           chatRef.current && chatRef.current.focus();
+          inputRef.current && inputRef.current.focus();
+          setIsLoadingImgSubmit(false);
         })
         .catch((err) => {
+          setIsLoadingImgSubmit(false);
           alert('일시적인 오류로 전송하지 못하였습니다');
         });
     }
@@ -353,6 +363,7 @@ const ClientComponent = ({ currUser }) => {
             value={message}
             onKeyUp={handleKeyDown}
             placeholder='메세지를 입력하세요'
+            ref={inputRef}
           />
           <button
             onClick={handleSubmit}
@@ -440,7 +451,10 @@ const ClientComponent = ({ currUser }) => {
                 onValueChange={(value) => {
                   setIsEnterSubmit(value);
                   setIsEnterSubmit(value);
-                  localStorage.setItem('isEnterSubmit', JSON.stringify(value));
+                  localStorage.setItem(
+                    'isEnterSubmit',
+                    JSON.stringify({ email: currUser.email, state: value })
+                  );
                 }}
                 color='danger'
               >
@@ -488,10 +502,12 @@ const ClientComponent = ({ currUser }) => {
                   취소
                 </button>
                 <button
-                  onClick={() => handleImgSubmit(onClose)}
+                  onClick={() => {
+                    handleImgSubmit(onClose);
+                  }}
                   className='full-btn px-[20px] py-[5px]'
                 >
-                  전송
+                  {isLoadingImgSubmit ? '전송중...' : '전송'}
                 </button>
               </ModalFooter>
             </>
@@ -593,7 +609,10 @@ const ClientComponent = ({ currUser }) => {
                 )}
               </ModalBody>
               <ModalFooter>
-                <button onClick={onClose} className='btn px-[20px] py-[5px]'>
+                <button
+                  onClick={onClose}
+                  className='full-btn px-[20px] py-[5px]'
+                >
                   닫기
                 </button>
                 {!isSubmitReport && (

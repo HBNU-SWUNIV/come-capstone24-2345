@@ -55,7 +55,6 @@ const ChatPage = () => {
         })
         .catch((err) => {
           // alert(err.response.data);
-          return;
         });
     };
 

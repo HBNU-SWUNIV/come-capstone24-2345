@@ -47,6 +47,13 @@ module.exports = {
           },
         },
       },
+      perspective: {
+        none: 'none',
+        1000: '1000px',
+      },
+      backfaceVisibility: {
+        hidden: 'hidden',
+      },
     },
   },
   darkMode: 'class',

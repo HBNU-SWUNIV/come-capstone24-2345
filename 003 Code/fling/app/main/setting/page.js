@@ -17,11 +17,14 @@ import {
 import Image from 'next/image';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+// import { getFCMToken } from '../../../firebase/firebaseDB';
 
 const SettingPage = () => {
   const [inquiryTitle, setInquiryTitle] = useState('');
   const [inquiryContent, setInquiryContent] = useState('');
   const [userInfo, setUserInfo] = useState();
+  const [permission, setPermission] = useState(false);
+  const [isPushAllow, setIsPushAllow] = useState(false);
   const [isAlreadyWithdraw, setIsAlreadyWithdraw] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -37,6 +40,76 @@ const SettingPage = () => {
       });
     }
   }, [session, status]);
+
+  const handleTokenClick = async () => {
+    // if (userInfo.email && window !== 'undefined') {
+    //   try {
+    //     // const token = await getFCMToken();
+    //     console.log(token);
+    //     const result = await axios.post('/api/push/setToken', {
+    //       email: userInfo.email,
+    //       token,
+    //     });
+    //     console.log(result);
+    //   } catch (err) {
+    //     alert(err.response.data);
+    //   }
+    // }
+  };
+
+  useEffect(() => {
+    // if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+    //   navigator.serviceWorker
+    //     .register('/firebase-messageing-sw.js')
+    //     .then((registration) => {
+    //       getToken(messaging, {
+    //         vapidKey,
+    //         serviceWorkerRegistration: registration,
+    //       })
+    //         .then((currentToken) => {
+    //           if (currentToken) {
+    //             console.log(currentToken);
+    //           } else {
+    //             console.log('no');
+    //           }
+    //         })
+    //         .catch((err) => {
+    //           console.log(err);
+    //         });
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // }
+  }, []);
+
+  const checkPermission = () => {
+    if (Notification.permission === 'granted') {
+      alert('알림이 이미 허용되어 있습니다');
+      setPermission(true);
+    } else if (Notification.permission === 'denied') {
+      alert('알림이 차단되어 있어 브라우저 설정에서 알림 권한을 허용해주세요');
+      setPermission(false);
+    } else {
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          alert('알림 권한이 허용되었습니다');
+          setPermission(true);
+        } else {
+          alert('알림 권한이 차단되었습니다');
+          setPermission(false);
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (Notification.permission === 'granted') {
+      setPermission(true);
+    } else {
+      setPermission(false);
+    }
+  }, []);
 
   const handleInquiry = async () => {
     await axios
@@ -76,7 +149,8 @@ const SettingPage = () => {
   };
 
   return (
-    <div className='w-full h-screen px-[40px] pt-[80px] flex flex-col gap-[10px] text-start bg-gray-100'>
+    <div className='w-full h-screen px-[40px] pt-[80px] flex flex-col gap-[10px] text-start bg-gray-50'>
+      {/* 탈퇴 모달창 */}
       <Modal isOpen={isOpen} placement='center' onOpenChange={onOpenChange}>
         <ModalContent className='w-4/5'>
           {(onClose) => (
@@ -117,10 +191,13 @@ const SettingPage = () => {
         </ModalContent>
       </Modal>
 
-      <div className='flex justify-between items-center px-[20px] py-[10px] bg-white rounded-[15px]'>
+      <div className='flex justify-between items-center px-[20px] py-[10px] bg-white rounded-[15px] card-border'>
         <div className='flex flex-col gap-[5px]'>
           <span>채팅 알림</span>
-          <span className='text-info text-gray-500'>PUSH 알림 기능 on/off</span>
+          <div className='text-info'>
+            <span className='text-gray-500'>PUSH 알림 기능 on/off </span>
+            <span className='text-gray-400 ml-[2px]'>(권한 체크 이후)</span>
+          </div>
         </div>
         <Switch
           aria-label='채팅 알림'
@@ -128,10 +205,13 @@ const SettingPage = () => {
           classNames={{
             wrapper: 'm-0',
           }}
+          isDisabled={permission ? false : true}
+          isSelected={isPushAllow}
+          onValueChange={setIsPushAllow}
         />
       </div>
 
-      <button className='flex flex-col px-[20px] py-[10px] bg-white rounded-[15px]'>
+      <button className='flex flex-col px-[20px] py-[10px] bg-white rounded-[15px] card-border'>
         <div className='flex flex-col text-start gap-[5px]'>
           <span>Q&A</span>
           <span className='text-info text-gray-500'>
@@ -147,7 +227,7 @@ const SettingPage = () => {
           title='문의하기'
           className='relative'
           classNames={{
-            base: 'bg-white px-[20px] py-[10px] rounded-[15px]',
+            base: 'bg-white px-[20px] py-[10px] rounded-[15px] card-border',
             title: '',
             content: 'bg-white text-info p-0 rounded-[15px]',
           }}
@@ -187,7 +267,7 @@ const SettingPage = () => {
         </AccordionItem>
       </Accordion>
 
-      <button className='flex flex-col px-[20px] py-[10px] bg-white rounded-[15px]'>
+      <button className='flex flex-col px-[20px] py-[10px] bg-white rounded-[15px] card-border'>
         <div className='flex flex-col text-start gap-[5px]'>
           <span className='text-gray-700'>버전</span>
           <span className='text-info text-gray-500'>v1.0.0</span>
@@ -204,9 +284,26 @@ const SettingPage = () => {
         >
           로그아웃
         </button>
+        <button
+          className='underline flex items-start'
+          onClick={checkPermission}
+        >
+          <span>알림 권한</span>
+          <span>
+            <Image
+              src='/main/setting/bell.svg'
+              alt='bell'
+              width={15}
+              height={15}
+            />
+          </span>
+        </button>
         <button className='underline' onClick={onOpen}>
           탈퇴하기
         </button>
+        {userInfo && userInfo.email && (
+          <button onClick={handleTokenClick}>토큰생성</button>
+        )}
       </div>
     </div>
   );
