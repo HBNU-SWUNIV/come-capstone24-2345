@@ -138,7 +138,6 @@ const RegisterEtc = () => {
             <div className='w-full px-[10px]'>
               <Slider
                 label='나의 주량'
-                color='foreground'
                 size='sm'
                 color='danger'
                 minValue={0}
