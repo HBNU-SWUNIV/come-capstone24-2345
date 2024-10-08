@@ -256,7 +256,7 @@ const MypagePage = () => {
                 infoComponent('MBTI', sessionInfo.mbti.type.join(''))}
               {infoComponent(
                 '흡연/음주',
-                `${sessionInfo.smoking === 'smoking' ? '흡연자' : '비흡연자'} / ${sessionInfo.drinkLimit === 0 ? '술을 못하는 편' : `${sessionInfo.drinkLimit}병 정도`}`
+                `${sessionInfo.smoking === 'smoking' ? '흡연자' : '비흡연자'} / ${sessionInfo.drinkLimit === 0 ? '술을 못하는 편' : `${sessionInfo.drinkLimit}병`}`
               )}
               {infoComponent(
                 '군필여부',

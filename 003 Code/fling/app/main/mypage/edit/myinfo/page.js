@@ -25,7 +25,6 @@ const editMyInfo = () => {
         drinkLimit: session.user.drinkLimit,
         army: session.user.army,
       };
-      console.log(myinfo);
       setInfo(myinfo);
       setDefaultInfo(session.user);
     }
@@ -171,158 +170,151 @@ const editMyInfo = () => {
               mainWrapper: 'flex-1',
             }}
           />
-          <Input
-            label='MBTI'
-            startContent={
-              <div className='w-full flex gap-[5px] text-info py-[5px]'>
-                <div className='flex flex-1 flex-col gap-[10px]'>
-                  <button
-                    onClick={() =>
-                      setInfo((prev) => ({
-                        ...prev,
-                        mbti: { type: ['I', ...prev.mbti.type.slice(1)] },
-                      }))
-                    }
-                    className={`aspect-square ${
-                      info.mbti.type[0] === 'I' ? 'focus-btn' : 'btn'
-                    }`}
-                  >
-                    I
-                  </button>
-                  <button
-                    onClick={() =>
-                      setInfo((prev) => ({
-                        ...prev,
-                        mbti: { type: ['E', ...prev.mbti.type.slice(1)] },
-                      }))
-                    }
-                    className={`aspect-square ${
-                      info.mbti.type[0] === 'E' ? 'focus-btn' : 'btn'
-                    }`}
-                  >
-                    E
-                  </button>
-                </div>
-                <div className='flex flex-1 flex-col gap-[10px]'>
-                  <button
-                    onClick={() =>
-                      setInfo((prev) => ({
-                        ...prev,
-                        mbti: {
-                          type: [
-                            prev.mbti.type[0],
-                            'N',
-                            ...prev.mbti.type.slice(2),
-                          ],
-                        },
-                      }))
-                    }
-                    className={`aspect-square ${
-                      info.mbti.type[1] === 'N' ? 'focus-btn' : 'btn'
-                    }`}
-                  >
-                    N
-                  </button>
-                  <button
-                    onClick={() =>
-                      setInfo((prev) => ({
-                        ...prev,
-                        mbti: {
-                          type: [
-                            prev.mbti.type[0],
-                            'S',
-                            ...prev.mbti.type.slice(2),
-                          ],
-                        },
-                      }))
-                    }
-                    className={`aspect-square ${
-                      info.mbti.type[1] === 'S' ? 'focus-btn' : 'btn'
-                    }`}
-                  >
-                    S
-                  </button>
-                </div>
-                <div className='flex flex-1 flex-col gap-[10px]'>
-                  <button
-                    onClick={() =>
-                      setInfo((prev) => ({
-                        ...prev,
-                        mbti: {
-                          type: [
-                            ...prev.mbti.type.slice(0, 2),
-                            'F',
-                            prev.mbti.type[3],
-                          ],
-                        },
-                      }))
-                    }
-                    className={`aspect-square ${
-                      info.mbti.type[2] === 'F' ? 'focus-btn' : 'btn'
-                    }`}
-                  >
-                    F
-                  </button>
-                  <button
-                    onClick={() =>
-                      setInfo((prev) => ({
-                        ...prev,
-                        mbti: {
-                          type: [
-                            ...prev.mbti.type.slice(0, 2),
-                            'T',
-                            prev.mbti.type[3],
-                          ],
-                        },
-                      }))
-                    }
-                    className={`aspect-square ${
-                      info.mbti.type[2] === 'T' ? 'focus-btn' : 'btn'
-                    }`}
-                  >
-                    T
-                  </button>
-                </div>
-                <div className='flex flex-1 flex-col gap-[10px]'>
-                  <button
-                    onClick={() =>
-                      setInfo((prev) => ({
-                        ...prev,
-                        mbti: { type: [...prev.mbti.type.slice(0, 3), 'P'] },
-                      }))
-                    }
-                    className={`aspect-square ${
-                      info.mbti.type[3] === 'P' ? 'focus-btn' : 'btn'
-                    }`}
-                  >
-                    P
-                  </button>
-                  <button
-                    onClick={() =>
-                      setInfo((prev) => ({
-                        ...prev,
-                        mbti: { type: [...prev.mbti.type.slice(0, 3), 'J'] },
-                      }))
-                    }
-                    className={`aspect-square ${
-                      info.mbti.type[3] === 'J' ? 'focus-btn' : 'btn'
-                    }`}
-                  >
-                    J
-                  </button>
-                </div>
+
+          <div className='w-full flex items-center'>
+            <span className='text-z-10 pointer-events-none origin-top-left rtl:origin-top-right subpixel-antialiased block text-small group-data-[filled-within=true]:text-foreground relative text-foreground pr-2 rtl:pr-0 rtl:pl-2 will-change-auto !duration-200 !ease-out motion-reduce:transition-none transition-[transform,color,left,opacity] group-data-[has-helper=true]:pt-3 w-[70px]'>
+              MBTI
+            </span>
+            <div className='w-full flex-1 flex gap-[10px] justify-around text-info py-[5px]'>
+              <div className='flex flex-1 flex-col gap-[10px]'>
+                <button
+                  onClick={() =>
+                    setInfo((prev) => ({
+                      ...prev,
+                      mbti: { type: ['I', ...prev.mbti.type.slice(1)] },
+                    }))
+                  }
+                  className={`aspect-square ${
+                    info.mbti.type[0] === 'I' ? 'focus-btn' : 'btn'
+                  }`}
+                >
+                  I
+                </button>
+                <button
+                  onClick={() =>
+                    setInfo((prev) => ({
+                      ...prev,
+                      mbti: { type: ['E', ...prev.mbti.type.slice(1)] },
+                    }))
+                  }
+                  className={`aspect-square ${
+                    info.mbti.type[0] === 'E' ? 'focus-btn' : 'btn'
+                  }`}
+                >
+                  E
+                </button>
               </div>
-            }
-            labelPlacement='outside-left'
-            classNames={{
-              input: 'hidden',
-              inputWrapper:
-                'bg-transparent shadow-none px-0 data-[hover=true]:bg-transparent',
-              label: 'w-[70px]',
-              innerWrapper: 'pb-0',
-              mainWrapper: 'flex-1',
-            }}
-          />
+              <div className='flex flex-1 flex-col gap-[10px]'>
+                <button
+                  onClick={() =>
+                    setInfo((prev) => ({
+                      ...prev,
+                      mbti: {
+                        type: [
+                          prev.mbti.type[0],
+                          'N',
+                          ...prev.mbti.type.slice(2),
+                        ],
+                      },
+                    }))
+                  }
+                  className={`aspect-square ${
+                    info.mbti.type[1] === 'N' ? 'focus-btn' : 'btn'
+                  }`}
+                >
+                  N
+                </button>
+                <button
+                  onClick={() =>
+                    setInfo((prev) => ({
+                      ...prev,
+                      mbti: {
+                        type: [
+                          prev.mbti.type[0],
+                          'S',
+                          ...prev.mbti.type.slice(2),
+                        ],
+                      },
+                    }))
+                  }
+                  className={`aspect-square ${
+                    info.mbti.type[1] === 'S' ? 'focus-btn' : 'btn'
+                  }`}
+                >
+                  S
+                </button>
+              </div>
+              <div className='flex flex-1 flex-col gap-[10px]'>
+                <button
+                  onClick={() =>
+                    setInfo((prev) => ({
+                      ...prev,
+                      mbti: {
+                        type: [
+                          ...prev.mbti.type.slice(0, 2),
+                          'F',
+                          prev.mbti.type[3],
+                        ],
+                      },
+                    }))
+                  }
+                  className={`aspect-square ${
+                    info.mbti.type[2] === 'F' ? 'focus-btn' : 'btn'
+                  }`}
+                >
+                  F
+                </button>
+                <button
+                  onClick={() =>
+                    setInfo((prev) => ({
+                      ...prev,
+                      mbti: {
+                        type: [
+                          ...prev.mbti.type.slice(0, 2),
+                          'T',
+                          prev.mbti.type[3],
+                        ],
+                      },
+                    }))
+                  }
+                  className={`aspect-square ${
+                    info.mbti.type[2] === 'T' ? 'focus-btn' : 'btn'
+                  }`}
+                >
+                  T
+                </button>
+              </div>
+              <div className='flex flex-1 flex-col gap-[10px]'>
+                <button
+                  onClick={() =>
+                    setInfo((prev) => ({
+                      ...prev,
+                      mbti: { type: [...prev.mbti.type.slice(0, 3), 'P'] },
+                    }))
+                  }
+                  className={`aspect-square ${
+                    info.mbti.type[3] === 'P' ? 'focus-btn' : 'btn'
+                  }`}
+                >
+                  P
+                </button>
+                <button
+                  onClick={() =>
+                    setInfo((prev) => ({
+                      ...prev,
+                      mbti: { type: [...prev.mbti.type.slice(0, 3), 'J'] },
+                    }))
+                  }
+                  className={`aspect-square ${
+                    info.mbti.type[3] === 'J' ? 'focus-btn' : 'btn'
+                  }`}
+                >
+                  J
+                </button>
+              </div>
+            </div>
+          </div>
+
           <Input
             isClearable
             type='numeric'
