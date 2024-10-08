@@ -20,9 +20,10 @@ import axios from 'axios';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 const MypagePage = () => {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const date = new Date();
   const [userImg, setUserImg] = useState();
+  const [univCert, setUnivCert] = useState();
 
   const [sessionInfo, setSessionInfo] = useState(null);
   const [profileImgFile, setProfileImgFile] = useState(null);
@@ -66,6 +67,20 @@ const MypagePage = () => {
       fetchUserImg();
     }
   }, [sessionInfo, isSubmitImg]);
+
+  useEffect(() => {
+    const fetchUnivCert = async () => {
+      const result = await axios.post('/api/chat/univCert', {
+        userEmail: sessionInfo.email,
+      });
+      const userUnivCert = result.data.userUnivCert;
+
+      setUnivCert({ userUnivCert });
+    };
+    if (sessionInfo) {
+      fetchUnivCert();
+    }
+  }, [sessionInfo]);
 
   const infoComponent = (key, value) => {
     return (
@@ -193,6 +208,24 @@ const MypagePage = () => {
                   >
                     {sessionInfo.univCert ? '대학인증 완료' : '대학인증 미완료'}
                   </span>
+                  <button
+                    onClick={() => {
+                      if (
+                        univCert &&
+                        univCert.userUnivCert !== sessionInfo.univCert
+                      ) {
+                        update({ univCert: univCert.userUnivCert });
+                      }
+                    }}
+                    className='btn'
+                  >
+                    <Image
+                      src={'/chatting/refresh.svg'}
+                      alt='refresh'
+                      width={20}
+                      height={20}
+                    />
+                  </button>
                 </div>
               </div>
             </div>
@@ -219,7 +252,8 @@ const MypagePage = () => {
               {infoComponent('학과', sessionInfo.department)}
               {infoComponent('키', `${sessionInfo.height}cm`)}
               {infoComponent('종교', '무교')}
-              {infoComponent('MBTI', sessionInfo.mbti.type.join(''))}
+              {sessionInfo.mbti &&
+                infoComponent('MBTI', sessionInfo.mbti.type.join(''))}
               {infoComponent(
                 '흡연/음주',
                 `${sessionInfo.smoking === 'smoking' ? '흡연자' : '비흡연자'} / ${sessionInfo.drinkLimit === 0 ? '술을 못하는 편' : `${sessionInfo.drinkLimit}병 정도`}`
@@ -283,22 +317,23 @@ const MypagePage = () => {
               </button>
             </div>
             <div className='text-subtitle text-start w-full flex flex-wrap gap-[5px]'>
-              {sessionInfo.hobby.map((hobby) => {
-                return (
-                  <button
-                    key={hobby}
-                    className={`flex justify-center items-center gap-[5px] px-[12px] py-[8px] btn`}
-                  >
-                    <Image
-                      src={`/register/hobby/unchecked/${hobby[1]}.svg`}
-                      alt={hobby[1]}
-                      width={20}
-                      height={20}
-                    />
-                    <span>{hobby[0]}</span>
-                  </button>
-                );
-              })}
+              {sessionInfo.hobby &&
+                sessionInfo.hobby.map((hobby) => {
+                  return (
+                    <button
+                      key={hobby}
+                      className={`flex justify-center items-center gap-[5px] px-[12px] py-[8px] btn`}
+                    >
+                      <Image
+                        src={`/register/hobby/unchecked/${hobby[1]}.svg`}
+                        alt={hobby[1]}
+                        width={20}
+                        height={20}
+                      />
+                      <span>{hobby[0]}</span>
+                    </button>
+                  );
+                })}
             </div>
           </div>
 

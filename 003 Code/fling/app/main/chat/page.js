@@ -5,32 +5,33 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Divider } from '@nextui-org/react';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from '@nextui-org/react';
 import axios from 'axios';
 
 const ChatPage = () => {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const date = new Date();
 
   const [sessionInfo, setSessionInfo] = useState(null);
   const [otherUserInfo, setOtherUserInfo] = useState(null);
   const [otherUserImg, setOtherUserImg] = useState();
   const [chatroomID, setChatroomID] = useState();
+  const [univCert, setUnivCert] = useState();
+
+  const {
+    isOpen: isUnivCertOpen,
+    onOpen: onUnivCertOpen,
+    onOpenChange: onUnivCertOpenChange,
+  } = useDisclosure();
 
   const router = useRouter();
-
-  const fetchOtherUserImg = async () => {
-    if (otherUserInfo.email) {
-      await axios
-        .post('/api/chat/profileImg', { email: otherUserInfo.email })
-        .then((res) => {
-          setOtherUserImg(res.data);
-        })
-        .catch((err) => {
-          alert(err.response.data);
-          return;
-        });
-    }
-  };
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -39,28 +40,26 @@ const ChatPage = () => {
   }, [session, status]);
 
   useEffect(() => {
-    const fetchChatroomID = async () => {
-      await axios
-        .post('/api/chat/roomID', { email: sessionInfo.email })
-        .then((res) => {
-          setChatroomID(res.data.chatroomID);
-        });
-    };
-
-    const fetchOtherUserInfo = async () => {
-      await axios
-        .post('/api/group/otherUserInfo', { email: sessionInfo.email })
-        .then((res) => {
-          setOtherUserInfo(res.data);
-        })
-        .catch((err) => {
-          // alert(err.response.data);
-        });
-    };
-
     if (sessionInfo) {
+      const fetchChatroomID = async () => {
+        await axios
+          .post('/api/chat/roomID', { email: sessionInfo.email })
+          .then((res) => {
+            setChatroomID(res.data.chatroomID);
+          });
+      };
       fetchChatroomID();
       if (otherUserInfo === null) {
+        const fetchOtherUserInfo = async () => {
+          await axios
+            .post('/api/group/otherUserInfo', { email: sessionInfo.email })
+            .then((res) => {
+              setOtherUserInfo(res.data);
+            })
+            .catch((err) => {
+              // alert(err.response.data);
+            });
+        };
         fetchOtherUserInfo();
       }
     }
@@ -68,9 +67,37 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (otherUserInfo) {
+      const fetchOtherUserImg = async () => {
+        if (otherUserInfo.email) {
+          await axios
+            .post('/api/chat/profileImg', { email: otherUserInfo.email })
+            .then((res) => {
+              setOtherUserImg(res.data);
+            })
+            .catch((err) => {
+              alert(err.response.data);
+              return;
+            });
+        }
+      };
       fetchOtherUserImg();
     }
   }, [otherUserInfo]);
+
+  useEffect(() => {
+    if (sessionInfo && otherUserInfo) {
+      const fetchUnivCert = async () => {
+        const result = await axios.post('/api/chat/univCert', {
+          userEmail: sessionInfo.email,
+          otherEmail: otherUserInfo.email,
+        });
+        const userUnivCert = result.data.userUnivCert;
+        const otherUnivCert = result.data.otherUnivCert;
+        setUnivCert({ userUnivCert, otherUnivCert });
+      };
+      fetchUnivCert();
+    }
+  }, [sessionInfo, otherUserInfo]);
 
   const infoComponent = (key, value) => {
     return (
@@ -82,7 +109,7 @@ const ChatPage = () => {
           <span>{value}</span>
           {key === 'MBTI' && (
             <span className='text-info text-gray-500 flex-1 text-start break-keep'>
-              {sessionInfo.mbti.description}
+              {sessionInfo && sessionInfo.mbti && sessionInfo.mbti.description}
             </span>
           )}
         </div>
@@ -91,8 +118,12 @@ const ChatPage = () => {
   };
 
   const handleGoToChatroom = () => {
-    if (chatroomID) {
-      router.replace(`/chatroom/${chatroomID}`);
+    if (univCert && chatroomID) {
+      if (univCert.userUnivCert && univCert.otherUnivCert) {
+        router.replace(`/chatroom/${chatroomID}`);
+      } else {
+        onUnivCertOpen();
+      }
     } else {
       alert('잠시 후 다시 시도해주세요');
     }
@@ -227,6 +258,42 @@ const ChatPage = () => {
 
           <div className='w-full h-[100px]'></div>
         </div>
+
+        <Modal
+          className='w-4/5'
+          isOpen={isUnivCertOpen}
+          placement='center'
+          onOpenChange={onUnivCertOpenChange}
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className='flex flex-col gap-1'>
+                  대학인증
+                </ModalHeader>
+                <ModalBody>
+                  {univCert && univCert.userUnivCert ? (
+                    <span className='text-info break-keep'>
+                      아직 상대방의 대학인증이 되지 않았어요
+                    </span>
+                  ) : (
+                    <span className='text-info break-keep'>
+                      아직 회원님의 대학인증이 되지 않았어요
+                    </span>
+                  )}
+                </ModalBody>
+                <ModalFooter>
+                  <button
+                    onClick={onClose}
+                    className={'full-btn px-[20px] py-[5px]'}
+                  >
+                    닫기
+                  </button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
       </div>
     );
   } else {
@@ -234,6 +301,7 @@ const ChatPage = () => {
       <div className='w-full h-dvh bg-gray-50 px-[40px]'>
         <div className='size-full flex flex-col justify-center items-center'>
           <span className='w-4/5 subtitle break-keep'>
+            {/* <span>유저 정보를 불러오는 중이거나 아직 상대방이 가입하지 않았어요</span> */}
             이런, 아직 상대방이 가입하지 않았어요 🥲
           </span>
         </div>
