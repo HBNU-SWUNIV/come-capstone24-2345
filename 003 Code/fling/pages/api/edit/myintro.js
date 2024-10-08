@@ -7,8 +7,6 @@ const handleEditMyIntro = async (req, res) => {
     let modifyInfo = data.info;
     let defaultInfo = data.defaultInfo;
 
-    console.log(data);
-
     const client = await connectDB;
     const db = await client.db('Fling');
 

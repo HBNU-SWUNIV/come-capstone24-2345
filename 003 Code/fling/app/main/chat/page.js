@@ -109,7 +109,9 @@ const ChatPage = () => {
           <span>{value}</span>
           {key === 'MBTI' && (
             <span className='text-info text-gray-500 flex-1 text-start break-keep'>
-              {sessionInfo && sessionInfo.mbti && sessionInfo.mbti.description}
+              {otherUserInfo &&
+                otherUserInfo.mbti &&
+                otherUserInfo.mbti.description}
             </span>
           )}
         </div>
@@ -190,10 +192,11 @@ const ChatPage = () => {
               {infoComponent('학과', otherUserInfo.department)}
               {infoComponent('키', `${otherUserInfo.height}cm`)}
               {infoComponent('종교', otherUserInfo.religion)}
-              {infoComponent('MBTI', otherUserInfo.mbti.type.join(''))}
+              {otherUserInfo.mbti &&
+                infoComponent('MBTI', otherUserInfo.mbti.type.join(''))}
               {infoComponent(
                 '흡연/음주',
-                `${otherUserInfo.smoking ? '흡연자' : '비흡연자'} / ${otherUserInfo.drinkLimit === 0 ? '술을 못하는 편' : `${otherUserInfo.drinkLimit}병 정도`}`
+                `${otherUserInfo.smoking ? '흡연자' : '비흡연자'} / ${otherUserInfo.drinkLimit === 0 ? '술을 못하는 편' : `${otherUserInfo.drinkLimit}병`}`
               )}
               {infoComponent(
                 '군필여부',

@@ -35,6 +35,7 @@ const editMyInfo = () => {
       .post('/api/edit/myinfo', { defaultInfo, info })
       .then((res) => {
         alert('수정되었습니다!');
+        console.log({ ...res.data.defaultInfo, ...res.data.modifyInfo });
         update({ ...res.data.defaultInfo, ...res.data.modifyInfo });
         router.replace('/main/mypage');
       })
