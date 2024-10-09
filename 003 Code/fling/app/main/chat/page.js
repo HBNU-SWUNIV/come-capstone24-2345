@@ -46,6 +46,7 @@ const ChatPage = () => {
           .post('/api/chat/roomID', { email: sessionInfo.email })
           .then((res) => {
             setChatroomID(res.data.chatroomID);
+            console.log(res.data.chatroomID);
           });
       };
       fetchChatroomID();
@@ -97,7 +98,7 @@ const ChatPage = () => {
       };
       fetchUnivCert();
     }
-  }, [sessionInfo, otherUserInfo]);
+  }, [sessionInfo, otherUserInfo, session]);
 
   const infoComponent = (key, value) => {
     return (
@@ -303,10 +304,10 @@ const ChatPage = () => {
     return (
       <div className='w-full h-dvh bg-gray-50 px-[40px]'>
         <div className='size-full flex flex-col justify-center items-center'>
-          <span className='w-4/5 subtitle break-keep'>
-            {/* <span>유저 정보를 불러오는 중이거나 아직 상대방이 가입하지 않았어요</span> */}
-            이런, 아직 상대방이 가입하지 않았어요 🥲
-          </span>
+          <div className='w-4/5 subtitle break-keep flex flex-col'>
+            <span>유저 정보를 불러오는 중이거나</span>
+            <span>아직 상대방이 가입하지 않았어요🥲</span>
+          </div>
         </div>
       </div>
     );

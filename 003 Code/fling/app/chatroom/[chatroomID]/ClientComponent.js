@@ -343,7 +343,7 @@ const ClientComponent = ({ currUser }) => {
       <motion.nav
         // layout
         ref={bottomNavRef}
-        className='w-full h-fit bg-white flex flex-col gap-[20px] rounded-t-[15px] border-t-2 border-solid border-slate-200'
+        className='w-full h-fit bg-white flex flex-col gap-[20px] rounded-t-[15px] border-t-1 border-solid border-slate-200'
       >
         <div className='w-full h-fit flex justify-between items-center gap-[15px] px-[15px] py-[10px]'>
           <button
@@ -362,6 +362,7 @@ const ClientComponent = ({ currUser }) => {
             onChange={(e) => setMessage(e.target.value)}
             value={message}
             onKeyUp={handleKeyDown}
+            onClick={() => setIsClickPlusBtn(false)}
             placeholder='메세지를 입력하세요'
             ref={inputRef}
           />
@@ -609,10 +610,7 @@ const ClientComponent = ({ currUser }) => {
                 )}
               </ModalBody>
               <ModalFooter>
-                <button
-                  onClick={onClose}
-                  className='full-btn px-[20px] py-[5px]'
-                >
+                <button onClick={onClose} className='btn px-[20px] py-[5px]'>
                   닫기
                 </button>
                 {!isSubmitReport && (
