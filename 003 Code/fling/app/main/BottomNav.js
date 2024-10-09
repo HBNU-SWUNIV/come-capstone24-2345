@@ -2,15 +2,13 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 
 const BottomNav = () => {
   const currPath = usePathname().split('/')[2];
-  const router = useRouter();
   return (
-    <nav className='w-full h-[80px] max-w-[440px] min-w-[330px] fixed bottom-0 left-1/2 transform -translate-x-1/2 rounded-t-[15px] flex px-[10px] pt-[10px] pb-[10px] bg-white border-t-2 border-solid border-slate-200 z-[999999]'>
+    <nav className='w-full h-[80px] max-w-[440px] min-w-[330px] fixed bottom-0 left-1/2 transform -translate-x-1/2 flex px-[10px] pt-[10px] pb-[10px] bg-white border-t-2 border-solid border-slate-200 z-[999999]'>
       <Link
         href={'/main/home'}
         replace={true}
@@ -25,13 +23,13 @@ const BottomNav = () => {
         />
       </Link>
       <Link
-        href={'/main/foodie'}
+        href={'/main/place'}
         replace={true}
         scroll={false}
         className='w-1/5 flex flex-col justify-start items-center cursor-pointer'
       >
         <Image
-          src={`/bottomNav/${currPath === 'foodie' ? '' : 'un'}checked/foodie.svg`}
+          src={`/bottomNav/${currPath === 'place' ? '' : 'un'}checked/foodie.svg`}
           width={30}
           height={30}
           alt='foodie'
