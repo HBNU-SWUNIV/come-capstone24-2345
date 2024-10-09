@@ -2,41 +2,32 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { Input } from '@nextui-org/react';
+import { Input, Slider } from '@nextui-org/react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 const editMyInfo = () => {
   const [info, setInfo] = useState();
-  const [defaultInfo, setDefaultInfo] = useState();
   const { data: session, status, update } = useSession();
   const router = useRouter();
 
   useEffect(() => {
     if (status === 'authenticated') {
-      let myinfo = {
-        univ: session.user.univ,
-        department: session.user.department,
-        height: session.user.height,
-        religion: session.user.religion,
-        mbti: session.user.mbti,
-        smoking: session.user.smoking,
-        drinkLimit: session.user.drinkLimit,
-        army: session.user.army,
-      };
-      setInfo(myinfo);
-      setDefaultInfo(session.user);
+      setInfo(session.user);
     }
   }, [session, status]);
 
   const handleEditInfo = async () => {
+    if (info.height < 100 || info.height > 250) {
+      alert('회원님의 키를 잘못 입력하셨습니다');
+      return;
+    }
     await axios
-      .post('/api/edit/myinfo', { defaultInfo, info })
+      .post('/api/edit/info', { info })
       .then((res) => {
         alert('수정되었습니다!');
-        console.log({ ...res.data.defaultInfo, ...res.data.modifyInfo });
-        update({ ...res.data.defaultInfo, ...res.data.modifyInfo });
+        update(res.data);
         router.replace('/main/mypage');
       })
       .catch((err) => {
@@ -152,7 +143,6 @@ const editMyInfo = () => {
             }}
           />
           <Input
-            isClearable
             type='numeric'
             variant='underlined'
             label='키'
@@ -165,6 +155,11 @@ const editMyInfo = () => {
             }
             labelPlacement='outside-left'
             value={info.height}
+            endContent={
+              <div className='pointer-events-none flex items-center'>
+                <span className='text-info'>cm</span>
+              </div>
+            }
             classNames={{
               label: 'w-[70px]',
               innerWrapper: 'pb-0',
@@ -316,27 +311,43 @@ const editMyInfo = () => {
             </div>
           </div>
 
-          <Input
-            isClearable
-            type='numeric'
-            variant='underlined'
-            label='주량'
-            step={0.5}
-            onChange={(e) => {
-              setInfo((prev) => ({
-                ...prev,
-                drinkLimit:
-                  e.target.value !== '' ? parseFloat(e.target.value) : 0,
-              }));
-            }}
-            labelPlacement='outside-left'
-            value={info.drinkLimit}
-            classNames={{
-              label: 'w-[70px]',
-              innerWrapper: 'pb-0',
-              mainWrapper: 'flex-1',
-            }}
-          />
+          <div className='w-full px-[10px]'>
+            <Slider
+              label='주량'
+              size='sm'
+              color='danger'
+              minValue={0}
+              maxValue={7}
+              getValue={(value) => (value >= 7 ? `7병 이상` : `${value}병`)}
+              step={0.5}
+              marks={[
+                {
+                  value: 0,
+                  label: 'X',
+                },
+                {
+                  value: 2,
+                  label: '조금마심',
+                },
+                {
+                  value: 5,
+                  label: '술고래',
+                },
+              ]}
+              onChange={(value) => {
+                setInfo((prev) => ({
+                  ...prev,
+                  drinkLimit: value,
+                }));
+              }}
+              value={info.drinkLimit}
+              className='max-w-md'
+              classNames={{
+                mark: 'text-info text-gray-300',
+              }}
+            />
+          </div>
+
           <Input
             isRequired
             variant='underlined'

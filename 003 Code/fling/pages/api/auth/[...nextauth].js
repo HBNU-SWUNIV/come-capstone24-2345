@@ -50,17 +50,33 @@ export const authOptions = {
     //user변수는 DB의 유저정보담겨있고 token.user에 저장하면 jwt에 들어감
     jwt: async ({ token, user, trigger, session }) => {
       if (trigger === 'update' && session !== null) {
-        token.user = {
-          ...token.user,
-          height: session.height,
-          religion: session.religion,
-          mbti: session.mbti,
-          smoking: session.smoking,
-          drinkLimit: session.drinkLimit,
-          introduction: session.introduction,
-          hobby: session.hobby,
-          univCert: session.univCert,
-        };
+        const {
+          height,
+          religion,
+          mbti,
+          smoking,
+          drinkLimit,
+          hobby,
+          introduction,
+          univCert,
+        } = session;
+
+        if (height && religion && mbti && smoking && drinkLimit) {
+          token.user.height = height;
+          token.user.religion = religion;
+          token.user.mbti = mbti;
+          token.user.smoking = smoking;
+          token.user.drinkLimit = drinkLimit;
+        }
+        if (hobby) {
+          token.user.hobby = hobby;
+        }
+        if (introduction) {
+          token.user.introduction = introduction;
+        }
+        if (univCert) {
+          token.user.univCert = univCert;
+        }
       }
       if (user) {
         token.user = {};

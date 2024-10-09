@@ -8,7 +8,6 @@ import Image from 'next/image';
 
 const editMyHobby = () => {
   const [info, setInfo] = useState();
-  const [defaultInfo, setDefaultInfo] = useState();
   const { data: session, status, update } = useSession();
   const router = useRouter();
   const hobbys = [
@@ -43,13 +42,7 @@ const editMyHobby = () => {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      let myinfo = {
-        univ: session.user.univ,
-        department: session.user.department,
-        hobby: session.user.hobby,
-      };
-      setInfo(myinfo);
-      setDefaultInfo(session.user);
+      setInfo(session.user);
     }
   }, [session, status]);
 
@@ -77,10 +70,10 @@ const editMyHobby = () => {
 
     const handleEditInfo = async () => {
       await axios
-        .post('/api/edit/myhobby', { defaultInfo, info })
+        .post('/api/edit/hobby', { info })
         .then((res) => {
           alert('수정되었습니다!');
-          update({ ...res.data.defaultInfo, ...res.data.modifyInfo });
+          update(res.data);
           router.replace('/main/mypage');
         })
         .catch((err) => {

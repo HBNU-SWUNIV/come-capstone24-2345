@@ -25,8 +25,10 @@ const SettingPage = () => {
   const [userInfo, setUserInfo] = useState();
   const [permission, setPermission] = useState(false);
   const [isPushAllow, setIsPushAllow] = useState(false);
-  const [isAlreadyWithdraw, setIsAlreadyWithdraw] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const [isLoadingWithdraw, setIsLoadingWithdraw] = useState(false);
+  const [isWithdraw, setIsWithdraw] = useState(false);
 
   const { data: session, status } = useSession();
 
@@ -134,17 +136,28 @@ const SettingPage = () => {
   };
 
   const handleWithdraw = async (closeModal) => {
-    if (isAlreadyWithdraw) {
-      router.replace('/');
+    setIsLoadingWithdraw(true);
+    try {
+      await axios.post('/api/delete/group', {
+        email: userInfo.email,
+      });
+      await axios.post('/api/delete/profile', {
+        email: userInfo.email,
+      });
+      await axios.post('/api/delete/chat', {
+        email: userInfo.email,
+      });
+      await axios.post('/api/delete/cred', {
+        email: userInfo.email,
+      });
+      setIsWithdraw(true);
       signOut();
-    } else {
-      await axios
-        .post('/api/setting/withdraw', { email: userInfo.email })
-        .then((res) => {
-          setIsAlreadyWithdraw(true);
-          closeModal();
-          onOpen();
-        });
+      router.replace('/');
+    } catch (err) {
+      setIsWithdraw(false);
+      alert(err.response.data);
+    } finally {
+      setIsLoadingWithdraw(false);
     }
   };
 
@@ -156,14 +169,11 @@ const SettingPage = () => {
           {(onClose) => (
             <>
               <ModalHeader className='flex flex-col gap-1'>
-                {isAlreadyWithdraw ? '탈퇴 완료' : '정말 탈퇴하실 건가요?'}
+                정말 탈퇴하실 건가요?
               </ModalHeader>
               <ModalBody className='text-info gap-[5px]'>
-                {isAlreadyWithdraw ? (
-                  <>
-                    <p>정상적으로 삭제되었습니다.</p>
-                    <p>이용해 주셔서 감사합니다.</p>
-                  </>
+                {isWithdraw ? (
+                  <p>이용해주셔서 감사합니다</p>
                 ) : (
                   <>
                     <p>회원님의 채팅내역 및 모든 정보들은 삭제됩니다.</p>
@@ -172,19 +182,24 @@ const SettingPage = () => {
                 )}
               </ModalBody>
               <ModalFooter>
-                {!isAlreadyWithdraw && (
-                  <button onClick={onClose} className='btn px-[20px] py-[5px]'>
-                    취소
-                  </button>
+                {isWithdraw ? null : (
+                  <>
+                    <button
+                      onClick={onClose}
+                      className='btn px-[20px] py-[5px]'
+                    >
+                      취소
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleWithdraw(onClose);
+                      }}
+                      className='full-btn px-[20px] py-[5px]'
+                    >
+                      {isLoadingWithdraw ? '진행중' : '탈퇴'}
+                    </button>
+                  </>
                 )}
-                <button
-                  onClick={() => {
-                    handleWithdraw(onClose);
-                  }}
-                  className='full-btn px-[20px] py-[5px]'
-                >
-                  확인
-                </button>
               </ModalFooter>
             </>
           )}

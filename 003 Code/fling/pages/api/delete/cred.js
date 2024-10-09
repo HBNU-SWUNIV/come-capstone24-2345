@@ -1,6 +1,6 @@
 import { connectDB } from '../../../util/database';
 
-const handleWithdraw = async (req, res) => {
+const handleDelteCredential = async (req, res) => {
   if (req.method === 'POST') {
     const email = req.body.email;
 
@@ -12,4 +12,4 @@ const handleWithdraw = async (req, res) => {
   }
 };
 
-export default handleWithdraw;
+export default handleDelteCredential;

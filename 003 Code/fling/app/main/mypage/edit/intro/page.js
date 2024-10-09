@@ -10,28 +10,21 @@ import Image from 'next/image';
 
 const editMyIntro = () => {
   const [info, setInfo] = useState();
-  const [defaultInfo, setDefaultInfo] = useState();
   const [isAccordionClick, setIsAccordionClick] = useState(false);
   const { data: session, status, update } = useSession();
   const router = useRouter();
 
   useEffect(() => {
     if (status === 'authenticated') {
-      let myinfo = {
-        univ: session.user.univ,
-        department: session.user.department,
-        introduction: session.user.introduction,
-      };
-      setInfo(myinfo);
-      setDefaultInfo(session.user);
+      setInfo(session.user);
     }
   }, [session, status]);
 
   const handleEditInfo = async () => {
     await axios
-      .post('/api/edit/myintro', { defaultInfo, info })
+      .post('/api/edit/intro', { info })
       .then((res) => {
-        update({ ...res.data.defaultInfo, ...res.data.modifyInfo });
+        update(res.data);
         alert('수정되었습니다!');
         router.replace('/main/mypage');
       })

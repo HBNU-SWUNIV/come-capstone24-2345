@@ -236,7 +236,7 @@ const MypagePage = () => {
               <span>나의 정보</span>
               <button
                 className='flex gap-[5px] px-[10px] py-[5px] justify-center items-center btn'
-                onClick={() => router.replace('/main/mypage/edit/myinfo')}
+                onClick={() => router.replace('/main/mypage/edit/info')}
               >
                 <Image
                   src='/main/mypage/pencil.svg'
@@ -270,7 +270,7 @@ const MypagePage = () => {
               <span>한 줄 소개</span>
               <button
                 className='flex gap-[5px] px-[10px] py-[5px] justify-center items-center btn'
-                onClick={() => router.replace('/main/mypage/edit/myintro')}
+                onClick={() => router.replace('/main/mypage/edit/intro')}
               >
                 <Image
                   src='/main/mypage/pencil.svg'
@@ -305,7 +305,7 @@ const MypagePage = () => {
               <span>취미</span>
               <button
                 className='flex gap-[5px] px-[10px] py-[5px] justify-center items-center btn'
-                onClick={() => router.replace('/main/mypage/edit/myhobby')}
+                onClick={() => router.replace('/main/mypage/edit/hobby')}
               >
                 <Image
                   src='/main/mypage/pencil.svg'

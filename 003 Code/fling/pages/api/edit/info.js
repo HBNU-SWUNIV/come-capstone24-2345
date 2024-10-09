@@ -1,11 +1,8 @@
-import { connectDB } from './../../../util/database';
+import { connectDB } from '../../../util/database';
 
-const handleEditMyInfo = async (req, res) => {
+const handleEditInfo = async (req, res) => {
   if (req.method === 'POST') {
-    const data = req.body;
-
-    const modifyInfo = data.info;
-    const defaultInfo = data.defaultInfo;
+    const { info } = req.body;
 
     const MBTIType = {
       ISTJ: '신뢰할 수 있고 책임감이 강한 사람',
@@ -29,44 +26,32 @@ const handleEditMyInfo = async (req, res) => {
     const client = await connectDB;
     const db = await client.db('Fling');
 
-    if (
-      defaultInfo.univ !== modifyInfo.univ ||
-      defaultInfo.department !== modifyInfo.department
-    ) {
-      res.status(400).send('잘못된 접근입니다');
-    } else {
-      await db.collection('user_cred').updateOne(
-        { email: defaultInfo.email },
-        {
-          $set: {
-            height: modifyInfo.height,
-            religion: modifyInfo.religion,
-            mbti: {
-              type: modifyInfo.mbti.type,
-              description: MBTIType[modifyInfo.mbti.type.join('')],
-            },
-            smoking: modifyInfo.smoking,
-            drinkLimit: modifyInfo.drinkLimit,
-            army: modifyInfo.army,
-          },
-        }
-      );
-      res.status(200).send({
-        defaultInfo,
-        modifyInfo: {
-          height: modifyInfo.height,
-          religion: modifyInfo.religion,
+    await db.collection('user_cred').updateOne(
+      { email: info.email },
+      {
+        $set: {
+          height: info.height,
+          religion: info.religion,
           mbti: {
-            type: modifyInfo.mbti.type,
-            description: MBTIType[modifyInfo.mbti.type.join('')],
+            type: info.mbti.type,
+            description: MBTIType[info.mbti.type.join('')],
           },
-          smoking: modifyInfo.smoking,
-          drinkLimit: modifyInfo.drinkLimit,
-          army: modifyInfo.army,
+          smoking: info.smoking,
+          drinkLimit: info.drinkLimit,
         },
-      });
-    }
+      }
+    );
+    res.status(200).send({
+      height: info.height,
+      religion: info.religion,
+      mbti: {
+        type: info.mbti.type,
+        description: MBTIType[info.mbti.type.join('')],
+      },
+      smoking: info.smoking,
+      drinkLimit: info.drinkLimit,
+    });
   }
 };
 
-export default handleEditMyInfo;
+export default handleEditInfo;
