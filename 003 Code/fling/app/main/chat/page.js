@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Divider } from '@nextui-org/react';
+import { Spinner } from '@nextui-org/spinner';
 import {
   Modal,
   ModalContent,
@@ -24,6 +25,7 @@ const ChatPage = () => {
   const [otherUserImg, setOtherUserImg] = useState();
   const [chatroomID, setChatroomID] = useState();
   const [univCert, setUnivCert] = useState();
+  const [isReplaceRoom, setIsReplaceRoom] = useState(false);
 
   const {
     isOpen: isUnivCertOpen,
@@ -38,6 +40,10 @@ const ChatPage = () => {
       setSessionInfo(session.user);
     }
   }, [session, status]);
+
+  useEffect(() => {
+    !isUnivCertOpen && setIsReplaceRoom(false);
+  }, [isUnivCertOpen]);
 
   useEffect(() => {
     if (sessionInfo) {
@@ -121,14 +127,17 @@ const ChatPage = () => {
   };
 
   const handleGoToChatroom = () => {
+    setIsReplaceRoom(true);
     if (univCert && chatroomID) {
       if (univCert.userUnivCert && univCert.otherUnivCert) {
         router.replace(`/chatroom/${chatroomID}`);
+        setIsReplaceRoom(false);
       } else {
         onUnivCertOpen();
       }
     } else {
       alert('잠시 후 다시 시도해주세요');
+      setIsReplaceRoom(false);
     }
   };
 
@@ -257,7 +266,17 @@ const ChatPage = () => {
             className='full-btn w-full px-[20px] py-[10px]'
             onClick={handleGoToChatroom}
           >
-            채팅방 이동
+            {isReplaceRoom ? (
+              <Spinner
+                size='sm'
+                classNames={{
+                  circle1: 'border-b-white',
+                  circle2: 'border-b-white',
+                }}
+              />
+            ) : (
+              '채팅방 이동'
+            )}
           </button>
 
           <div className='w-full h-[100px]'></div>
@@ -304,7 +323,7 @@ const ChatPage = () => {
     return (
       <div className='w-full h-dvh bg-gray-50 px-[40px]'>
         <div className='size-full flex flex-col justify-center items-center'>
-          <div className='w-4/5 subtitle break-keep flex flex-col'>
+          <div className='w-4/5 subtitle break-keep flex flex-col text-gray-500'>
             <span>유저 정보를 불러오는 중이거나</span>
             <span>아직 상대방이 가입하지 않았어요🥲</span>
           </div>

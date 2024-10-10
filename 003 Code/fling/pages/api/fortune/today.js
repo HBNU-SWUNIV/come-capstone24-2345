@@ -3,15 +3,14 @@ import { connectDB } from '../../../util/database';
 
 const handleFortuneToday = async (req, res) => {
   if (req.method === 'POST') {
-    const gender = req.body.gender === 'man' ? '남자' : '여자';
-    const year = req.body.birth.year;
-    const month = req.body.birth.month;
-    const day = req.body.birth.day;
-    const mbti = req.body.mbti.type.join('');
-    const datingType = req.body.datingType.type;
-    const email = req.body.email;
+    let { gender, birth, mbti, datingType, email } = req.body;
+    gender = gender === 'man' ? '남자' : '여자';
+    const year = birth.year;
+    const month = birth.month;
+    const day = birth.day;
+    mbti = mbti.type.join('');
 
-    const fetchFortuneData = async () => {
+    const fetchTodayFortuneData = async () => {
       const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY });
 
       const completion = await openai.chat.completions.create({
@@ -35,28 +34,30 @@ const handleFortuneToday = async (req, res) => {
 
     const client = await connectDB;
     const db = await client.db('Fling');
+    const oneDayMs = 24 * 60 * 60 * 1000;
 
     const now = new Date();
-
     const userDoc = await db.collection('user_cred').findOne({ email });
 
     if (userDoc.fortune) {
       const lastCheckDate = userDoc.fortune.date;
-      if (lastCheckDate < now && lastCheckDate.getDate() !== now.getDate) {
-        const data = await fetchFortuneData();
+
+      if (now - lastCheckDate >= oneDayMs) {
+        const fortuneData = await fetchTodayFortuneData();
+        //업데이트
         await db.collection('user_cred').updateOne(
           { email },
           {
             $set: {
               fortune: {
                 date: now,
-                content: data,
+                content: fortuneData,
               },
             },
           }
         );
         res.status(200).send({
-          content: data,
+          content: fortuneData,
           date: {
             year: now.getFullYear(),
             month: now.getMonth(),
@@ -66,6 +67,8 @@ const handleFortuneToday = async (req, res) => {
           },
         });
       } else {
+        //하루가 지나지 않음
+        //기존 값 가져오기
         res.status(200).send({
           content: userDoc.fortune.content,
           date: {
@@ -77,31 +80,30 @@ const handleFortuneToday = async (req, res) => {
           },
         });
       }
-    } else {
-      const data = await fetchFortuneData();
-      await db.collection('user_cred').updateOne(
-        { email },
-        {
-          $set: {
-            fortune: {
-              date: now,
-              content: data,
-            },
-          },
-        }
-      );
-
-      res.status(200).send({
-        content: data,
-        date: {
-          year: now.getFullYear(),
-          month: now.getMonth(),
-          day: now.getDate(),
-          hour: now.getHours(),
-          min: now.getMinutes(),
-        },
-      });
     }
+  } else {
+    const fortuneData = await fetchTodayFortuneData();
+    await db.collection('user_cred').updateOne(
+      { email },
+      {
+        $set: {
+          fortune: {
+            date: now,
+            content: fortuneData,
+          },
+        },
+      }
+    );
+    res.status(200).send({
+      content: fortuneData,
+      date: {
+        year: now.getFullYear(),
+        month: now.getMonth(),
+        day: now.getDate(),
+        hour: now.getHours(),
+        min: now.getMinutes(),
+      },
+    });
   }
 };
 

@@ -6,6 +6,7 @@ import { signOut } from 'next-auth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Textarea, Switch } from '@nextui-org/react';
 import { CheckboxGroup, Checkbox } from '@nextui-org/react';
+import { Spinner } from '@nextui-org/spinner';
 import {
   Modal,
   ModalContent,
@@ -506,9 +507,19 @@ const ClientComponent = ({ currUser }) => {
                   onClick={() => {
                     handleImgSubmit(onClose);
                   }}
-                  className='full-btn px-[20px] py-[5px]'
+                  className='full-btn px-[20px] py-[5px] flex justify-center items-center'
                 >
-                  {isLoadingImgSubmit ? '전송중...' : '전송'}
+                  {isLoadingImgSubmit ? (
+                    <Spinner
+                      size='sm'
+                      classNames={{
+                        circle1: 'border-b-white',
+                        circle2: 'border-b-white',
+                      }}
+                    />
+                  ) : (
+                    '전송'
+                  )}
                 </button>
               </ModalFooter>
             </>
@@ -645,7 +656,7 @@ const ClientComponent = ({ currUser }) => {
               <ModalBody className='text-info'>
                 <p>채팅방을 나가시면 모든 대화내역이 사라집니다</p>
                 <p>또한 계정도 삭제되며, 해당 서비스를 이용할 수 없습니다</p>
-                <p>웹앱 사용신청을 다시하여 선정되어야 사용가능합니다</p>
+                <p>사용신청을 다시하여 선정되어야 사용가능합니다</p>
               </ModalBody>
               <ModalFooter>
                 <button onClick={onClose} className='btn px-[20px] py-[5px]'>

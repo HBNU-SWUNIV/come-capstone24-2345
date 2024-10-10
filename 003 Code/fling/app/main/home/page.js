@@ -15,6 +15,7 @@ import {
   useDisclosure,
 } from '@nextui-org/react';
 import styled from 'styled-components';
+import { Spinner } from '@nextui-org/spinner';
 import axios from 'axios';
 
 const MainPage = () => {
@@ -249,9 +250,19 @@ const MainPage = () => {
                   </div>
                   <button
                     onClick={handleFortune}
-                    className='full-btn py-[10px] w-full'
+                    className='full-btn h-[50px] py-[10px] w-full flex justify-center items-center'
                   >
-                    {isFortuneLoading ? '...' : '운세 확인'}
+                    {isFortuneLoading ? (
+                      <Spinner
+                        size='sm'
+                        classNames={{
+                          circle1: 'border-b-white',
+                          circle2: 'border-b-white',
+                        }}
+                      />
+                    ) : (
+                      '운세 확인'
+                    )}
                   </button>
                 </div>
               </div>
@@ -295,7 +306,7 @@ const MainPage = () => {
                     {totalGroup ? (
                       <>
                         <p>{`총 ${totalGroup}그룹이 선정되었습니다.`}</p>
-                        <p>매주 선정 인원은 랜덤이니 참고해주세요 ^_^</p>
+                        <p>매주 선정 인원은 랜덤이니 참고해주세요</p>
                       </>
                     ) : (
                       '불러오는 중입니다...'
@@ -459,7 +470,17 @@ const MainPage = () => {
                       onClick={() => handleReviewSubmit(onClose)}
                       className={`${review !== '' ? 'full-btn' : 'btn'} px-[20px] py-[5px]`}
                     >
-                      {isReviewLoading ? '제출중' : '제출'}
+                      {isReviewLoading ? (
+                        <Spinner
+                          size='sm'
+                          classNames={{
+                            circle1: 'border-b-white',
+                            circle2: 'border-b-white',
+                          }}
+                        />
+                      ) : (
+                        '제출'
+                      )}
                     </button>
                   </ModalFooter>
                 </>
@@ -482,7 +503,7 @@ const MainPage = () => {
                 <CardContainer className='w-full flex justify-center items-center'>
                   <Card
                     className='w-4/5 max-w-[300px]'
-                    isflipped={isFlipped}
+                    $isflipped={isFlipped}
                     onClick={() => setIsFlipped((prev) => !prev)}
                   >
                     <CardFront className='size-full rounded-small relative'>
@@ -548,7 +569,7 @@ const Card = styled.div`
   transform-style: preserve-3d;
   cursor: pointer;
   transform: ${(props) =>
-    props.isflipped ? 'rotateY(180deg)' : 'rotateY(0deg)'};
+    props.$isflipped ? 'rotateY(180deg)' : 'rotateY(0deg)'};
 `;
 
 const CardFB = styled.div`

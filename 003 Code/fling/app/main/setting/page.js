@@ -17,6 +17,7 @@ import {
 import Image from 'next/image';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { Spinner } from '@nextui-org/spinner';
 // import { getFCMToken } from '../../../firebase/firebaseDB';
 
 const SettingPage = () => {
@@ -94,6 +95,7 @@ const SettingPage = () => {
       setPermission(false);
     } else {
       Notification.requestPermission().then((permission) => {
+        console.log(permission);
         if (permission === 'granted') {
           alert('알림 권한이 허용되었습니다');
           setPermission(true);
@@ -194,9 +196,19 @@ const SettingPage = () => {
                       onClick={() => {
                         handleWithdraw(onClose);
                       }}
-                      className='full-btn px-[20px] py-[5px]'
+                      className='full-btn px-[20px] py-[5px] flex justify-center items-center'
                     >
-                      {isLoadingWithdraw ? '진행중' : '탈퇴'}
+                      {isLoadingWithdraw ? (
+                        <Spinner
+                          size='sm'
+                          classNames={{
+                            circle1: 'border-b-white',
+                            circle2: 'border-b-white',
+                          }}
+                        />
+                      ) : (
+                        '탈퇴'
+                      )}
                     </button>
                   </>
                 )}
