@@ -23,7 +23,7 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-export const messaging = getMessaging(app);
+// export const messaging = getMessaging(app);
 // export const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
 
 // export const getFCMToken = async () => {

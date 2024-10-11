@@ -19,6 +19,7 @@ import axios from 'axios';
 const ChatPage = () => {
   const { data: session, status, update } = useSession();
   const date = new Date();
+  const [otherUserState, setOtherUserState] = useState();
 
   const [sessionInfo, setSessionInfo] = useState(null);
   const [otherUserInfo, setOtherUserInfo] = useState(null);
@@ -47,24 +48,28 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (sessionInfo) {
-      const fetchChatroomID = async () => {
-        await axios
-          .post('/api/chat/roomID', { email: sessionInfo.email })
-          .then((res) => {
-            setChatroomID(res.data.chatroomID);
-            console.log(res.data.chatroomID);
-          });
-      };
-      fetchChatroomID();
       if (otherUserInfo === null) {
         const fetchOtherUserInfo = async () => {
           await axios
-            .post('/api/group/otherUserInfo', { email: sessionInfo.email })
+            .post('/api/group/otherUserInfo', {
+              email: sessionInfo.email,
+            })
             .then((res) => {
               setOtherUserInfo(res.data);
             })
             .catch((err) => {
+              if (err.response.data.type === 'USER_WITHDRAW') {
+                setOtherUserState('상대방이 탈퇴하였습니다');
+                alert(err.response.data.message);
+                router.replace('/main/home');
+                return;
+              }
+              if (err.response.data.type === 'NOT_REGISTER') {
+                setOtherUserState(err.response.data.message);
+              }
               // alert(err.response.data);
+              setOtherUserInfo(null);
+              setOtherUserImg(null);
             });
         };
         fetchOtherUserInfo();
@@ -74,6 +79,19 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (otherUserInfo) {
+      const fetchChatroomID = async () => {
+        await axios
+          .post('/api/chat/roomID', { email: sessionInfo.email })
+          .then((res) => {
+            setChatroomID(res.data.chatroomID);
+          })
+          .catch((err) => {
+            setOtherUserInfo(null);
+            setOtherUserImg(null);
+          });
+      };
+      fetchChatroomID();
+
       const fetchOtherUserImg = async () => {
         if (otherUserInfo.email) {
           await axios
@@ -324,8 +342,9 @@ const ChatPage = () => {
       <div className='w-full h-dvh bg-gray-50 px-[40px]'>
         <div className='size-full flex flex-col justify-center items-center'>
           <div className='w-4/5 subtitle break-keep flex flex-col text-gray-500'>
-            <span>유저 정보를 불러오는 중이거나</span>
-            <span>아직 상대방이 가입하지 않았어요🥲</span>
+            {otherUserState
+              ? otherUserState
+              : '상대방 정보를 불러오는 중입니다...'}
           </div>
         </div>
       </div>

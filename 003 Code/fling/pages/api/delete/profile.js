@@ -8,10 +8,10 @@ const handleDeleteProfile = async (req, res) => {
     const profileListRef = ref(storage, `images/profile`);
 
     try {
-      const result = await listAll(profileListRef);
+      const list = await listAll(profileListRef);
 
       try {
-        result.items.forEach(async (itemRef) => {
+        list.items.forEach(async (itemRef) => {
           if (itemRef.name.startsWith(email)) {
             await deleteObject(itemRef);
           }

@@ -1,31 +1,36 @@
 'use client';
 
-import { collection, doc, getDoc } from 'firebase/firestore';
-import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { db } from '../../../firebase/firebaseDB';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { Spinner } from '@nextui-org/spinner';
 
 const HeaderComponent = (props) => {
   const [other, setOther] = useState();
-  const chatroomID = usePathname().split('/')[2];
+  const [isExistGroup, setIsExistGroup] = useState(false);
   const router = useRouter();
-
-  // useEffect(() => {
-  //   const fetchMemberData = async () => {
-  //     const member = doc(db, 'chatrooms', chatroomID);
-  //     const docSnap = await getDoc(member);
-  //     if (docSnap.exists()) {
-  //       setMember(docSnap.data().member);
-  //     }
-  //   };
-  //   fetchMemberData();
-  // }, []);
 
   useEffect(() => {
     if (props.currUser) {
+      const fetchOtherUserInfo = async () => {
+        axios
+          .post('/api/group/otherUserInfo?reqExist=true', {
+            email: props.currUser.email,
+          })
+          .then((res) => {
+            setIsExistGroup(true);
+          })
+          .catch((err) => {
+            router.replace('/main/chat');
+          });
+      };
+      fetchOtherUserInfo();
+    }
+  }, [props.currUser]);
+
+  useEffect(() => {
+    if (isExistGroup) {
       const fetchOtherInfo = async () => {
         await axios
           .post('/api/chat/otherInfo', { email: props.currUser.email })
@@ -35,7 +40,7 @@ const HeaderComponent = (props) => {
       };
       fetchOtherInfo();
     }
-  }, [props.currUser]);
+  }, [isExistGroup]);
 
   const handlePrev = () => {
     router.replace('/main/chat');
@@ -46,7 +51,12 @@ const HeaderComponent = (props) => {
       <button className='relative size-[25px]' onClick={handlePrev}>
         <Image src='/chatting/left.svg' alt='prev' fill />
       </button>
-      <span>{other ? other.nickname : '...'}님</span>
+
+      {other ? (
+        <span>{other.nickname}님</span>
+      ) : (
+        <Spinner size='sm' color='danger' />
+      )}
     </header>
   );
 };

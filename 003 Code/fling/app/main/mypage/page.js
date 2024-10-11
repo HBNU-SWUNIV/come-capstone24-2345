@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Divider } from '@nextui-org/react';
+import { Spinner } from '@nextui-org/spinner';
 import {
   Modal,
   ModalContent,
@@ -69,15 +70,15 @@ const MypagePage = () => {
   }, [sessionInfo, isSubmitImg]);
 
   useEffect(() => {
-    const fetchUnivCert = async () => {
-      const result = await axios.post('/api/chat/univCert', {
-        userEmail: sessionInfo.email,
-      });
-      const userUnivCert = result.data.userUnivCert;
-
-      setUnivCert({ userUnivCert });
-    };
     if (sessionInfo) {
+      const fetchUnivCert = async () => {
+        const result = await axios.post('/api/chat/univCert', {
+          userEmail: sessionInfo.email,
+        });
+        const userUnivCert = result.data.userUnivCert;
+
+        setUnivCert({ userUnivCert });
+      };
       fetchUnivCert();
     }
   }, [sessionInfo]);
@@ -113,6 +114,7 @@ const MypagePage = () => {
 
   const handleProfileImgSubmit = async (onClose) => {
     if (profileImgFile) {
+      setIsSubmitImg(true);
       const compressedImgBlob = await imageCompression(profileImgFile, {
         maxSizeMB: 1,
       });
@@ -124,7 +126,7 @@ const MypagePage = () => {
         }
       );
 
-      const storageRef = ref(storage, `images/profile/${sessionInfo.email}}`);
+      const storageRef = ref(storage, `images/profile/${sessionInfo.email}`);
       await uploadBytes(storageRef, compressedImgFile);
       const url = await getDownloadURL(storageRef);
 
@@ -134,17 +136,18 @@ const MypagePage = () => {
           imgSrc: url,
         })
         .then((res) => {
-          setIsSubmitImg(true);
           setUserImg(url);
         })
         .catch((err) => {
           alert(err.response.data);
+        })
+        .finally(() => {
+          setProfileImgFile(null);
+          setProfileImgUrl(null);
+          setIsSubmitImg(false);
+          onClose();
         });
     }
-    setProfileImgFile(null);
-    setProfileImgUrl(null);
-    setIsSubmitImg(false);
-    onClose();
   };
 
   if (sessionInfo) {
@@ -371,9 +374,19 @@ const MypagePage = () => {
                   </button>
                   <button
                     onClick={() => handleProfileImgSubmit(onClose)}
-                    className='full-btn px-[20px] py-[5px]'
+                    className='full-btn px-[20px] py-[5px] flex justify-center items-center'
                   >
-                    변경
+                    {isSubmitImg ? (
+                      <Spinner
+                        size='sm'
+                        classNames={{
+                          circle1: 'border-b-white',
+                          circle2: 'border-b-white',
+                        }}
+                      />
+                    ) : (
+                      '변경'
+                    )}
                   </button>
                 </ModalFooter>
               </>

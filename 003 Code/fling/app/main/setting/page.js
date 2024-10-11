@@ -18,6 +18,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@nextui-org/spinner';
+import deleteAccountHandler from '../../../hooks/deleteAccount';
 // import { getFCMToken } from '../../../firebase/firebaseDB';
 
 const SettingPage = () => {
@@ -138,28 +139,21 @@ const SettingPage = () => {
   };
 
   const handleWithdraw = async (closeModal) => {
-    setIsLoadingWithdraw(true);
-    try {
-      await axios.post('/api/delete/group', {
-        email: userInfo.email,
-      });
-      await axios.post('/api/delete/profile', {
-        email: userInfo.email,
-      });
-      await axios.post('/api/delete/chat', {
-        email: userInfo.email,
-      });
-      await axios.post('/api/delete/cred', {
-        email: userInfo.email,
-      });
-      setIsWithdraw(true);
-      signOut();
-      router.replace('/');
-    } catch (err) {
-      setIsWithdraw(false);
-      alert(err.response.data);
-    } finally {
-      setIsLoadingWithdraw(false);
+    if (userInfo.email) {
+      setIsLoadingWithdraw(true);
+      try {
+        await deleteAccountHandler(userInfo.email);
+        await signOut();
+        setIsWithdraw(true);
+        setIsLoadingWithdraw(false);
+        router.replace('/');
+      } catch (err) {
+        setIsWithdraw(false);
+        setIsLoadingWithdraw(false);
+        alert(err.response.data);
+      }
+    } else {
+      alert('잠시 후에 다시 시도해주세요');
     }
   };
 

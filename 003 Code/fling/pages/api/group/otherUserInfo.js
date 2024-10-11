@@ -13,7 +13,11 @@ const handleOtherUserInfo = async (req, res) => {
       },
     });
 
-    if (doc) {
+    if (!doc) {
+      return res
+        .status(404)
+        .send({ type: 'USER_WITHDRAW', message: '상대방이 탈퇴하였습니다' });
+    } else {
       const otherUser = doc.group.filter((item) => item.email !== myEmail);
       const otherUserEmail = otherUser[0].email;
       const otherUserInfo = await db
@@ -41,10 +45,11 @@ const handleOtherUserInfo = async (req, res) => {
         };
         res.status(200).send(data);
       } else {
-        res.status(400).send('상대방이 아직 가입하지 않았어요');
+        res.status(404).send({
+          type: 'NOT_REGISTER',
+          message: '상대방이 아직 가입하지 않았어요🥲',
+        });
       }
-    } else {
-      res.status(400).send('상대방이 아직 가입하지 않았어요');
     }
   }
 };

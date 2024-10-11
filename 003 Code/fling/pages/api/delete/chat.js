@@ -1,32 +1,44 @@
-import {
-  collection,
-  deleteDoc,
-  getDocs,
-  query,
-  where,
-} from 'firebase/firestore';
-import { db } from '../../../firebase/firebaseDB';
+import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
+import { db as firebaseDB } from '../../../firebase/firebaseDB';
+import { connectDB } from '../../../util/database';
 
 const handleDeleteChat = async (req, res) => {
   if (req.method === 'POST') {
     const { email } = req.body;
 
-    const chatroomRef = collection(db, 'chatrooms');
-    const q = query(chatroomRef, where('member', 'array-contains', email));
-    const querySnapshot = await getDocs(q);
+    const client = await connectDB;
+    const mongoDB = await client.db('Fling');
 
-    if (querySnapshot.empty) {
-      res.status(200).send('이미 삭제되었습니다');
-    } else {
-      try {
-        querySnapshot.forEach(async (doc) => {
-          await deleteDoc(doc.ref);
-        });
-        res.status(200).end();
-      } catch (err) {
-        res.status(500).send(err);
-      }
+    const userCredDoc = await mongoDB
+      .collection('user_cred')
+      .findOne({ email });
+    const chatroomID = userCredDoc.chatroomID;
+
+    const messagesRef = collection(
+      firebaseDB,
+      'chatrooms',
+      chatroomID,
+      'messages'
+    );
+
+    const messagesQuerySnapShot = await getDocs(messagesRef);
+    if (!messagesQuerySnapShot.empty) {
+      messagesQuerySnapShot.forEach(async (messageDoc) => {
+        const messageDocRef = doc(
+          firebaseDB,
+          'chatrooms',
+          chatroomID,
+          'messages',
+          messageDoc.id
+        );
+        await deleteDoc(messageDocRef);
+      });
     }
+
+    const chatroomDoc = doc(firebaseDB, 'chatrooms', chatroomID);
+    await deleteDoc(chatroomDoc);
+
+    res.status(200).end();
   }
 };
 

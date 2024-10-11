@@ -11,8 +11,12 @@ const handleRoomID = async (req, res) => {
       group: { $elemMatch: { email } },
     });
 
-    const chatroomID = doc.chatroomID;
-    res.status(200).send({ chatroomID });
+    if (doc) {
+      const chatroomID = doc.chatroomID;
+      res.status(200).send({ chatroomID });
+    } else {
+      res.status(500).send('해당 채팅방이 존재하지 않습니다');
+    }
   }
 };
 

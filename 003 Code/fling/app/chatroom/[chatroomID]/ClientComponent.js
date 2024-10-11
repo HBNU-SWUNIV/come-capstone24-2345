@@ -1,8 +1,9 @@
 'use client';
 
 import useOnClickOutside from '../../../hooks/useOnClickOutside';
+import deleteAccountHandler from '../../../hooks/deleteAccount';
 import React, { useEffect, useRef, useState } from 'react';
-import { signOut } from 'next-auth';
+import { signOut } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Textarea, Switch } from '@nextui-org/react';
 import { CheckboxGroup, Checkbox } from '@nextui-org/react';
@@ -15,7 +16,6 @@ import {
   ModalFooter,
   useDisclosure,
 } from '@nextui-org/react';
-import BottomInputNav from './BottomInputNav';
 import {
   collection,
   doc,
@@ -73,6 +73,7 @@ const ClientComponent = ({ currUser }) => {
   const [reportOptions, setReportOptions] = useState([]);
   const [reportEtc, setReportEtc] = useState('');
   const [isSubmitReport, setIsSubmitReport] = useState(false);
+  const [isLoadingWithdraw, setIsLoadingWithdraw] = useState(false);
 
   const chatroomID = usePathname().split('/')[2];
   const chatRef = useRef();
@@ -97,27 +98,55 @@ const ClientComponent = ({ currUser }) => {
   }, []);
 
   useEffect(() => {
+    if (currUser) {
+      const fetchOtherUserCheck = async () => {
+        try {
+          await axios.post('/api/group/otherUserInfo', {
+            email: currUser.email,
+          });
+        } catch (err) {
+          if (err.response.data.type === 'USER_WITHDRAW') {
+            alert(err.response.data.message);
+            router.replace('/main/home');
+            return;
+          }
+          if (err.response.data.type === 'NOT_REGISTER') {
+            alert(err.response.data.message);
+            router.replace('/main/chat');
+            return;
+          }
+        }
+      };
+      fetchOtherUserCheck();
+    }
+  }, [currUser]);
+
+  useEffect(() => {
     const messagesRef = collection(db, 'chatrooms', chatroomID, 'messages');
     const q = query(messagesRef, orderBy('date', 'asc'));
     const unsub = onSnapshot(q, (querySnapshot) => {
-      let arr = [];
-      querySnapshot.docs.forEach((doc) => {
-        const data = doc.data();
-        if (data.message) {
-          arr.push({
-            date: data.date,
-            message: data.message,
-            email: data.email,
-          });
-        } else if (data.imgSrc) {
-          arr.push({
-            date: data.date,
-            imgSrc: data.imgSrc,
-            email: data.email,
-          });
-        }
-      });
-      setChatData(arr);
+      if (querySnapshot.empty) {
+        setChatData([]);
+      } else {
+        let arr = [];
+        querySnapshot.docs.forEach((doc) => {
+          const data = doc.data();
+          if (data.message) {
+            arr.push({
+              date: data.date,
+              message: data.message,
+              email: data.email,
+            });
+          } else if (data.imgSrc) {
+            arr.push({
+              date: data.date,
+              imgSrc: data.imgSrc,
+              email: data.email,
+            });
+          }
+        });
+        setChatData(arr);
+      }
     });
 
     return () => unsub;
@@ -156,7 +185,7 @@ const ClientComponent = ({ currUser }) => {
       >
         {message && (
           <div
-            className={`max-w-4/5 border border-main-red border-solid rounded-[15px] text-start px-[20px] py-[10px] bg-white relative`}
+            className={`max-w-4/5 card-border rounded-medium text-start px-[20px] py-[10px] bg-white relative`}
           >
             <span className='text-subtitle break-keep'>{message}</span>
           </div>
@@ -167,7 +196,7 @@ const ClientComponent = ({ currUser }) => {
               onViewImgOpen();
               setClickViewImgSrc(imgSrc);
             }}
-            className='btn px-[20px] py-[10px] !rounded-[15px]'
+            className='btn px-[20px] py-[10px] !rounded-full bg-white'
           >
             📷 사진 보기
           </button>
@@ -202,7 +231,7 @@ const ClientComponent = ({ currUser }) => {
         </div>
         {message && (
           <div
-            className={`max-w-4/5 border border-main-red border-solid bg-main-red rounded-[15px] text-start px-[20px] py-[10px] relative`}
+            className={`max-w-4/5 border border-main-red border-solid bg-main-red rounded-medium text-start px-[20px] py-[10px] relative`}
           >
             <span className='text-subtitle break-keep text-white'>
               {message}
@@ -215,7 +244,8 @@ const ClientComponent = ({ currUser }) => {
               onViewImgOpen();
               setClickViewImgSrc(imgSrc);
             }}
-            className='card-border px-[20px] py-[10px] rounded-[15px]'
+            // className='card-border px-[20px] py-[10px] rounded-[15px]'
+            className='full-btn px-[20px] py-[10px] !rounded-full'
           >
             📷 사진 보기
           </button>
@@ -317,11 +347,21 @@ const ClientComponent = ({ currUser }) => {
   };
 
   const handleRoomOut = async () => {
-    let withdraw = await axios.post('/api/setting/withdraw', {
-      email: currUser.email,
-    });
-    signOut();
-    router.replace('/');
+    if (currUser) {
+      setIsLoadingWithdraw(true);
+      deleteAccountHandler(currUser.email)
+        .then(async () => {
+          setIsLoadingWithdraw(false);
+          onRoomOutOpenChange(false);
+          await signOut();
+          router.replace('/');
+        })
+        .catch((err) => {
+          setIsLoadingWithdraw(false);
+          onRoomOutOpenChange(false);
+          console.log(err);
+        });
+    }
   };
 
   return (
@@ -659,15 +699,32 @@ const ClientComponent = ({ currUser }) => {
                 <p>사용신청을 다시하여 선정되어야 사용가능합니다</p>
               </ModalBody>
               <ModalFooter>
-                <button onClick={onClose} className='btn px-[20px] py-[5px]'>
-                  취소
-                </button>
-                <button
-                  onClick={handleRoomOut}
-                  className='full-btn px-[20px] py-[5px]'
-                >
-                  나가기
-                </button>
+                {isLoadingWithdraw ? (
+                  <button className='full-btn px-[20px] py-[5px] flex justify-center items-center'>
+                    <Spinner
+                      size='sm'
+                      classNames={{
+                        circle1: 'border-b-white',
+                        circle2: 'border-b-white',
+                      }}
+                    />
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={onClose}
+                      className='btn px-[20px] py-[5px]'
+                    >
+                      취소
+                    </button>
+                    <button
+                      onClick={handleRoomOut}
+                      className='full-btn px-[20px] py-[5px]'
+                    >
+                      나가기
+                    </button>
+                  </>
+                )}
               </ModalFooter>
             </>
           )}
