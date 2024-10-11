@@ -19,7 +19,6 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@nextui-org/spinner';
 import deleteAccountHandler from '../../../hooks/deleteAccount';
-// import { getFCMToken } from '../../../firebase/firebaseDB';
 
 const SettingPage = () => {
   const [inquiryTitle, setInquiryTitle] = useState('');
@@ -322,9 +321,9 @@ const SettingPage = () => {
         <button className='underline' onClick={onOpen}>
           탈퇴하기
         </button>
-        {userInfo && userInfo.email && (
+        {/* {userInfo && userInfo.email && (
           <button onClick={handleTokenClick}>토큰생성</button>
-        )}
+        )} */}
       </div>
     </div>
   );

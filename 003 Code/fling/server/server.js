@@ -5,7 +5,6 @@ const { MongoClient } = require('mongodb');
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 const admin = require('firebase-admin');
-
 const https = require('https');
 const fs = require('fs');
 const { parse } = require('url');
@@ -24,6 +23,7 @@ admin.initializeApp({
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
 });
 const firebaseDB = admin.firestore();
+const firebaseStorage = admin.storage().bucket();
 
 const port = parseInt(process.env.PORT || '3000', 10);
 const dev = process.env.NODE_ENV !== 'production';
@@ -64,63 +64,129 @@ app.prepare().then(() => {
       console.log(err);
     });
 
-  // 유저 선정 및 남녀 그룹화
+  const deleteAllCredentials = async () => {
+    try {
+      await mongoDB.collection('user_cred').deleteMany({ role: 'normal' });
+    } catch (err) {
+      return err;
+    }
+  };
+
+  const deleteAllSelectedGroup = async () => {
+    try {
+      await mongoDB.collection('selected_groups').deleteMany({});
+    } catch (err) {
+      return err;
+    }
+  };
+
+  const deleteAllImages = async () => {
+    try {
+      const [files] = await firebaseStorage.getFiles({ prefix: 'images/' });
+
+      files.map(async (file) => {
+        const filePath = file.name;
+        if (!filePath.startsWith('images/marker')) {
+          await file.delete();
+        }
+      });
+    } catch (err) {
+      return err;
+    }
+  };
+
+  const deleteAllChat = async () => {
+    try {
+      const chatroomRef = firebaseDB.collection('chatrooms');
+      const chatroomSnapshot = await chatroomRef.get();
+      if (!chatroomSnapshot.empty) {
+        chatroomSnapshot.forEach(async (chatroomDoc) => {
+          const messageRef = firebaseDB
+            .collection('chatrooms')
+            .doc(chatroomDoc.id)
+            .collection('messages');
+          const messageSnapshot = await messageRef.get();
+
+          if (!messageSnapshot.empty) {
+            messageSnapshot.forEach(async (messageDoc) => {
+              await messageDoc.ref.delete();
+            });
+          }
+
+          await chatroomDoc.ref.delete();
+        });
+      }
+    } catch (err) {
+      return err;
+    }
+  };
+
+  // 유저 선정,남녀 그룹화 및 모든 데이터 삭제
   // 매주 월요일 오전 9시에 동작 => 0 9 * * 1
   cron.schedule('0 9 * * 1', async () => {
-    const allForm = await mongoDB.collection('form').find({}).toArray();
+    try {
+      await deleteAllCredentials();
+      await deleteAllSelectedGroup();
+      await deleteAllImages();
+      await deleteAllChat();
 
-    if (allForm) {
-      const man = allForm.filter((item) => item.gender === 'man');
-      man.forEach((item) => {
-        item.eventCode = Math.random()
-          .toString(20)
-          .substring(2, 8)
-          .toUpperCase();
-      });
-      const woman = allForm.filter((item) => item.gender === 'woman');
-      woman.forEach((item) => {
-        item.eventCode = Math.random()
-          .toString(20)
-          .substring(2, 8)
-          .toUpperCase();
-      });
-      const minLength = Math.min(man.length, woman.length);
-      const randomLength = Math.floor(Math.random() * minLength) + 1;
+      const allForm = await mongoDB.collection('form').find({}).toArray();
 
-      const selectedMan = shuffle(man.slice(0, randomLength));
-      const selectedWoman = shuffle(woman.slice(0, randomLength));
+      if (allForm) {
+        const man = allForm.filter((item) => item.gender === 'man');
+        man.forEach((item) => {
+          item.eventCode = Math.random()
+            .toString(20)
+            .substring(2, 8)
+            .toUpperCase();
+        });
+        const woman = allForm.filter((item) => item.gender === 'woman');
+        woman.forEach((item) => {
+          item.eventCode = Math.random()
+            .toString(20)
+            .substring(2, 8)
+            .toUpperCase();
+        });
+        const minLength = Math.min(man.length, woman.length);
+        const randomLength = Math.floor(Math.random() * minLength) + 1;
 
-      const groups = selectedMan.map((element, idx) => {
-        return [element, selectedWoman[idx]];
-      });
+        const selectedMan = shuffle(man.slice(0, randomLength));
+        const selectedWoman = shuffle(woman.slice(0, randomLength));
 
-      await mongoDB.collection('selected_groups').deleteMany({});
-
-      const ids = await getAllDocumentIds('chatrooms');
-
-      for (let id of ids) {
-        await firebaseDB.collection('chatrooms').doc(id).delete();
-      }
-
-      for (const group of groups) {
-        const chatroomID = Math.random()
-          .toString(20)
-          .substring(2, 12)
-          .toUpperCase();
-
-        const emails = group.map((item) => item.email);
-
-        await firebaseDB.collection('chatrooms').doc(chatroomID).set({
-          member: emails,
+        const groups = selectedMan.map((element, idx) => {
+          return [element, selectedWoman[idx]];
         });
 
-        await mongoDB
-          .collection('selected_groups')
-          .insertOne({ group, chatroomID });
-      }
+        await mongoDB.collection('selected_groups').deleteMany({});
 
-      // await mongoDB.collection('form').deleteMany({});
-      console.log('그룹화 완료');
+        const ids = await getAllDocumentIds('chatrooms');
+
+        for (let id of ids) {
+          await firebaseDB.collection('chatrooms').doc(id).delete();
+        }
+
+        for (const group of groups) {
+          const chatroomID = Math.random()
+            .toString(20)
+            .substring(2, 12)
+            .toUpperCase();
+
+          const emails = group.map((item) => item.email);
+
+          await firebaseDB.collection('chatrooms').doc(chatroomID).set({
+            member: emails,
+          });
+
+          await mongoDB
+            .collection('selected_groups')
+            .insertOne({ group, chatroomID });
+        }
+
+        // await mongoDB.collection('form').deleteMany({});
+        console.log('그룹화 완료');
+      }
+    } catch (err) {
+      console.log(err);
     }
   });
 
@@ -189,18 +255,6 @@ app.prepare().then(() => {
 
     transporter.close();
   });
-
-  /** Next.js Routing */
-  // server.get('/', (req, res) => {
-  //   const parsedUrl = parse(req.url, true);
-  //   const { pathname, query } = parsedUrl;
-  //   app.render(req, res, pathname, query);
-  // });
-
-  // server.use('/api', (req, res, next) => {
-  //   // Next.js API 라우터로 요청 전달
-  //   return handle(req, res);
-  // });
 
   server.all('*', (req, res) => {
     return handle(req, res);
