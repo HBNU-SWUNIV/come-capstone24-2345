@@ -19,6 +19,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@nextui-org/spinner';
 import deleteAccountHandler from '../../../hooks/deleteAccount';
+import Link from 'next/link';
 
 const SettingPage = () => {
   const [inquiryTitle, setInquiryTitle] = useState('');
@@ -37,10 +38,7 @@ const SettingPage = () => {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      setUserInfo({
-        email: session.user.email,
-        nickname: session.user.nickname,
-      });
+      setUserInfo(session.user);
     }
   }, [session, status]);
 
@@ -297,8 +295,8 @@ const SettingPage = () => {
       <div className='w-full flex px-[20px] py-[10px] justify-around items-center text-info text-gray-500'>
         <button
           className='underline'
-          onClick={() => {
-            signOut();
+          onClick={async () => {
+            await signOut();
             router.replace('/');
           }}
         >
@@ -324,6 +322,11 @@ const SettingPage = () => {
         {/* {userInfo && userInfo.email && (
           <button onClick={handleTokenClick}>토큰생성</button>
         )} */}
+        {userInfo && userInfo.role === 'admin' && (
+          <Link className='underline' href={'/admin'}>
+            관리자모드
+          </Link>
+        )}
       </div>
     </div>
   );

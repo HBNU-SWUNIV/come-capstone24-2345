@@ -97,6 +97,7 @@ export const authOptions = {
         token.user.univCert = user.univCert;
         token.user.army = user.army;
         token.user.chatroomID = user.chatroomID;
+        token.user.role = user.role;
       }
       return token;
     },

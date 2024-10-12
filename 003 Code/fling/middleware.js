@@ -31,4 +31,13 @@ export async function middleware(request) {
       return NextResponse.redirect(new URL('/main/chat', request.url));
     }
   }
+
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    const session = await getToken({ req: request });
+    if (session === null) {
+      return NextResponse.redirect(new URL('/', request.url));
+    } else if (session.user.role !== 'admin') {
+      return NextResponse.redirect(new URL('/main/home', request.url));
+    }
+  }
 }
