@@ -11,6 +11,9 @@ import {
   Button,
   useDisclosure,
 } from '@nextui-org/react';
+import axios from 'axios';
+import { db } from '@/firebase/firebaseDB';
+import { Timestamp } from 'firebase/firestore';
 
 const ReportPage = () => {
   const [reports, setReports] = useState();
@@ -30,9 +33,23 @@ const ReportPage = () => {
     console.log(reports);
   }, [reports]);
 
-  const checkChatLog = (report) => {
-    setCurrReport(report);
-    onOpen();
+  const checkChatLog = async (report) => {
+    try {
+      const chatLogs = await axios.post('/api/admin/chat/logs', {
+        email: report.email,
+        date: report.date,
+      });
+      setCurrReport(chatLogs.data);
+      onOpen();
+    } catch (err) {
+      alert(err.response.data);
+    }
+  };
+
+  const getFirebaseTime = (time) => {
+    const milliseconds = time.seconds * 1000 + time.nanoseconds / 1000000;
+    const date = new Date(milliseconds);
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}:${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}`;
   };
 
   if (reports && Array.isArray(reports)) {
@@ -90,22 +107,43 @@ const ReportPage = () => {
             {(onClose) => (
               <>
                 <ModalHeader className='flex flex-col gap-1'>
-                  Modal Title
+                  채팅 로그
                 </ModalHeader>
                 <ModalBody>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Nullam pulvinar risus non risus hendrerit venenatis.
-                    Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                  </p>
+                  <div className='w-full max-h-[350px] flex flex-col gap-[10px] overflow-y-scroll'>
+                    {currReport &&
+                      currReport.map((item) => {
+                        return (
+                          <div
+                            className='flex flex-col'
+                            key={item.email + item.date + item.message}
+                          >
+                            <span className='text-info text-gray-400'>
+                              {item.email}
+                            </span>
+                            {item.message && (
+                              <span className='text-info'>{item.message}</span>
+                            )}
+                            {item.imgSrc && (
+                              <span className='text-info truncate'>
+                                {item.imgSrc}
+                              </span>
+                            )}
+                            <span className='text-info text-gray-400'>
+                              {getFirebaseTime(item.date)}
+                            </span>
+                          </div>
+                        );
+                      })}
+                  </div>
                 </ModalBody>
                 <ModalFooter>
-                  <Button color='danger' variant='light' onPress={onClose}>
-                    Close
-                  </Button>
-                  <Button color='primary' onPress={onClose}>
-                    Action
-                  </Button>
+                  <button
+                    onClick={onClose}
+                    className='full-btn px-[15px] py-[5px]'
+                  >
+                    닫기
+                  </button>
                 </ModalFooter>
               </>
             )}

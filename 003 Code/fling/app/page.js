@@ -40,6 +40,8 @@ const StartPage = () => {
         setEmail('');
       })
       .catch((err) => {
+        setGender('man');
+        setEmail('');
         alert(err.response.data);
       });
   };
@@ -173,11 +175,11 @@ const StartPage = () => {
 
       <div className='size-full flex flex-col justify-center items-center relative'>
         <div className='w-full min-h-[300px] h-1/2 relative top-[-50px] flex flex-col justify-evenly items-center'>
-          <MainSlider />
+          {/* <MainSlider /> */}
         </div>
 
         <div className='w-full absolute bottom-[50px]'>
-          <button className='w-full h-[60px] my-[20px] rounded-[15px] bg-main-red text-white'>
+          <button className='w-full h-[50px] my-[20px] rounded-[15px] bg-main-red text-white'>
             <Link
               href='/register/code'
               className='size-full flex justify-center items-center'

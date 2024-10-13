@@ -649,7 +649,16 @@ const ClientComponent = ({ currUser }) => {
                           욕설, 성적인 표현, 혐오 표현 등이 포함된 닉네임
                         </p>
                       </Checkbox>
+                      <Checkbox value='부적절한 프로필'>
+                        <p>부적절한 프로필</p>
+                        <p className='text-info text-gray-500'>
+                          적절하지 않은 이미지를 프로필로 사용
+                        </p>
+                      </Checkbox>
                     </CheckboxGroup>
+                    <span className='text-info text-main-red underline'>
+                      * 신고 시 채팅내역을 검수합니다
+                    </span>
                     <Textarea
                       label='기타'
                       minRows={1}

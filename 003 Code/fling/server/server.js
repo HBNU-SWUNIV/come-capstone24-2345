@@ -123,6 +123,7 @@ app.prepare().then(() => {
 
   // 유저 선정,남녀 그룹화 및 모든 데이터 삭제
   // 매주 월요일 오전 9시에 동작 => 0 9 * * 1
+  // */30 * * * * * 30초
   cron.schedule('0 9 * * 1', async () => {
     try {
       await deleteAllCredentials();
@@ -157,13 +158,13 @@ app.prepare().then(() => {
           return [element, selectedWoman[idx]];
         });
 
-        await mongoDB.collection('selected_groups').deleteMany({});
+        // await mongoDB.collection('selected_groups').deleteMany({});
 
-        const ids = await getAllDocumentIds('chatrooms');
+        // const ids = await getAllDocumentIds('chatrooms');
 
-        for (let id of ids) {
-          await firebaseDB.collection('chatrooms').doc(id).delete();
-        }
+        // for (let id of ids) {
+        //   await firebaseDB.collection('chatrooms').doc(id).delete();
+        // }
 
         for (const group of groups) {
           const chatroomID = Math.random()
@@ -182,7 +183,7 @@ app.prepare().then(() => {
             .insertOne({ group, chatroomID });
         }
 
-        // await mongoDB.collection('form').deleteMany({});
+        await mongoDB.collection('form').deleteMany({});
         console.log('그룹화 완료');
       }
     } catch (err) {
@@ -207,15 +208,6 @@ app.prepare().then(() => {
         user: process.env.NEXT_PUBLIC_NODEMAILER_USER,
         pass: process.env.NEXT_PUBLIC_NODEMAILER_PASS,
       },
-    });
-
-    transporter.sendMail(manMailOptions, (err, info) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log('email sent : ' + info.response);
-        transporter.close();
-      }
     });
 
     groups.forEach((element) => {
@@ -252,6 +244,8 @@ app.prepare().then(() => {
         else console.log('email sent : ' + info.response);
       });
     });
+
+    await mongoDB.colletion('form').deleteMany({});
 
     transporter.close();
   });
