@@ -522,7 +522,7 @@ const MainPage = () => {
                             이번주 연애운세
                           </span>
                           <span className='w-full text-end text-info text-gray-400'>{`${fortuneContent.date.year}-${fortuneContent.date.month}-${fortuneContent.date.day} ${fortuneContent.date.hour < 10 ? `0${fortuneContent.date.hour}` : fortuneContent.date.hour}시 ${fortuneContent.date.min < 10 ? `0${fortuneContent.date.min}` : fortuneContent.date.min}분 기준`}</span>
-                          <span className='mt-[20px] text-subtitle break-keep break-words'>
+                          <span className='w-full flex-1 mt-[20px] text-subtitle break-keep break-words overflow-y-scroll'>
                             {fortuneContent.content}
                           </span>
                         </div>
@@ -560,12 +560,14 @@ const SliderContainer = styled.div`
 const CardContainer = styled.div`
   aspect-ratio: 1 / 1.58;
   perspective: 1000px;
+  -webkit-perspective: 1000px;
 `;
 const Card = styled.div`
   aspect-ratio: 1 / 1.58;
   position: relative;
   transition: transform 0.6s;
   transform-style: preserve-3d;
+  -webkit-transform-style: perserve-3d;
   cursor: pointer;
   transform: ${(props) =>
     props.$isflipped ? 'rotateY(180deg)' : 'rotateY(0deg)'};
@@ -577,6 +579,7 @@ const CardFB = styled.div`
   justify-content: center;
   align-items: center;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 `;
 const CardFront = styled(CardFB)``;
 const CardBack = styled(CardFB)`
