@@ -5,8 +5,11 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Image from 'next/image';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
+import useKakaoLoader from '@/hooks/useKakaoLoader';
 
 export default function KakaoMap({ place }) {
+  useKakaoLoader();
+
   const [center, setCenter] = useState({
     lat: 36.35813,
     lng: 127.3868,
@@ -14,12 +17,11 @@ export default function KakaoMap({ place }) {
   const [kakaoMap, setKakaoMap] = useState(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const [marker, setMarker] = useState();
-  const [slideIndex, setSlideIndex] = useState(0);
-  const [updateCount, setUpdateCount] = useState(0);
 
-  const KAKAO_MAP_SDK_URL = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY}&autoload=false&libraries=services,clusterer`;
-  const markerImage =
+  const redMarkerImage =
     'https://firebasestorage.googleapis.com/v0/b/fling-fdf18.appspot.com/o/images%2Fmarker%2Fmarker.svg?alt=media&token=6ab7bc38-361e-4c92-925f-f94414c9ec21';
+  const blueMarkerImage =
+    'https://firebasestorage.googleapis.com/v0/b/fling-fdf18.appspot.com/o/images%2Fmarker%2Fmarker2.svg?alt=media&token=edf7aa9d-dff9-4e57-b34c-21a1da852a56';
 
   const container = useRef();
   let sliderRef = useRef(null);
@@ -32,14 +34,10 @@ export default function KakaoMap({ place }) {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    // autoplay: true,
-    // autoplaySpeed: 5000,
-    // cssEase: 'ease',
+    cssEase: 'ease',
     beforeChange: (current, next) => {
       setActiveSlide(next);
     },
-    // afterChange: () => setUpdateCount(updateCount + 1),
-    // beforeChange: (current, next) => setSlideIndex(next),
     draggable: true,
     nextArrow: (
       <SlickButtonFix>
@@ -68,37 +66,39 @@ export default function KakaoMap({ place }) {
   };
 
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = KAKAO_MAP_SDK_URL;
-    document.head.appendChild(script);
-
-    script.onload = () => {
-      kakao.maps.load(() => {
-        const map = new kakao.maps.Map(container.current);
-        setKakaoMap(map);
-      });
-    };
-  }, [container]);
-
-  useEffect(() => {
     if (!kakaoMap) return;
 
     if (place.length !== 0) {
       let geocoder = new kakao.maps.services.Geocoder();
 
-      geocoder.addressSearch(
-        place[activeSlide].data.address,
-        (result, status) => {
-          if (status === kakao.maps.services.Status.OK) {
-            setCenter({ lat: result[0].y, lng: result[0].x });
-            setMarker({ position: { lat: result[0].y, lng: result[0].x } });
-          }
-        }
-      );
+      const placePromises = place.map((item) => {
+        return new Promise((resolve, reject) => {
+          geocoder.addressSearch(item.data.address, (result, status) => {
+            if (status === kakao.maps.services.Status.OK) {
+              resolve({ position: { lat: result[0].y, lng: result[0].x } });
+            }
+          });
+        });
+      });
+
+      Promise.all(placePromises).then((placeList) => {
+        setMarker(placeList);
+      });
     } else {
       setMarker(null);
     }
   }, [kakaoMap, place, activeSlide]);
+
+  useEffect(() => {
+    if (!kakaoMap) return;
+
+    marker && setCenter(marker[activeSlide].position);
+  }, [marker, activeSlide, kakaoMap]);
+
+  const handleMarker = (index, position) => {
+    setCenter(position);
+    sliderRef.current.slickGoTo(index);
+  };
 
   return (
     <Map
@@ -109,27 +109,34 @@ export default function KakaoMap({ place }) {
       onCreate={setKakaoMap}
       level={3}
     >
-      {marker && (
-        <MapMarker
-          image={{
-            src: markerImage,
-            size: {
-              width: 35,
-              height: 40,
-            },
-          }}
-          position={marker.position}
-        />
-      )}
+      {marker &&
+        marker.length !== 0 &&
+        marker.map((item, idx) => {
+          return (
+            <MapMarker
+              image={{
+                src: idx === activeSlide ? redMarkerImage : blueMarkerImage,
+                size:
+                  idx === activeSlide
+                    ? {
+                        width: 40,
+                        height: 45,
+                      }
+                    : {
+                        width: 30,
+                        height: 35,
+                      },
+              }}
+              onClick={() => handleMarker(idx, item.position)}
+              position={item.position}
+              zIndex={`${idx === activeSlide ? 9 : 1}`}
+            />
+          );
+        })}
       <section className='absolute bottom-[80px] left-1/2 transform -translate-x-1/2 w-full h-[150px] px-[30px] z-[9] bg-white/80 card-border'>
         {place.length !== 0 ? (
           <SliderContainer>
-            <Slider
-              ref={(slider) => {
-                sliderRef = slider;
-              }}
-              {...sliderSettings}
-            >
+            <Slider ref={sliderRef} {...sliderSettings}>
               {place.map((item, idx) => {
                 return (
                   <div key={item.data} className='w-full h-[150px] relative'>

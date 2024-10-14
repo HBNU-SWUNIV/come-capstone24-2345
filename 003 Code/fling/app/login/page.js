@@ -69,7 +69,7 @@ const LoginPage = () => {
           <button
             type='submit'
             // onClick={handleLogin}
-            className='w-full h-[60px] mt-[20px] full-btn'
+            className='w-full h-[50px] mt-[20px] full-btn'
           >
             로그인
           </button>

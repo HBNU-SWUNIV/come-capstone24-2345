@@ -80,10 +80,8 @@ const handleSuccess = async (req, res) => {
           religion,
           role,
         });
-        console.log(result);
         res.status(200).end();
       } catch (err) {
-        console.log(err);
         res.status(500).send('잠시 후 다시 시도해주세요');
       }
     } else {
