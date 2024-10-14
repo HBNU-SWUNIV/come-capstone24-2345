@@ -229,12 +229,13 @@ const SettingPage = () => {
         />
       </div>
 
-      <button className='flex flex-col px-[20px] py-[10px] bg-white rounded-[15px] card-border'>
+      <button
+        onClick={() => router.replace('/main/setting/inquiry')}
+        className='flex flex-col px-[20px] py-[10px] bg-white rounded-[15px] card-border'
+      >
         <div className='flex flex-col text-start gap-[5px]'>
           <span>Q&A</span>
-          <span className='text-info text-gray-500'>
-            회원님들의 문의 내역들
-          </span>
+          <span className='text-info text-gray-500'>회원님의 문의 내역</span>
         </div>
       </button>
 
