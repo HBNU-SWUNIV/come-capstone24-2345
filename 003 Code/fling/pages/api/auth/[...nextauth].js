@@ -61,22 +61,14 @@ export const authOptions = {
           univCert,
         } = session;
 
-        if (height && religion && mbti && smoking && drinkLimit) {
-          token.user.height = height;
-          token.user.religion = religion;
-          token.user.mbti = mbti;
-          token.user.smoking = smoking;
-          token.user.drinkLimit = drinkLimit;
-        }
-        if (hobby) {
-          token.user.hobby = hobby;
-        }
-        if (introduction) {
-          token.user.introduction = introduction;
-        }
-        if (univCert) {
-          token.user.univCert = univCert;
-        }
+        token.user.height = height ?? token.user.height;
+        token.user.religion = religion ?? token.user.religion;
+        token.user.mbti = mbti ?? token.user.mbti;
+        token.user.smoking = smoking ?? token.user.smoking;
+        token.user.drinkLimit = drinkLimit ?? token.user.drinkLimit;
+        token.user.hobby = hobby ?? token.user.hobby;
+        token.user.introduction = introduction ?? token.user.introduction;
+        token.user.univCert = univCert ?? token.user.univCert;
       }
       if (user) {
         token.user = {};

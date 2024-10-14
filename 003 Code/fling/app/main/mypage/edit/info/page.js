@@ -26,8 +26,8 @@ const editMyInfo = () => {
     await axios
       .post('/api/edit/info', { info })
       .then((res) => {
-        alert('수정되었습니다!');
         update(res.data);
+        alert('수정되었습니다!');
         router.replace('/main/mypage');
       })
       .catch((err) => {

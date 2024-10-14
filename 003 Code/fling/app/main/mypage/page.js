@@ -254,12 +254,12 @@ const MypagePage = () => {
               {infoComponent('학교', sessionInfo.univ)}
               {infoComponent('학과', sessionInfo.department)}
               {infoComponent('키', `${sessionInfo.height}cm`)}
-              {infoComponent('종교', '무교')}
+              {infoComponent('종교', sessionInfo.religion)}
               {sessionInfo.mbti &&
                 infoComponent('MBTI', sessionInfo.mbti.type.join(''))}
               {infoComponent(
                 '흡연/음주',
-                `${sessionInfo.smoking === 'smoking' ? '흡연자' : '비흡연자'} / ${sessionInfo.drinkLimit === 0 ? '술을 못하는 편' : `${sessionInfo.drinkLimit}병`}`
+                `${sessionInfo.smoking ? '흡연자' : '비흡연자'} / ${sessionInfo.drinkLimit === 0 ? '술을 못하는 편' : `${sessionInfo.drinkLimit}병`}`
               )}
               {infoComponent(
                 '군필여부',
