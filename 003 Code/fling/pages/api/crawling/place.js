@@ -77,7 +77,7 @@ const crawlingHandler = async (req, res) => {
           imgs.length !== 0 ? imgs.map((img) => img.src) : null
         );
 
-        let result = await db.collection(`${city}_foodie`).insertOne({
+        let result = await db.collection(`${city}_place`).insertOne({
           type,
           data: { title, category, address, phone, tag, img },
         });
@@ -91,73 +91,64 @@ const crawlingHandler = async (req, res) => {
   };
 
   if (req.method === 'GET') {
+    // await crawling(
+    //   { region: '대전', keywords: ['20대', '데이트', '카페'] },
+    //   'daejeon',
+    //   '카페'
+    // )();
+    // await crawling(
+    //   { region: '대전', keywords: ['20대', '데이트', '술집'] },
+    //   'daejeon',
+    //   '술집'
+    // )();
+    // await crawling(
+    //   { region: '대전', keywords: ['20대', '데이트', '양식'] },
+    //   'daejeon',
+    //   '양식'
+    // )();
+    // await crawling(
+    //   { region: '대전', keywords: ['20대', '데이트', '중식'] },
+    //   'daejeon',
+    //   '중식'
+    // )();
+    // await crawling(
+    //   { region: '대전', keywords: ['20대', '데이트', '일식'] },
+    //   'daejeon',
+    //   '일식'
+    // )();
+    // await crawling(
+    //   { region: '대전', keywords: ['20대', '데이트', '한식'] },
+    //   'daejeon',
+    //   '한식'
+    // )();
     await crawling(
-      { region: '대전', keywords: ['20대', '데이트', '카페'] },
-      'daejeon',
-      '카페'
-    )();
-    await crawling(
-      { region: '대전', keywords: ['20대', '데이트', '술집'] },
+      { region: '대전%20동구', keywords: ['20대', '술집', '데이트'] },
       'daejeon',
       '술집'
     )();
     await crawling(
-      { region: '대전', keywords: ['20대', '데이트', '양식'] },
+      { region: '대전%20중구', keywords: ['20대', '술집', '데이트'] },
       'daejeon',
-      '양식'
+      '술집'
     )();
     await crawling(
-      { region: '대전', keywords: ['20대', '데이트', '중식'] },
+      { region: '대전%20서구', keywords: ['20대', '술집', '데이트'] },
       'daejeon',
-      '중식'
+      '술집'
     )();
     await crawling(
-      { region: '대전', keywords: ['20대', '데이트', '일식'] },
+      { region: '대전%20유성구', keywords: ['20대', '술집', '데이트'] },
       'daejeon',
-      '일식'
+      '술집'
     )();
     await crawling(
-      { region: '대전', keywords: ['20대', '데이트', '한식'] },
+      { region: '대전%20대덕구', keywords: ['20대', '술집', '데이트'] },
       'daejeon',
-      '한식'
+      '술집'
     )();
 
-    res.status(200).send('Complete crawling');
-    // (async () => {
-    //   await crawling('list.dc?query=대전%20이색카페', 'daejeon', '카페')();
-
-    //   await crawling(
-    //     'list.dc?query=대전%20술집&keyword=20대%2C데이트%2C술집',
-    //     'daejeon',
-    //     '술집'
-    //   )();
-
-    //   await crawling(
-    //     'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C양식',
-    //     'daejeon',
-    //     '양식'
-    //   )();
-
-    //   await crawling(
-    //     'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C일식',
-    //     'daejeon',
-    //     '일식'
-    //   )();
-
-    //   await crawling(
-    //     'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C중식',
-    //     'daejeon',
-    //     '중식'
-    //   )();
-
-    //   await crawling(
-    //     'list.dc?query=대전%20맛집&keyword=20대%2C데이트%2C한식',
-    //     'daejeon',
-    //     '한식'
-    //   )();
-    // })().then(() => {
-    //   res.status(200).send('데이팅장소 수집 완료!');
-    // });
+    console.log('크롤링 완료');
+    return res.status(200).send('Complete crawling');
   }
 };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { Select, SelectItem } from '@nextui-org/react';
 import DaejeonData from './DaejeonInfo.json';
@@ -23,6 +23,7 @@ const PlacePage = () => {
   const [category, setCategory] = useState();
   const [place, setPlace] = useState([]);
 
+  const [sigunguList, setSigunguList] = useState();
   const mapContainer = useRef();
 
   const {
@@ -34,13 +35,30 @@ const PlacePage = () => {
 
   const handleSearch = async () => {
     setSearchValue(`${si} ${siGunGu} ${dong} ${category}`);
-    await axios
-      .get(`/api/place/${si}/${siGunGu}/${dong}?category=${category}`)
-      .then((res) => {
-        setPlace(res.data);
-      });
-    onMapOptionOpenChange(false);
+    // setSearchValue(`${si} ${siGunGu} ${category}`);
+    if (si && siGunGu && dong && category) {
+      await axios
+        .get(`/api/place/${si}/${siGunGu}/${dong}?category=${category}`)
+        // .get(`/api/place/${si}/${siGunGu}/dong?category=${category}`)
+        .then((res) => {
+          setPlace(res.data);
+        });
+      onMapOptionOpenChange(false);
+    } else {
+      alert('장소를 모두 선택해주세요');
+    }
   };
+
+  useEffect(() => {
+    const fetchDong = async () => {
+      const result = await axios.post(`/api/place/${si}/list`);
+      setSigunguList(result.data);
+      console.log(result.data);
+    };
+    if (si) {
+      fetchDong();
+    }
+  }, [si]);
 
   return (
     <>
@@ -96,8 +114,8 @@ const PlacePage = () => {
                     className='w-full'
                     value={siGunGu}
                   >
-                    {si &&
-                      Object.keys(DaejeonData[si]).map((SiGunGu, idx) => (
+                    {sigunguList &&
+                      Object.keys(sigunguList).map((SiGunGu, idx) => (
                         <SelectItem
                           key={SiGunGu + idx}
                           onClick={() => {
@@ -115,8 +133,9 @@ const PlacePage = () => {
                     className='w-full'
                     value={dong}
                   >
-                    {siGunGu &&
-                      DaejeonData[si][siGunGu].map((Dong, idx) => (
+                    {sigunguList &&
+                      siGunGu &&
+                      sigunguList[siGunGu].map((Dong, idx) => (
                         <SelectItem
                           key={Dong + idx}
                           onClick={() => {
@@ -140,6 +159,7 @@ const PlacePage = () => {
                       return (
                         <SelectItem
                           key={si + siGunGu + dong + element}
+                          // key={si + siGunGu + element}
                           onClick={() => setCategory(element)}
                         >
                           {element}
@@ -153,9 +173,11 @@ const PlacePage = () => {
                     취소
                   </button>
                   <button
-                    disabled={!si || !siGunGu || !dong || !category}
+                    // disabled={!si || !siGunGu || !dong || !category}
+                    disabled={!si || !siGunGu || !category}
                     onClick={handleSearch}
-                    className={`${!si || !siGunGu || !dong || !category ? 'btn' : 'full-btn'} px-[20px] py-[5px]`}
+                    // className={`${!si || !siGunGu || !dong || !category ? 'btn' : 'full-btn'} px-[20px] py-[5px]`}
+                    className={`${!si || !siGunGu || !category ? 'btn' : 'full-btn'} px-[20px] py-[5px]`}
                   >
                     검색
                   </button>

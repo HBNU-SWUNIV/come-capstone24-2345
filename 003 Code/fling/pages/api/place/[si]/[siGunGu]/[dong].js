@@ -9,7 +9,7 @@ const handlerFoodieQuery = async (req, res) => {
 
     if (si === '대전광역시') {
       const result = await db
-        .collection('daejeon_foodie')
+        .collection('daejeon_place')
         .find({
           type: { $regex: category },
           'data.address': { $regex: `${si} ${siGunGu} ${dong}` },
