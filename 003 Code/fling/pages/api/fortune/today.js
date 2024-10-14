@@ -34,76 +34,111 @@ const handleFortuneToday = async (req, res) => {
 
     const client = await connectDB;
     const db = await client.db('Fling');
-    const oneDayMs = 24 * 60 * 60 * 1000;
+    // const oneDayMs = 24 * 60 * 60 * 1000;
 
-    const now = new Date();
+    // const now = new Date();
     const userDoc = await db.collection('user_cred').findOne({ email });
 
-    if (userDoc.fortune) {
-      const lastCheckDate = userDoc.fortune.date;
-
-      if (now - lastCheckDate >= oneDayMs) {
-        const fortuneData = await fetchTodayFortuneData();
-        //업데이트
-        await db.collection('user_cred').updateOne(
-          { email },
-          {
-            $set: {
-              fortune: {
-                date: now,
-                content: fortuneData,
+    if (!userDoc.fortune) {
+      const fortuneData = await fetchTodayFortuneData();
+      const now = new Date();
+      await db.collection('user_cred').updateOne(
+        { email },
+        {
+          $set: {
+            fortune: {
+              date: {
+                year: now.getFullYear(),
+                month: now.getMonth() + 1,
+                day: now.getDate(),
+                hour: now.getHours(),
+                min: now.getMinutes(),
               },
+              content: fortuneData,
             },
-          }
-        );
-        res.status(200).send({
-          content: fortuneData,
-          date: {
-            year: now.getFullYear(),
-            month: now.getMonth(),
-            day: now.getDate(),
-            hour: now.getHours(),
-            min: now.getMinutes(),
           },
-        });
-      } else {
-        //하루가 지나지 않음
-        //기존 값 가져오기
-        res.status(200).send({
-          content: userDoc.fortune.content,
-          date: {
-            year: userDoc.fortune.date.getFullYear(),
-            month: userDoc.fortune.date.getMonth(),
-            day: userDoc.fortune.date.getDate(),
-            hour: userDoc.fortune.date.getHours(),
-            min: userDoc.fortune.date.getMinutes(),
-          },
-        });
-      }
-    }
-  } else {
-    const fortuneData = await fetchTodayFortuneData();
-    await db.collection('user_cred').updateOne(
-      { email },
-      {
-        $set: {
-          fortune: {
-            date: now,
-            content: fortuneData,
-          },
+        }
+      );
+      res.status(200).send({
+        content: fortuneData,
+        date: {
+          year: now.getFullYear(),
+          month: now.getMonth() + 1,
+          day: now.getDate(),
+          hour: now.getHours(),
+          min: now.getMinutes(),
         },
-      }
-    );
-    res.status(200).send({
-      content: fortuneData,
-      date: {
-        year: now.getFullYear(),
-        month: now.getMonth(),
-        day: now.getDate(),
-        hour: now.getHours(),
-        min: now.getMinutes(),
-      },
-    });
+      });
+    } else {
+      const userDoc = await db.collection('user_cred').findOne({ email });
+      res.status(200).send(userDoc.fortune);
+    }
+
+    //   if (userDoc.fortune) {
+    //     const lastCheckDate = userDoc.fortune.date;
+
+    //     if (now - lastCheckDate >= oneDayMs) {
+    //       const fortuneData = await fetchTodayFortuneData();
+    //       //업데이트
+    //       await db.collection('user_cred').updateOne(
+    //         { email },
+    //         {
+    //           $set: {
+    //             fortune: {
+    //               date: now,
+    //               content: fortuneData,
+    //             },
+    //           },
+    //         }
+    //       );
+    //       res.status(200).send({
+    //         content: fortuneData,
+    //         date: {
+    //           year: now.getFullYear(),
+    //           month: now.getMonth(),
+    //           day: now.getDate(),
+    //           hour: now.getHours(),
+    //           min: now.getMinutes(),
+    //         },
+    //       });
+    //     } else {
+    //       //하루가 지나지 않음
+    //       //기존 값 가져오기
+    //       res.status(200).send({
+    //         content: userDoc.fortune.content,
+    //         date: {
+    //           year: userDoc.fortune.date.getFullYear(),
+    //           month: userDoc.fortune.date.getMonth(),
+    //           day: userDoc.fortune.date.getDate(),
+    //           hour: userDoc.fortune.date.getHours(),
+    //           min: userDoc.fortune.date.getMinutes(),
+    //         },
+    //       });
+    //     }
+    //   }
+    // } else {
+    //   const fortuneData = await fetchTodayFortuneData();
+    //   await db.collection('user_cred').updateOne(
+    //     { email },
+    //     {
+    //       $set: {
+    //         fortune: {
+    //           date: now,
+    //           content: fortuneData,
+    //         },
+    //       },
+    //     }
+    //   );
+    //   res.status(200).send({
+    //     content: fortuneData,
+    //     date: {
+    //       year: now.getFullYear(),
+    //       month: now.getMonth(),
+    //       day: now.getDate(),
+    //       hour: now.getHours(),
+    //       min: now.getMinutes(),
+    //     },
+    //   });
   }
 };
 

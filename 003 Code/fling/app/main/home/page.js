@@ -151,6 +151,7 @@ const MainPage = () => {
           datingType: userInfo.datingType,
           email: userInfo.email,
         });
+        console.log(result.data.date);
         setFortuneContent(result.data);
       } catch (err) {
         console.log(err);
@@ -515,19 +516,17 @@ const MainPage = () => {
                       />
                     </CardFront>
                     <CardBack className='size-full rounded-small'>
-                      {fortuneContent &&
-                        fortuneContent.content &&
-                        fortuneContent.date && (
-                          <div className='size-full p-[20px] flex flex-col gap-[20px]'>
-                            <span className='w-full text-center'>
-                              오늘의 운세
-                            </span>
-                            <span className='w-full text-end text-info text-gray-400'>{`${fortuneContent.date.year}-${fortuneContent.date.month}-${fortuneContent.date.day} ${fortuneContent.date.hour}시 ${fortuneContent.date.min}분 기준`}</span>
-                            <span className='mt-[20px] text-subtitle break-keep break-words'>
-                              {fortuneContent.content}
-                            </span>
-                          </div>
-                        )}
+                      {fortuneContent && (
+                        <div className='size-full p-[20px] flex flex-col gap-[20px]'>
+                          <span className='w-full text-center'>
+                            이번주 연애운세
+                          </span>
+                          <span className='w-full text-end text-info text-gray-400'>{`${fortuneContent.date.year}-${fortuneContent.date.month}-${fortuneContent.date.day} ${fortuneContent.date.hour < 10 ? `0${fortuneContent.date.hour}` : fortuneContent.date.hour}시 ${fortuneContent.date.min < 10 ? `0${fortuneContent.date.min}` : fortuneContent.date.min}분 기준`}</span>
+                          <span className='mt-[20px] text-subtitle break-keep break-words'>
+                            {fortuneContent.content}
+                          </span>
+                        </div>
+                      )}
                     </CardBack>
                   </Card>
                 </CardContainer>
