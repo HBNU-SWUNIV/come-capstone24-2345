@@ -35,6 +35,8 @@ import CameraSvg from './../../../public/chatroom/camera.svg';
 import ReportSvg from './../../../public/chatroom/report.svg';
 import OutRoomSvg from './../../../public/chatroom/out-room.svg';
 import axios from 'axios';
+// import { sendNotification } from '@/hooks/notifications';
+import setActiveChatroom from './setActiveChatroom';
 
 const ClientComponent = ({ currUser }) => {
   const [chatData, setChatData] = useState([]);
@@ -75,6 +77,7 @@ const ClientComponent = ({ currUser }) => {
   const [isSubmitReport, setIsSubmitReport] = useState(false);
   const [isLoadingWithdraw, setIsLoadingWithdraw] = useState(false);
 
+  const pathname = usePathname();
   const chatroomID = usePathname().split('/')[2];
   const chatRef = useRef();
   const inputRef = useRef();
@@ -146,10 +149,41 @@ const ClientComponent = ({ currUser }) => {
           }
         });
         setChatData(arr);
+
+        const newMessage =
+          querySnapshot.docs[querySnapshot.docs.length - 1].data();
+
+        // axios
+        //   .post('/api/chat/notification', { message: newMessage, chatroomID })
+        //   .then((res) => {});
+        // if (document.visibilityState === 'hidden') {
+        //   // 새로운 메시지가 있을 때만 알림 전송
+        //   const newMessage = arr[arr.length - 1];
+        //   if (newMessage.message) {
+        //     sendNotification(newMessage.message);
+        //   } else {
+        //     sendNotification('사진을 보냈습니다');
+        //   }
+        // }
       }
     });
 
+    setActiveChatroom(currUser.email, true);
+
     return () => unsub;
+  }, [chatroomID]);
+
+  useEffect(() => {
+    const handleVisbility = async () => {
+      if (document.visibilityState === 'hidden') {
+        await setActiveChatroom(currUser.email, false);
+      } else if (document.visibilityState === 'visible') {
+        await setActiveChatroom(currUser.email, true);
+      }
+    };
+    window.addEventListener('visibilitychange', handleVisbility);
+    return () =>
+      window.removeEventListener('visibilitychange', handleVisbility);
   }, []);
 
   useEffect(() => {

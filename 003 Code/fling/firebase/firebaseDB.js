@@ -2,8 +2,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import { getToken } from 'firebase/messaging';
-import { getMessaging } from 'firebase/messaging';
+import { getMessaging, getToken } from 'firebase/messaging';
 import axios from 'axios';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -23,19 +22,24 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-// export const messaging = getMessaging(app);
-// export const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
-
-// export const getFCMToken = async () => {
-//   return await getToken(messaging, { vapidKey })
-//     .then(async (currentToken) => {
-//       if (!currentToken) {
-//         console.error('토큰 생성 불가');
-//       } else {
-//         return currentToken;
-//       }
-//     })
-//     .catch((error) => {
-//       console.error('token error', error);
-//     });
-// };
+export const getTokenHandler = async (userEmail) => {
+  const messaging = getMessaging(app);
+  await getToken(messaging, {
+    vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+  })
+    .then(async (currentToken) => {
+      if (!currentToken) {
+        // 토큰 생성 불가시 처리할 내용, 주로 브라우저 푸시 허용이 안된 경우에 해당한다.
+        console.log('토큰 생성 불가');
+      } else {
+        // 토큰을 받았다면 여기서 DB에 저장하면 됩니다.
+        const result = await axios.post('/api/chat/setFCMToken', {
+          token: currentToken,
+          email: userEmail,
+        });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+};

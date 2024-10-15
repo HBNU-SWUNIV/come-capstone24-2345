@@ -20,6 +20,7 @@ import { useRouter } from 'next/navigation';
 import { Spinner } from '@nextui-org/spinner';
 import deleteAccountHandler from '../../../hooks/deleteAccount';
 import Link from 'next/link';
+import { getTokenHandler } from '@/firebase/firebaseDB';
 
 const SettingPage = () => {
   const [inquiryTitle, setInquiryTitle] = useState('');
@@ -42,60 +43,19 @@ const SettingPage = () => {
     }
   }, [session, status]);
 
-  const handleTokenClick = async () => {
-    // if (userInfo.email && window !== 'undefined') {
-    //   try {
-    //     // const token = await getFCMToken();
-    //     console.log(token);
-    //     const result = await axios.post('/api/push/setToken', {
-    //       email: userInfo.email,
-    //       token,
-    //     });
-    //     console.log(result);
-    //   } catch (err) {
-    //     alert(err.response.data);
-    //   }
-    // }
-  };
-
-  useEffect(() => {
-    // if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-    //   navigator.serviceWorker
-    //     .register('/firebase-messageing-sw.js')
-    //     .then((registration) => {
-    //       getToken(messaging, {
-    //         vapidKey,
-    //         serviceWorkerRegistration: registration,
-    //       })
-    //         .then((currentToken) => {
-    //           if (currentToken) {
-    //             console.log(currentToken);
-    //           } else {
-    //             console.log('no');
-    //           }
-    //         })
-    //         .catch((err) => {
-    //           console.log(err);
-    //         });
-    //     })
-    //     .catch((err) => {
-    //       console.log(err);
-    //     });
-    // }
-  }, []);
-
   const checkPermission = () => {
     if (Notification.permission === 'granted') {
       alert('알림이 이미 허용되어 있습니다');
+      // userInfo && getTokenHandler(userInfo.email);
       setPermission(true);
     } else if (Notification.permission === 'denied') {
       alert('알림이 차단되어 있어 브라우저 설정에서 알림 권한을 허용해주세요');
       setPermission(false);
     } else {
       Notification.requestPermission().then((permission) => {
-        console.log(permission);
         if (permission === 'granted') {
           alert('알림 권한이 허용되었습니다');
+          userInfo && getTokenHandler(userInfo.email);
           setPermission(true);
         } else {
           alert('알림 권한이 차단되었습니다');
