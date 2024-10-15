@@ -15,21 +15,67 @@ import { Divider } from '@nextui-org/divider';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import MainSlider from './MainSlider';
-import InstallPrompt from './InstallPrompt';
 import axios from 'axios';
 
 const StartPage = () => {
-  const [isClickInstallBtn, setIsClickInstallBtn] = useState(false);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isIOS, setIsIOS] = useState(null);
+  const {
+    isOpen: isInstallOpen,
+    onOpen: onInstallOpen,
+    onOpenChange: onInstallOpenChange,
+  } = useDisclosure();
+  const {
+    isOpen: isFormOpen,
+    onOpen: onFormOpen,
+    onOpenChange: onFormOpenChange,
+  } = useDisclosure();
   const [gender, setGender] = useState('man');
   const [email, setEmail] = useState('');
   const [isSubmit, setIsSubmit] = useState(false);
 
   useEffect(() => {
-    if (!isOpen) {
+    if (!isFormOpen) {
       setIsSubmit(false);
     }
-  }, [isOpen]);
+  }, [isFormOpen]);
+
+  useEffect(() => {
+    const isDeviceIOS =
+      /iPad|iPhone|iPod/.test(window.navigator.userAgent) && !window.MSStream;
+    setIsIOS(isDeviceIOS);
+
+    isDeviceIOS && onInstallOpen();
+
+    const beforeInstallPromptHandler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      onInstallOpen();
+    };
+
+    window.addEventListener('beforeinstallprompt', beforeInstallPromptHandler);
+
+    return () => {
+      window.removeEventListener(
+        'beforeinstallprompt',
+        beforeInstallPromptHandler
+      );
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choiceResult = await deferredPrompt.userChoice;
+      if (choiceResult.outcome === 'accepted') {
+        alert('홈 화면에 설치되었습니다!');
+      } else {
+        onInstallOpenChange(false);
+      }
+      setDeferredPrompt(null);
+      onInstallOpenChange(false);
+    }
+  };
 
   const handleSubmit = async () => {
     await axios
@@ -47,22 +93,19 @@ const StartPage = () => {
   };
 
   return (
-    <div className='w-full h-screen px-[40px] relative'>
-      <header className='absolute w-full h-[100px] flex justify-between items-center px-[30px] py-[25px] z-[9999] left-0'>
-        <Image src='/main-logo.svg' alt='main-logo' width={100} height={50} />
+    <div className='w-full h-screen px-[40px] flex flex-col relative'>
+      <header className='absolute w-full h-[60px] flex justify-between items-center px-[30px] py-[15px] z-1 left-0'>
+        <div className='w-[30px] h-full relative'>
+          <Image src='/logo/main-logo.svg' alt='main-logo' fill />
+        </div>
         <div className='flex h-[20px] gap-[10px] items-center'>
-          <button
-            onClick={() => {
-              setIsClickInstallBtn(true);
-            }}
-            className={`text-info text-main-red`}
-          >
+          <button onClick={onInstallOpen} className={`text-info text-main-red`}>
             인앱 설치
           </button>
           <Divider orientation='vertical' />
           <button
             onClick={() => {
-              onOpen();
+              onFormOpen();
             }}
             className='text-info text-main-red'
           >
@@ -71,16 +114,73 @@ const StartPage = () => {
         </div>
       </header>
 
-      <InstallPrompt
-        isClickInstallBtn={isClickInstallBtn}
-        setIsClickInstallBtn={setIsClickInstallBtn}
-      />
+      {/* 웹앱 설치 모달창 */}
+      <Modal
+        className='w-4/5 z-2'
+        isOpen={isInstallOpen}
+        placement='top'
+        onOpenChange={onInstallOpenChange}
+        classNames={{
+          closeButton: 'hidden',
+        }}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalBody className='py-[15px] text-info'>
+                {isIOS ? (
+                  <>
+                    <p className='text-center'>
+                      Fling은 앱에서 원활하게 사용하실 수 있습니다
+                    </p>
+                    <div className='text-start w-full flex flex-col gap-[5px]'>
+                      <div className='flex items-center gap-[5px]'>
+                        <p>1.</p>
+                        <Image
+                          src='/install/share.svg'
+                          width={15}
+                          height={15}
+                          alt='shared-button'
+                        />
+                        <p>공유버튼 클릭</p>
+                      </div>
+                      <div className='flex items-center gap-[5px]'>
+                        <p>2.</p>
+                        <Image
+                          src='/install/plus-box.svg'
+                          width={15}
+                          height={15}
+                          alt='plus-button'
+                        />
+                        <p>"홈 화면에 추가하기" 클릭</p>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className='w-full flex flex-col gap-[10px] items-center'>
+                    <p className='text-center'>
+                      Fling은 앱에서 원활하게 사용하실 수 있습니다
+                    </p>
+                    <button
+                      className='full-btn w-fit px-[20px] h-[40px]'
+                      onClick={handleInstallClick}
+                    >
+                      홈 화면에 추가하기
+                    </button>
+                  </div>
+                )}
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
 
+      {/* 코드신청 모달창 */}
       <Modal
         className='w-4/5 z-[99999]'
-        isOpen={isOpen}
+        isOpen={isFormOpen}
         placement='center'
-        onOpenChange={onOpenChange}
+        onOpenChange={onFormOpenChange}
       >
         <ModalContent>
           {(onClose) => (
@@ -173,27 +273,22 @@ const StartPage = () => {
         </ModalContent>
       </Modal>
 
-      <div className='size-full flex flex-col justify-center items-center relative'>
-        <div className='w-full min-h-[300px] h-1/2 relative top-[-50px] flex flex-col justify-evenly items-center'>
-          {/* <MainSlider /> */}
-        </div>
+      <div className='w-full flex-1 pt-[60px] pb-[40px] content-center'>
+        <MainSlider />
+      </div>
 
-        <div className='w-full absolute bottom-[50px]'>
-          <button className='w-full h-[50px] my-[20px] rounded-[15px] bg-main-red text-white'>
-            <Link
-              href='/register/code'
-              className='size-full flex justify-center items-center'
-            >
-              플링 시작하기
-            </Link>
-          </button>
-
-          <div className='w-full flex justify-center text-subtitle'>
-            <p>이미 계정이 있으신가요?</p>
-            <Link className='ml-[10px] text-main-red' href={'/login'}>
-              로그인하기
-            </Link>
-          </div>
+      <div className='w-full h-[150px] gap-[10px] flex flex-col justify-start items-center'>
+        <Link
+          href='/register/code'
+          className='size-full h-[50px] flex justify-center items-center full-btn'
+        >
+          플링 시작하기
+        </Link>
+        <div className='w-full flex gap-[10px] justify-center text-subtitle'>
+          <p>이미 계정이 있으신가요?</p>
+          <Link className='text-main-red' href={'/login'}>
+            로그인하기
+          </Link>
         </div>
       </div>
     </div>

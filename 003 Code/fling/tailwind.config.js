@@ -26,6 +26,7 @@ module.exports = {
         modalUp: 'modalUp 1s ease-in-out',
         modalDown: 'modalDown 1s ease-in-out',
         fadeIn: 'fadeIn 1s',
+        float: 'float 3s ease-in-out infinite',
       },
       keyframes: {
         modalUp: {
@@ -45,6 +46,10 @@ module.exports = {
             opacity: '1',
             transform: 'translateY(0)',
           },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
         },
       },
       perspective: {

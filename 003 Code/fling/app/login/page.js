@@ -31,10 +31,15 @@ const LoginPage = () => {
   return (
     <div className='w-full h-screen px-[40px] relative'>
       <div className='w-full h-full flex flex-col justify-center items-center gap-[20px]'>
-        <Image src='/main-logo.svg' width={200} height={100} alt='main-logo' />
+        <Image
+          src='/logo/main-logo.svg'
+          width={100}
+          height={80}
+          alt='main-logo'
+        />
 
         <form
-          className='w-full flex flex-col gap-[10px]'
+          className='w-full flex flex-col gap-[10px] mt-[20px]'
           onSubmit={handleLogin}
         >
           <div className='w-full flex flex-col mt-[10px]'>
@@ -73,6 +78,9 @@ const LoginPage = () => {
           >
             로그인
           </button>
+          <Link href={'/'} className='underline text-info'>
+            메인으로
+          </Link>
         </form>
       </div>
     </div>

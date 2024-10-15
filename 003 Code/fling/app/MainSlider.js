@@ -6,24 +6,6 @@ import Image from 'next/image';
 import styled from 'styled-components';
 
 export default function MainSlider() {
-  const content = [
-    {
-      title: '간편한 매칭',
-      subtitle1: '단 한 번의 버튼 클릭으로',
-      subtitle2: '완전한 랜덤 매칭이 이루어져요',
-    },
-    {
-      title: '사용 방법',
-      subtitle1: '상단의 코드 신청을 통해',
-      subtitle2: '소개팅을 할 수 있도록 회원님을 선정해요',
-    },
-    {
-      title: '무료 매칭',
-      subtitle1: '상대방과의 매칭은',
-      subtitle2: '일절 비용이 들지 않아요',
-    },
-  ];
-
   const SlickButtonFix = ({ currentSlide, slideCount, children, ...props }) => (
     <span {...props}>{children}</span>
   );
@@ -32,13 +14,14 @@ export default function MainSlider() {
     dots: true,
     infinite: true,
     autoplay: true,
-    autoplaySpeed: 2500,
+    autoplaySpeed: 7000,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
     fade: true,
     draggable: true,
     pauseOnHover: false,
+    cssEase: 'ease',
     nextArrow: (
       <SlickButtonFix>
         <div className='size-[30px] relative opacity-80'>
@@ -66,39 +49,60 @@ export default function MainSlider() {
   };
 
   return (
-    <SliderContainer className='w-full px-[20px]'>
-      <Slider {...settings}>
-        <div className='w-full mb-[40px]'>
-          <div className='w-full h-[270px] relative'>
-            <Image src={`/start/0.svg`} fill alt='1page' />
+    <SliderContainer className='h-full content-center'>
+      <Slider {...settings} className='h-full content-center'>
+        <div>
+          <div className='flex flex-col py-[40px]'>
+            <p className='text-title break-keep'>매주 월요일 오전</p>
+            <p className='text-title break-keep'>9시에 유저를 선정해요</p>
+            <p className='text-subtitle text-gray-500 break-keep mt-[10px]'>
+              회원가입 코드는 오전 9시 10분에 전송해요
+            </p>
+            <div className='flex-grow relative flex items-center mt-[20px]'>
+              <Image
+                src='/start/start1.svg'
+                alt='start1'
+                className='px-[20px] animate-float'
+                fill
+              />
+            </div>
           </div>
-          <p className='text-title text-main-red my-[20px]'>
-            {content[0].title}
-          </p>
-          <p className='text-subtitle text-black/50'>{content[0].subtitle1}</p>
-          <p className='text-subtitle text-black/50'>{content[0].subtitle2}</p>
         </div>
 
-        <div className='w-full mb-[20px]'>
-          <div className='w-full h-[270px] relative'>
-            <Image src={`/start/1.svg`} fill alt='2page' />
+        <div>
+          <div className='flex flex-col py-[40px]'>
+            <p className='text-title break-keep'>같이 가볼만한</p>
+            <p className='text-title break-keep'>분위기 있는 데이트 장소</p>
+            <p className='text-subtitle text-gray-500 break-keep mt-[10px]'>
+              데이트하기 좋은 장소를 알려드릴게요
+            </p>
+            <div className='flex-grow relative flex items-center mt-[20px]'>
+              <Image
+                src='/start/start2.svg'
+                alt='start2'
+                className='px-[20px] animate-float'
+                fill
+              />
+            </div>
           </div>
-          <p className='text-title text-main-red my-[20px]'>
-            {content[1].title}
-          </p>
-          <p className='text-subtitle text-black/50'>{content[1].subtitle1}</p>
-          <p className='text-subtitle text-black/50'>{content[1].subtitle2}</p>
         </div>
 
-        <div className='w-full mb-[20px]'>
-          <div className='w-full h-[270px] relative'>
-            <Image src={`/start/2.svg`} fill alt='3page' />
+        <div>
+          <div className='flex flex-col py-[40px]'>
+            <p className='text-title break-keep'>이성과 일주일간</p>
+            <p className='text-title break-keep'>대화를 나눌 수 있어요</p>
+            <p className='text-subtitle text-gray-500 break-keep mt-[10px]'>
+              일주일이 지나면 계정은 자동으로 삭제돼요
+            </p>
+            <div className='flex-grow relative flex items-center mt-[20px]'>
+              <Image
+                src='/start/start3.svg'
+                alt='start3'
+                className='px-[20px] animate-float'
+                fill
+              />
+            </div>
           </div>
-          <p className='text-title text-main-red my-[20px]'>
-            {content[2].title}
-          </p>
-          <p className='text-subtitle text-black/50'>{content[2].subtitle1}</p>
-          <p className='text-subtitle text-black/50'>{content[2].subtitle2}</p>
         </div>
       </Slider>
     </SliderContainer>
@@ -137,6 +141,23 @@ const SliderContainer = styled.div`
 
   li button::before {
     content: '';
+  }
+
+  .slick-list,
+  .slick-track {
+    height: 100%;
+    align-content: center;
+  }
+
+  .slick-slide {
+    align-content: center;
+    margin-bottom: 25px;
+  }
+
+  .slick-slide div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   li.slick-active button {
