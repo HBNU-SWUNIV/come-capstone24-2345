@@ -86,7 +86,10 @@ app.prepare().then(() => {
 
       files.map(async (file) => {
         const filePath = file.name;
-        if (!filePath.startsWith('images/marker')) {
+        if (
+          !filePath.startsWith('images/marker') &&
+          !filePath.startsWith('images/logo')
+        ) {
           await file.delete();
         }
       });
@@ -215,23 +218,325 @@ app.prepare().then(() => {
       const womanEmail = element.group[1].email;
       const manEventCode = element.group[0].eventCode;
       const womanEventCode = element.group[1].eventCode;
+      const responseDate = new Date();
+      const resYear = responseDate.getFullYear();
+      const resMonth =
+        responseDate.getMonth() + 1 < 10
+          ? `0${responseDate.getMonth() + 1}`
+          : responseDate.getMonth() + 1;
+      const resDay =
+        responseDate.getDate() < 10
+          ? `0${responseDate.getDate()}`
+          : responseDate.getDate();
+      const resHour =
+        responseDate.getHours() < 10
+          ? `0${responseDate.getHours()}`
+          : responseDate.getHours();
+      const resMin =
+        responseDate.getMinutes() < 10
+          ? `0${responseDate.getMinutes()}`
+          : responseDate.getMinutes();
+      const resSec =
+        responseDate.getSeconds() < 10
+          ? `0${responseDate.getSeconds()}`
+          : responseDate.getSeconds();
 
       const manMailOptions = {
         from: process.env.NEXT_PUBLIC_NODEMAILER_USER,
         to: manEmail,
         subject: '[플링] 선정된 유저 이벤트코드 발송 건',
-        html: `<h2>안녕하세요 플링에 선정되셔서 메일을 전송합니다!</h2>
-            <p>회원가입 시 아래의 이벤트 코드를 작성해주세요</p>
-            <p>이벤트코드 : <u>${manEventCode}</u></p>`,
+        html: `
+        <table
+      width="720"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      style="margin:0 auto"
+    >
+      <tbody>
+        <tr>
+          <td style="background:#fff">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tbody>
+                <tr>
+                  <td
+                    style="padding: 0px 10px;font-size:1px;line-height:1px;border-bottom:0.5px #e94057 solid"
+                  >
+                    <img
+                      src="https://firebasestorage.googleapis.com/v0/b/fling-fdf18.appspot.com/o/images%2Flogo%2Ficon.png?alt=media&token=127d7a4a-e68a-4f58-a2ec-4bba0ed2dd3f"
+                      alt="fling"
+                      style="width:50px; height:50px;"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tbody>
+                <tr>
+                  <td style="width:40px"></td>
+                  <td style="padding:20px 0">
+                    <table
+                      width="100%"
+                      border="0"
+                      cellspacing="0"
+                      cellpadding="0"
+                    >
+                      <tbody>
+                        <tr>
+                          <td
+                            style="font:30px Malgun Gothic;letter-spacing:-1px;color:#e94057;"
+                          >
+                            <span>[플링] 이벤트코드를 안내해 드려요</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="padding:10px 0px;font:16px/26px Malgun Gothic;color:#767676"
+                          >
+                            안녕하세요
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="font:16px/26px Malgun Gothic;color:#767676"
+                          >
+                            플링에 선정되셔서 메일을 전송합니다!<br />회원가입 시 아래의 이벤트 코드를 작성해주세요<br />
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <table border="0" cellpadding="0" cellspacing="0">
+                              <tbody>
+                                <tr>
+                                  <td style="display:block;"></td>
+                                </tr>
+                              </tbody>
+                            </table>
+
+                            <table border="0" cellpadding="0" cellspacing="0">
+                              <tbody>
+                                <tr>
+                                  <td style="display:block;height:10px"></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <table
+                              cellpadding="0"
+                              cellspacing="0"
+                              style="width:100%"
+                            >
+                              <tbody>
+                                <tr>
+                                  <td
+                                    style="background:#e94057;font-size:1px;line-height:1px;height:1px"
+                                  ></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <table
+                              cellpadding="0"
+                              cellspacing="0"
+                              style="width:100%;table-layout:fixed;border-bottom:1px #e94057 solid"
+                            >
+                              <colgroup>
+                                <col width="18%" />
+                                <col />
+                                <col width="18%" />
+                                <col />
+                              </colgroup>
+                              <tbody>
+                                <tr>
+                                  <th
+                                    style="padding:8px 0;font:bold 14px/20px Malgun Gothic;letter-spacing:-1px;color:#fff;text-align:center;background:#e94057;"
+                                  >
+                                    이벤트코드
+                                  </th>
+                                  <td
+                                    style="padding:8px 10px;font:14px/20px Malgun Gothic;color:#4b5964;border-left:1px #e0e0e0 solid;border-top:1px #e0e0e0 solid"
+                                  >
+                                    ${manEventCode}
+                                  </td>
+                                </tr>
+                                 <tr>
+                                  <th
+                                    style="padding:8px 0;font:bold 14px/20px Malgun Gothic;letter-spacing:-1px;color:#fff;text-align:center;background:#e94057;"
+                                  >
+                                    전송 시간
+                                  </th>
+                                  <td
+                                    style="padding:8px 10px;font:14px/20px Malgun Gothic;color:#4b5964;border-left:1px #e0e0e0 solid;border-top:1px #e0e0e0 solid"
+                                  >
+                                    ${resYear}-${resMonth}-${resDay} ${resHour}:${resMin}:${resSec}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td style="width:40px"></td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+        `,
       };
 
       const womanMailOptions = {
         from: process.env.NEXT_PUBLIC_NODEMAILER_USER,
         to: womanEmail,
         subject: '[플링] 선정된 유저 이벤트코드 발송 건',
-        html: `<h2>안녕하세요 플링에 선정되셔서 메일을 전송합니다!</h2>
-            <p>회원가입 시 아래의 이벤트 코드를 작성해주세요</p>
-            <p>이벤트코드 : <u>${womanEventCode}</u></p>`,
+        html: `
+        <table
+      width="720"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      style="margin:0 auto"
+    >
+      <tbody>
+        <tr>
+          <td style="background:#fff">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tbody>
+                <tr>
+                  <td
+                    style="padding: 0px 10px;font-size:1px;line-height:1px;border-bottom:0.5px #e94057 solid"
+                  >
+                    <img
+                      src="https://firebasestorage.googleapis.com/v0/b/fling-fdf18.appspot.com/o/images%2Flogo%2Ficon.png?alt=media&token=127d7a4a-e68a-4f58-a2ec-4bba0ed2dd3f"
+                      alt="fling"
+                      style="width:50px; height:50px;"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tbody>
+                <tr>
+                  <td style="width:40px"></td>
+                  <td style="padding:20px 0">
+                    <table
+                      width="100%"
+                      border="0"
+                      cellspacing="0"
+                      cellpadding="0"
+                    >
+                      <tbody>
+                        <tr>
+                          <td
+                            style="font:30px Malgun Gothic;letter-spacing:-1px;color:#e94057;"
+                          >
+                            <span>[플링] 이벤트코드를 안내해 드려요</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="padding:10px 0px;font:16px/26px Malgun Gothic;color:#767676"
+                          >
+                            안녕하세요
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="font:16px/26px Malgun Gothic;color:#767676"
+                          >
+                            플링에 선정되셔서 메일을 전송합니다!<br />회원가입 시 아래의 이벤트 코드를 작성해주세요<br />
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <table border="0" cellpadding="0" cellspacing="0">
+                              <tbody>
+                                <tr>
+                                  <td style="display:block;"></td>
+                                </tr>
+                              </tbody>
+                            </table>
+
+                            <table border="0" cellpadding="0" cellspacing="0">
+                              <tbody>
+                                <tr>
+                                  <td style="display:block;height:10px"></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <table
+                              cellpadding="0"
+                              cellspacing="0"
+                              style="width:100%"
+                            >
+                              <tbody>
+                                <tr>
+                                  <td
+                                    style="background:#e94057;font-size:1px;line-height:1px;height:1px"
+                                  ></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <table
+                              cellpadding="0"
+                              cellspacing="0"
+                              style="width:100%;table-layout:fixed;border-bottom:1px #e94057 solid"
+                            >
+                              <colgroup>
+                                <col width="18%" />
+                                <col />
+                                <col width="18%" />
+                                <col />
+                              </colgroup>
+                              <tbody>
+                                <tr>
+                                  <th
+                                    style="padding:8px 0;font:bold 14px/20px Malgun Gothic;letter-spacing:-1px;color:#fff;text-align:center;background:#e94057;"
+                                  >
+                                    이벤트코드
+                                  </th>
+                                  <td
+                                    style="padding:8px 10px;font:14px/20px Malgun Gothic;color:#4b5964;border-left:1px #e0e0e0 solid;border-top:1px #e0e0e0 solid"
+                                  >
+                                    ${womanEventCode}
+                                  </td>
+                                </tr>
+                                 <tr>
+                                  <th
+                                    style="padding:8px 0;font:bold 14px/20px Malgun Gothic;letter-spacing:-1px;color:#fff;text-align:center;background:#e94057;"
+                                  >
+                                    전송 시간
+                                  </th>
+                                  <td
+                                    style="padding:8px 10px;font:14px/20px Malgun Gothic;color:#4b5964;border-left:1px #e0e0e0 solid;border-top:1px #e0e0e0 solid"
+                                  >
+                                    ${resYear}-${resMonth}-${resDay} ${resHour}:${resMin}:${resSec}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td style="width:40px"></td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+        `,
       };
 
       transporter.sendMail(manMailOptions, (err, info) => {
