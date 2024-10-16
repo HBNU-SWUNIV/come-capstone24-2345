@@ -21,9 +21,10 @@ const UnivCertPage = () => {
     fetchUsers();
   }, []);
 
-  const handleCertButton = async (isAllow, email) => {
+  const handleCertButton = async (isAllow, userEmail) => {
     try {
-      await handleCert(isAllow, email);
+      await handleCert(isAllow, userEmail);
+      setUsers((prev) => prev.filter((item) => item.email !== userEmail));
     } catch (err) {
       alert(err);
     }

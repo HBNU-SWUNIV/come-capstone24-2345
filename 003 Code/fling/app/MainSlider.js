@@ -60,6 +60,7 @@ export default function MainSlider() {
             </p>
             <div className='flex-grow relative flex items-center mt-[20px]'>
               <Image
+                quality={100}
                 src='/start/start1.svg'
                 alt='start1'
                 className='px-[20px] animate-float'
@@ -78,6 +79,7 @@ export default function MainSlider() {
             </p>
             <div className='flex-grow relative flex items-center mt-[20px]'>
               <Image
+                quality={100}
                 src='/start/start2.svg'
                 alt='start2'
                 className='px-[20px] animate-float'
@@ -96,6 +98,7 @@ export default function MainSlider() {
             </p>
             <div className='flex-grow relative flex items-center mt-[20px]'>
               <Image
+                quality={100}
                 src='/start/start3.svg'
                 alt='start3'
                 className='px-[20px] animate-float'
