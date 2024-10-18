@@ -107,6 +107,25 @@ export default function MainSlider() {
             </div>
           </div>
         </div>
+
+        <div>
+          <div className='flex flex-col py-[40px]'>
+            <p className='text-title break-keep'>무료로 사용이 가능하고</p>
+            <p className='text-title break-keep'>언제든지 탈퇴가 가능해요</p>
+            <p className='text-subtitle text-gray-500 break-keep mt-[10px]'>
+              참고로 채팅방을 나가면 계정이 삭제돼요
+            </p>
+            <div className='flex-grow relative flex items-center mt-[20px]'>
+              <Image
+                quality={100}
+                src='/start/start4.svg'
+                alt='start3'
+                className='px-[20px] animate-float'
+                fill
+              />
+            </div>
+          </div>
+        </div>
       </Slider>
     </SliderContainer>
   );
