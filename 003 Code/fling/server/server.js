@@ -41,15 +41,6 @@ function shuffle(array) {
   return array;
 }
 
-async function getAllDocumentIds(collectionPath) {
-  const collectionRef = firebaseDB.collection(collectionPath);
-  const snapshot = await collectionRef.get();
-
-  const documentIds = snapshot.docs.map((doc) => doc.id);
-
-  return documentIds;
-}
-
 app.prepare().then(() => {
   const server = express();
 
@@ -161,14 +152,6 @@ app.prepare().then(() => {
           return [element, selectedWoman[idx]];
         });
 
-        // await mongoDB.collection('selected_groups').deleteMany({});
-
-        // const ids = await getAllDocumentIds('chatrooms');
-
-        // for (let id of ids) {
-        //   await firebaseDB.collection('chatrooms').doc(id).delete();
-        // }
-
         for (const group of groups) {
           const chatroomID = Math.random()
             .toString(20)
@@ -179,6 +162,7 @@ app.prepare().then(() => {
 
           await firebaseDB.collection('chatrooms').doc(chatroomID).set({
             member: emails,
+            active: [],
           });
 
           await mongoDB
