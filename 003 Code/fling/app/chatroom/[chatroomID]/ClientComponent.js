@@ -1,10 +1,8 @@
 'use client';
 
-import useOnClickOutside from '../../../hooks/useOnClickOutside';
 import deleteAccountHandler from '../../../hooks/deleteAccount';
 import React, { useEffect, useRef, useState } from 'react';
 import { signOut } from 'next-auth/react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Textarea, Switch } from '@nextui-org/react';
 import { CheckboxGroup, Checkbox } from '@nextui-org/react';
 import { Spinner } from '@nextui-org/spinner';
@@ -67,6 +65,12 @@ const ClientComponent = ({ currUser }) => {
     onOpenChange: onViewImgOpenChange,
   } = useDisclosure();
 
+  const {
+    isOpen: isPlusOpen,
+    onOpen: onPlusOpen,
+    onOpenChange: onPlusOpenChange,
+  } = useDisclosure();
+
   const [clickViewImgSrc, setClickViewImgSrc] = useState(null);
 
   const [message, setMessage] = useState('');
@@ -76,17 +80,13 @@ const ClientComponent = ({ currUser }) => {
   const [reportEtc, setReportEtc] = useState('');
   const [isSubmitReport, setIsSubmitReport] = useState(false);
   const [isLoadingWithdraw, setIsLoadingWithdraw] = useState(false);
+  const [navPadding, setNavPadding] = useState('pb-[20px]');
 
   const pathname = usePathname();
   const chatroomID = usePathname().split('/')[2];
   const chatRef = useRef();
   const inputRef = useRef();
-  const bottomNavRef = useRef();
   const router = useRouter();
-
-  useOnClickOutside(bottomNavRef, () => {
-    setIsClickPlusBtn(false);
-  });
 
   useEffect(() => {
     if (typeof window != 'undefined') {
@@ -191,6 +191,10 @@ const ClientComponent = ({ currUser }) => {
       onSubmitImgOpen();
     }
   }, [imgFile]);
+
+  useEffect(() => {
+    isClickPlusBtn && onPlusOpen();
+  }, [isClickPlusBtn]);
 
   useEffect(() => {
     if (!isReportOpen) {
@@ -415,10 +419,8 @@ const ClientComponent = ({ currUser }) => {
         ></div>
       </div>
 
-      <motion.nav
-        // layout
-        ref={bottomNavRef}
-        className='w-full h-fit bg-white flex flex-col gap-[20px] rounded-t-[15px] border-t-1 border-solid border-slate-200'
+      <nav
+        className={`w-full h-fit bg-white flex flex-col gap-[20px] rounded-t-[10px] border-t-1 border-solid border-slate-200 transition-all duration-500 ${navPadding}`}
       >
         <div className='w-full h-fit flex justify-between items-center gap-[15px] px-[15px] py-[10px]'>
           <button
@@ -440,6 +442,8 @@ const ClientComponent = ({ currUser }) => {
             onClick={() => setIsClickPlusBtn(false)}
             placeholder='메세지를 입력하세요'
             ref={inputRef}
+            onFocus={() => setNavPadding('')}
+            onBlur={() => setNavPadding('pb-[20px]')}
           />
           <button
             onClick={handleSubmit}
@@ -449,97 +453,102 @@ const ClientComponent = ({ currUser }) => {
             <Image src='/chatting/send.svg' fill alt='send' />
           </button>
         </div>
+      </nav>
 
-        <motion.div className='w-full h-fit px-[50px] bg-white'>
-          {isClickPlusBtn && (
-            <div className='w-full flex flex-col gap-[20px] mb-[50px] items-center'>
-              <div className='w-full flex justify-around'>
-                <input
-                  id='input-image'
-                  type='file'
-                  accept='image/jpeg, image/png, image/webp, image/bmp'
-                  onChange={handleImg}
-                  hidden
-                />
-                <label
-                  htmlFor='input-image'
-                  className='flex-1 flex flex-col justify-center items-center gap-[10px] cursor-pointer'
-                >
-                  <Image
-                    src={ImgSvg}
-                    width={30}
-                    height={30}
-                    alt='image'
-                    className='full-btn p-[10px] box-content'
+      {/* +버튼 클릭시 */}
+      <Modal
+        isOpen={isPlusOpen}
+        placement={'center'}
+        onOpenChange={onPlusOpenChange}
+        className='w-4/5'
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className='flex flex-col gap-1'></ModalHeader>
+              <ModalBody>
+                <div className='w-full flex flex-col items-start gap-[15px] px-[20px]'>
+                  <input
+                    id='input-image'
+                    type='file'
+                    accept='image/jpeg, image/png, image/webp, image/bmp'
+                    onChange={handleImg}
+                    capture='user'
+                    hidden
                   />
-                  <span className='text-info'>이미지</span>
-                </label>
-                <input
-                  id='input-image'
-                  type='file'
-                  accept='image/jpeg, image/png, image/webp, image/bmp'
-                  onChange={handleImg}
-                  hidden
-                  capture='user'
-                />
-                <label
-                  htmlFor='input-image'
-                  className='flex-1 flex flex-col justify-center items-center gap-[10px] cursor-pointer'
-                >
-                  <Image
-                    src={CameraSvg}
-                    width={30}
-                    height={30}
-                    alt='image'
-                    className='full-btn p-[10px] box-content'
-                  />
-                  <span className='text-info'>카메라</span>
-                </label>
+                  <label
+                    htmlFor='input-image'
+                    className='flex-1 flex justify-center items-center gap-[15px] cursor-pointer'
+                  >
+                    <Image
+                      src={ImgSvg}
+                      width={30}
+                      height={30}
+                      alt='image'
+                      className='full-btn p-[5px] box-content'
+                    />
+                    <span className='text-subtitle text-gray-500'>
+                      카메라/이미지
+                    </span>
+                  </label>
+                  <button
+                    onClick={onReportOpen}
+                    className='flex-1 flex justify-center items-center gap-[15px]'
+                  >
+                    <Image
+                      src={ReportSvg}
+                      width={30}
+                      height={30}
+                      alt='report'
+                      className='full-btn p-[5px] box-content'
+                    />
+                    <span className='text-subtitle text-gray-500'>
+                      신고하기
+                    </span>
+                  </button>
+                  <button
+                    onClick={onRoomOutOpen}
+                    className='flex-1 flex justify-center items-center gap-[15px]'
+                  >
+                    <Image
+                      src={OutRoomSvg}
+                      width={30}
+                      height={30}
+                      alt='out-room'
+                      className='full-btn p-[5px] box-content'
+                    />
+                    <span className='text-subtitle text-gray-500'>나가기</span>
+                  </button>
+                  <Switch
+                    isSelected={isEnterSubmit}
+                    onValueChange={(value) => {
+                      setIsEnterSubmit(value);
+                      setIsEnterSubmit(value);
+                      localStorage.setItem(
+                        'isEnterSubmit',
+                        JSON.stringify({ email: currUser.email, state: value })
+                      );
+                    }}
+                    color='danger'
+                  >
+                    <span className='text-subtitle'>
+                      Enter키로 메세지 전송하기
+                    </span>
+                  </Switch>
+                </div>
+              </ModalBody>
+              <ModalFooter>
                 <button
-                  onClick={onReportOpen}
-                  className='flex-1 flex flex-col justify-center items-center gap-[10px]'
+                  onClick={onClose}
+                  className='full-btn px-[20px] py-[5px] flex justify-center items-center'
                 >
-                  <Image
-                    src={ReportSvg}
-                    width={30}
-                    height={30}
-                    alt='report'
-                    className='full-btn p-[10px] box-content'
-                  />
-                  <span className='text-info'>신고하기</span>
+                  닫기
                 </button>
-                <button
-                  onClick={onRoomOutOpen}
-                  className='flex-1 flex flex-col justify-center items-center gap-[10px]'
-                >
-                  <Image
-                    src={OutRoomSvg}
-                    width={30}
-                    height={30}
-                    alt='out-room'
-                    className='full-btn p-[10px] box-content'
-                  />
-                  <span className='text-info'>나가기</span>
-                </button>
-              </div>
-              <Switch
-                isSelected={isEnterSubmit}
-                onValueChange={(value) => {
-                  setIsEnterSubmit(value);
-                  setIsEnterSubmit(value);
-                  localStorage.setItem(
-                    'isEnterSubmit',
-                    JSON.stringify({ email: currUser.email, state: value })
-                  );
-                }}
-                color='danger'
-              >
-                <span className='text-subtitle'>Enter키로 메세지 전송하기</span>
-              </Switch>
-            </div>
+              </ModalFooter>
+            </>
           )}
-        </motion.div>
-      </motion.nav>
+        </ModalContent>
+      </Modal>
 
       {/* 이미지 전송하는 모달창 */}
       <Modal
@@ -666,26 +675,26 @@ const ClientComponent = ({ currUser }) => {
                     >
                       <Checkbox value='부적절한 메세지'>
                         <p>부적절한 메세지</p>
-                        <p className='text-info text-gray-500'>
+                        <p className='text-info text-gray-500 break-keep'>
                           욕설, 외설적인 내용 또는 불쾌감을 주는 메시지
                         </p>
                       </Checkbox>
                       <Checkbox value='욕설 및 혐오발언'>
                         <p>차별 또는 혐오 발언</p>
-                        <p className='text-info text-gray-500'>
+                        <p className='text-info text-gray-500 break-keep'>
                           인종, 성별, 종교, 성적 지향 등에 대한 차별이나 혐오
                           표현
                         </p>
                       </Checkbox>
                       <Checkbox value='부적절한 닉네임'>
                         <p>부적절한 닉네임</p>
-                        <p className='text-info text-gray-500'>
+                        <p className='text-info text-gray-500 break-keep'>
                           욕설, 성적인 표현, 혐오 표현 등이 포함된 닉네임
                         </p>
                       </Checkbox>
                       <Checkbox value='부적절한 프로필'>
                         <p>부적절한 프로필</p>
-                        <p className='text-info text-gray-500'>
+                        <p className='text-info text-gray-500 break-keep'>
                           적절하지 않은 이미지를 프로필로 사용
                         </p>
                       </Checkbox>
@@ -709,10 +718,11 @@ const ClientComponent = ({ currUser }) => {
                 </button>
                 {!isSubmitReport && (
                   <button
+                    disabled={reportOptions.length === 0 && reportEtc === ''}
                     onClick={() => {
                       handleReport(onClose);
                     }}
-                    className='full-btn px-[20px] py-[5px]'
+                    className={`px-[20px] py-[5px] ${reportOptions.length === 0 && reportEtc === '' ? 'btn' : 'full-btn'}`}
                   >
                     제출
                   </button>
