@@ -5,11 +5,42 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Spinner } from '@nextui-org/spinner';
+import { useDispatch, useSelector } from 'react-redux';
+import { setChatActive } from '@/library/store';
 
 const HeaderComponent = (props) => {
   const [other, setOther] = useState();
   const [isExistGroup, setIsExistGroup] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const fetchLastConnection = async (active) => {
+    await axios.post('/api/chat/connect', {
+      isActive: active,
+      email: props.currUser.email,
+      chatroomID: props.currUser.chatroomID,
+    });
+  };
+
+  useEffect(() => {
+    dispatch(setChatActive(true));
+    fetchLastConnection(true);
+  }, []);
+
+  useEffect(() => {
+    const handleVisbility = async () => {
+      if (document.visibilityState === 'hidden') {
+        dispatch(setChatActive(false));
+        fetchLastConnection(false);
+      } else {
+        dispatch(setChatActive(true));
+        fetchLastConnection(true);
+      }
+    };
+    window.addEventListener('visibilitychange', handleVisbility);
+    return () =>
+      window.removeEventListener('visibilitychange', handleVisbility);
+  }, []);
 
   useEffect(() => {
     if (props.currUser) {

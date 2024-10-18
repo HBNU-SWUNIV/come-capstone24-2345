@@ -160,10 +160,22 @@ app.prepare().then(() => {
 
           const emails = group.map((item) => item.email);
 
-          await firebaseDB.collection('chatrooms').doc(chatroomID).set({
-            member: emails,
-            active: [],
-          });
+          await firebaseDB
+            .collection('chatrooms')
+            .doc(chatroomID)
+            .set({
+              member: emails,
+              active: {
+                [emails[0].split('@')[0]]: {
+                  state: false,
+                  lastDate: new Date(),
+                },
+                [emails[1].split('@')[0]]: {
+                  state: false,
+                  lastDate: new Date(),
+                },
+              },
+            });
 
           await mongoDB
             .collection('selected_groups')

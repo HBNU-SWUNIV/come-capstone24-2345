@@ -46,7 +46,7 @@ const SettingPage = () => {
   const checkPermission = () => {
     if (Notification.permission === 'granted') {
       alert('알림이 이미 허용되어 있습니다');
-      // userInfo && getTokenHandler(userInfo.email);
+      userInfo && getTokenHandler(userInfo.email);
       setPermission(true);
     } else if (Notification.permission === 'denied') {
       alert('알림이 차단되어 있어 브라우저 설정에서 알림 권한을 허용해주세요');

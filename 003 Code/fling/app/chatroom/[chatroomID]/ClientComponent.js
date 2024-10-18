@@ -21,6 +21,7 @@ import {
   orderBy,
   query,
   addDoc,
+  getDoc,
 } from 'firebase/firestore';
 import { db, storage } from '../../../firebase/firebaseDB';
 import imageCompression from 'browser-image-compression';
@@ -29,12 +30,9 @@ import Image from 'next/image';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 import ImgSvg from './../../../public/chatroom/image.svg';
-import CameraSvg from './../../../public/chatroom/camera.svg';
 import ReportSvg from './../../../public/chatroom/report.svg';
 import OutRoomSvg from './../../../public/chatroom/out-room.svg';
 import axios from 'axios';
-// import { sendNotification } from '@/hooks/notifications';
-import setActiveChatroom from './setActiveChatroom';
 
 const ClientComponent = ({ currUser }) => {
   const [chatData, setChatData] = useState([]);
@@ -125,66 +123,62 @@ const ClientComponent = ({ currUser }) => {
   }, [currUser]);
 
   useEffect(() => {
-    const messagesRef = collection(db, 'chatrooms', chatroomID, 'messages');
-    const q = query(messagesRef, orderBy('date', 'asc'));
-    const unsub = onSnapshot(q, (querySnapshot) => {
-      if (querySnapshot.empty) {
-        setChatData([]);
-      } else {
-        let arr = [];
-        querySnapshot.docs.forEach((doc) => {
-          const data = doc.data();
-          if (data.message) {
-            arr.push({
-              date: data.date,
-              message: data.message,
-              email: data.email,
-            });
-          } else if (data.imgSrc) {
-            arr.push({
-              date: data.date,
-              imgSrc: data.imgSrc,
-              email: data.email,
-            });
+    const fetchData = async () => {
+      const messagesRef = collection(db, 'chatrooms', chatroomID, 'messages');
+      const q = query(messagesRef, orderBy('date', 'asc'));
+      const unsub = onSnapshot(q, async (querySnapshot) => {
+        if (querySnapshot.empty) {
+          setChatData([]);
+        } else {
+          let arr = [];
+          querySnapshot.docs.forEach((doc) => {
+            const data = doc.data();
+            if (data.message) {
+              arr.push({
+                date: data.date,
+                message: data.message,
+                email: data.email,
+              });
+            } else if (data.imgSrc) {
+              arr.push({
+                date: data.date,
+                imgSrc: data.imgSrc,
+                email: data.email,
+              });
+            }
+          });
+          setChatData(arr);
+
+          const chatroomRef = doc(db, 'chatrooms', chatroomID);
+          const chatroomDoc = await getDoc(chatroomRef);
+
+          if (chatroomDoc.exists()) {
+            const active = chatroomDoc.data().active;
+            const lastAccessTime = active[currUser.email.split('@')[0]]?.last;
+            const activeState = active[currUser.email.split('@')[0]]?.state;
+
+            const newMessage =
+              querySnapshot.docs[querySnapshot.docs.length - 1].data();
+
+            if (
+              newMessage.date.toMillis() > lastAccessTime.toMillis() &&
+              !activeState
+            ) {
+              // 채팅방이 아닐 시 fcm전송
+              alert(
+                '새로운 메시지가 도착했습니다: ' +
+                  (newMessage.message || newMessage.imgSrc)
+              );
+            }
           }
-        });
-        setChatData(arr);
+        }
+      });
 
-        const newMessage =
-          querySnapshot.docs[querySnapshot.docs.length - 1].data();
-
-        // axios
-        //   .post('/api/chat/notification', { message: newMessage, chatroomID })
-        //   .then((res) => {});
-        // if (document.visibilityState === 'hidden') {
-        //   // 새로운 메시지가 있을 때만 알림 전송
-        //   const newMessage = arr[arr.length - 1];
-        //   if (newMessage.message) {
-        //     sendNotification(newMessage.message);
-        //   } else {
-        //     sendNotification('사진을 보냈습니다');
-        //   }
-        // }
-      }
-    });
-
-    setActiveChatroom(currUser.email, true);
-
-    return () => unsub;
-  }, [chatroomID]);
-
-  useEffect(() => {
-    const handleVisbility = async () => {
-      if (document.visibilityState === 'hidden') {
-        await setActiveChatroom(currUser.email, false);
-      } else if (document.visibilityState === 'visible') {
-        await setActiveChatroom(currUser.email, true);
-      }
+      return () => unsub;
     };
-    window.addEventListener('visibilitychange', handleVisbility);
-    return () =>
-      window.removeEventListener('visibilitychange', handleVisbility);
-  }, []);
+
+    fetchData();
+  }, [chatroomID]);
 
   useEffect(() => {
     if (imgFile) {

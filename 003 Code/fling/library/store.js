@@ -1,5 +1,21 @@
 import { createSlice, configureStore } from '@reduxjs/toolkit';
 
+const chatActive = createSlice({
+  name: 'chatActive',
+  initialState: {
+    isActive: false,
+    email: '',
+  },
+  reducers: {
+    setChatActive: (state, action) => {
+      state.isActive = action.payload;
+    },
+    setChatActiveEmail: (state, action) => {
+      state.email = action.payload;
+    },
+  },
+});
+
 const registerUserInfo = createSlice({
   name: 'registerUserInfo',
   initialState: {
@@ -152,8 +168,11 @@ export const {
   setStoreInitialize,
 } = registerUserInfo.actions;
 
+export const { setChatActive, setChatActiveEmail } = chatActive.actions;
+
 export default configureStore({
   reducer: {
     registerUserInfo: registerUserInfo.reducer,
+    chatActive: chatActive.reducer,
   },
 });

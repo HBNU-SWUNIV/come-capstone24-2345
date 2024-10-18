@@ -5,6 +5,7 @@ import localfont from 'next/font/local';
 import { NextUIProviders } from '../library/NextUIProviders';
 import ReduxProvider from '../library/ReduxProvider';
 import StyledComponentsRegistry from '../library/StyledComponentRegistry';
+import SessionAuthProvider from '@/library/SessionAuthProvider';
 
 const Pretendard = localfont({
   src: [
@@ -128,9 +129,13 @@ export default function RootLayout({ children }) {
           {/* max-h-[940px] */}
           <div className='main w-full max-w-[440px] min-w-[330px] min-h-[568px] text-center m-auto box-border flex flex-col h-screen overflow-x-hidden bg-white relative'>
             <ReduxProvider>
-              <NextUIProviders>
-                <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
-              </NextUIProviders>
+              <SessionAuthProvider>
+                <NextUIProviders>
+                  <StyledComponentsRegistry>
+                    {children}
+                  </StyledComponentsRegistry>
+                </NextUIProviders>
+              </SessionAuthProvider>
             </ReduxProvider>
           </div>
         </div>
