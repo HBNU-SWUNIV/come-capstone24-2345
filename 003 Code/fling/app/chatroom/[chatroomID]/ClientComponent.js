@@ -154,6 +154,7 @@ const ClientComponent = ({ currUser }) => {
 
           if (chatroomDoc.exists()) {
             const active = chatroomDoc.data().active;
+            const member = chatroomDoc.data().member;
             const lastAccessTime = active[currUser.email.split('@')[0]]?.last;
             const activeState = active[currUser.email.split('@')[0]]?.state;
 
@@ -165,10 +166,17 @@ const ClientComponent = ({ currUser }) => {
               !activeState
             ) {
               // 채팅방이 아닐 시 fcm전송
-              alert(
-                '새로운 메시지가 도착했습니다: ' +
-                  (newMessage.message || newMessage.imgSrc)
+              const inactiveStudentIds = Object.entries(active)
+                .filter(([key, value]) => value.state === false) // state가 false인 것만 필터링
+                .map(([key]) => key); // 키값(학번)만 추출
+
+              const inactiveEmails = member.filter(
+                (email) => inactiveStudentIds.some((id) => email.startsWith(id)) // 학번이 이메일 시작 부분과 일치하는지 확인
               );
+              await axios.post('/api/chat/notification', {
+                message: newMessage.message || '사진을 보냈습니다',
+                emails: inactiveEmails,
+              });
             }
           }
         }

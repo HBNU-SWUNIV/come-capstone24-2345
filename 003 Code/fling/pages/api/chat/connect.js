@@ -4,8 +4,6 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 const handleConnect = async (req, res) => {
   if (req.method === 'POST') {
     const { isActive, email, chatroomID } = req.body;
-    console.log(isActive, email, chatroomID);
-    const now = new Date();
 
     const studentID = email.split('@')[0];
 
