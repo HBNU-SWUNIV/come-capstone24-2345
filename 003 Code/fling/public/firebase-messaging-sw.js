@@ -28,11 +28,10 @@ messaging.onBackgroundMessage(messaging, (payload) => {
   const title = payload.title;
   const options = {
     body: payload.body,
-    icon: "/icons/icon.png",
+    icon: "https://firebasestorage.googleapis.com/v0/b/fling-fdf18.appspot.com/o/images%2Flogo%2Ficon.png?alt=media&token=127d7a4a-e68a-4f58-a2ec-4bba0ed2dd3f",
   };
 
   self.registration.showNotification(title, options);
-  console.log("okk");
 });
 
 // 푸시 내용을 처리해서 알림으로 띄운다.

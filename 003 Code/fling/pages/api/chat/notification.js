@@ -27,15 +27,17 @@ const getFCMToken = async (email) => {
 const sendFCMHandler = async (req, res) => {
   if (req.method === "POST") {
     const { message, email } = req.body;
-    console.log(message);
-    console.log(email);
+
+    const client = await connectDB;
+    const db = await client.db("Fling");
 
     const token = await getFCMToken(email);
+    const recieverDoc = await db.collection("user_cred").findOne({ email });
+    const nickname = recieverDoc && recieverDoc.nickname;
 
-    // 수집된 FCM 토큰에 알림 전송
     const payload = {
       notification: {
-        title: "플링",
+        title: nickname,
         body: message,
       },
       token,
