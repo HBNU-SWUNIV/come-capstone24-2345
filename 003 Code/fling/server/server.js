@@ -997,18 +997,25 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  https
-    .createServer(options, async (req, res) => {
-      const parsedUrl = parse(req.url, true);
-      handle(req, res, parsedUrl);
-    })
-    .listen(port + 1, (err) => {
+  if (process.env.NODE_ENV === "production") {
+    server.listen(port, (err) => {
       if (err) throw err;
-      console.log("> Ready on https://localhost:", port + 1);
+      console.log("> Ready on http://localhost:", port);
     });
+  } else {
+    https
+      .createServer(options, async (req, res) => {
+        const parsedUrl = parse(req.url, true);
+        handle(req, res, parsedUrl);
+      })
+      .listen(port + 1, (err) => {
+        if (err) throw err;
+        console.log("> Ready on https://localhost:", port + 1);
+      });
 
-  server.listen(port, (err) => {
-    if (err) throw err;
-    console.log("> Ready on http://localhost:", port);
-  });
+    server.listen(port, (err) => {
+      if (err) throw err;
+      console.log("> Ready on http://localhost:", port);
+    });
+  }
 });
