@@ -49,7 +49,7 @@ const sendFCMHandler = async (req, res) => {
       res.status(200).end();
     } catch (error) {
       console.error("FCM 알림 전송 실패:", error);
-      res.status(500).end();
+      res.status(500).send(error);
     }
   }
 };

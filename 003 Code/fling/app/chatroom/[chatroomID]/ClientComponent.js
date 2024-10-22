@@ -186,10 +186,14 @@ const ClientComponent = ({ currUser }) => {
             !activeState &&
             newMessage.date.seconds > lastAccessTime.seconds
           ) {
-            await axios.post("/api/chat/notification", {
-              message: newMessage.message || "사진을 보냈습니다",
-              email: reciever,
-            });
+            await axios
+              .post("/api/chat/notification", {
+                message: newMessage.message || "사진을 보냈습니다",
+                email: reciever,
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           }
         }
       }

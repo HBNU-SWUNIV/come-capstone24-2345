@@ -555,15 +555,15 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  // https
-  //   .createServer(options, async (req, res) => {
-  //     const parsedUrl = parse(req.url, true);
-  //     handle(req, res, parsedUrl);
-  //   })
-  //   .listen(port + 1, (err) => {
-  //     if (err) throw err;
-  //     console.log("> Ready on https://localhost:", port + 1);
-  //   });
+  https
+    .createServer(options, async (req, res) => {
+      const parsedUrl = parse(req.url, true);
+      handle(req, res, parsedUrl);
+    })
+    .listen(port + 1, (err) => {
+      if (err) throw err;
+      console.log("> Ready on https://localhost:", port + 1);
+    });
 
   server.listen(port, (err) => {
     if (err) throw err;
