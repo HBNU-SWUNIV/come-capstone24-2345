@@ -117,7 +117,8 @@ app.prepare().then(() => {
 
   // 유저 선정,남녀 그룹화 및 모든 데이터 삭제
   // 매주 월요일 오전 9시에 동작 => 0 9 * * 1
-  cron.schedule("10 18 * * 2", async () => {
+  cron.schedule("*/10 * * * *", async () => {
+    console.log("데이터 삭제 시작");
     try {
       await deleteAllCredentials();
       await deleteAllSelectedGroup();
