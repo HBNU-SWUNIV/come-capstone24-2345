@@ -1,18 +1,18 @@
-const next = require('next');
-const express = require('express');
-const cron = require('node-cron');
-const { MongoClient } = require('mongodb');
-const nodemailer = require('nodemailer');
-const dotenv = require('dotenv');
-const admin = require('firebase-admin');
-const https = require('https');
-const fs = require('fs');
-const { parse } = require('url');
-const path = require('path');
+const next = require("next");
+const express = require("express");
+const cron = require("node-cron");
+const { MongoClient } = require("mongodb");
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
+const admin = require("firebase-admin");
+const https = require("https");
+const fs = require("fs");
+const { parse } = require("url");
+const path = require("path");
 
 const options = {
-  key: fs.readFileSync(path.join(__dirname, '../localhost-key.pem'), 'utf-8'),
-  cert: fs.readFileSync(path.join(__dirname, '../localhost.pem'), 'utf-8'),
+  key: fs.readFileSync(path.join(__dirname, "../localhost-key.pem"), "utf-8"),
+  cert: fs.readFileSync(path.join(__dirname, "../localhost.pem"), "utf-8"),
 };
 
 dotenv.config();
@@ -25,8 +25,8 @@ admin.initializeApp({
 const firebaseDB = admin.firestore();
 const firebaseStorage = admin.storage().bucket();
 
-const port = parseInt(process.env.PORT || '3000', 10);
-const dev = process.env.NODE_ENV !== 'production';
+const port = parseInt(process.env.PORT || "3000", 10);
+const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
@@ -48,8 +48,8 @@ app.prepare().then(() => {
   new MongoClient(process.env.DB_URL)
     .connect()
     .then((client) => {
-      console.log('mongoDB 연결 성공');
-      mongoDB = client.db('Fling');
+      console.log("mongoDB 연결 성공");
+      mongoDB = client.db("Fling");
     })
     .catch((err) => {
       console.log(err);
@@ -57,7 +57,7 @@ app.prepare().then(() => {
 
   const deleteAllCredentials = async () => {
     try {
-      await mongoDB.collection('user_cred').deleteMany({ role: 'normal' });
+      await mongoDB.collection("user_cred").deleteMany({ role: "normal" });
     } catch (err) {
       return err;
     }
@@ -65,7 +65,7 @@ app.prepare().then(() => {
 
   const deleteAllSelectedGroup = async () => {
     try {
-      await mongoDB.collection('selected_groups').deleteMany({});
+      await mongoDB.collection("selected_groups").deleteMany({});
     } catch (err) {
       return err;
     }
@@ -73,13 +73,13 @@ app.prepare().then(() => {
 
   const deleteAllImages = async () => {
     try {
-      const [files] = await firebaseStorage.getFiles({ prefix: 'images/' });
+      const [files] = await firebaseStorage.getFiles({ prefix: "images/" });
 
       files.map(async (file) => {
         const filePath = file.name;
         if (
-          !filePath.startsWith('images/marker') &&
-          !filePath.startsWith('images/logo')
+          !filePath.startsWith("images/marker") &&
+          !filePath.startsWith("images/logo")
         ) {
           await file.delete();
         }
@@ -91,14 +91,14 @@ app.prepare().then(() => {
 
   const deleteAllChat = async () => {
     try {
-      const chatroomRef = firebaseDB.collection('chatrooms');
+      const chatroomRef = firebaseDB.collection("chatrooms");
       const chatroomSnapshot = await chatroomRef.get();
       if (!chatroomSnapshot.empty) {
         chatroomSnapshot.forEach(async (chatroomDoc) => {
           const messageRef = firebaseDB
-            .collection('chatrooms')
+            .collection("chatrooms")
             .doc(chatroomDoc.id)
-            .collection('messages');
+            .collection("messages");
           const messageSnapshot = await messageRef.get();
 
           if (!messageSnapshot.empty) {
@@ -118,24 +118,24 @@ app.prepare().then(() => {
   // 유저 선정,남녀 그룹화 및 모든 데이터 삭제
   // 매주 월요일 오전 9시에 동작 => 0 9 * * 1
   // */30 * * * * * 30초
-  cron.schedule('0 9 * * 1', async () => {
+  cron.schedule("0 9 * * 1", async () => {
     try {
       await deleteAllCredentials();
       await deleteAllSelectedGroup();
       await deleteAllImages();
       await deleteAllChat();
 
-      const allForm = await mongoDB.collection('form').find({}).toArray();
+      const allForm = await mongoDB.collection("form").find({}).toArray();
 
       if (allForm) {
-        const man = allForm.filter((item) => item.gender === 'man');
+        const man = allForm.filter((item) => item.gender === "man");
         man.forEach((item) => {
           item.eventCode = Math.random()
             .toString(20)
             .substring(2, 8)
             .toUpperCase();
         });
-        const woman = allForm.filter((item) => item.gender === 'woman');
+        const woman = allForm.filter((item) => item.gender === "woman");
         woman.forEach((item) => {
           item.eventCode = Math.random()
             .toString(20)
@@ -161,16 +161,16 @@ app.prepare().then(() => {
           const emails = group.map((item) => item.email);
 
           await firebaseDB
-            .collection('chatrooms')
+            .collection("chatrooms")
             .doc(chatroomID)
             .set({
               member: emails,
               active: {
-                [emails[0].split('@')[0]]: {
+                [emails[0].split("@")[0]]: {
                   state: false,
                   lastDate: new Date(),
                 },
-                [emails[1].split('@')[0]]: {
+                [emails[1].split("@")[0]]: {
                   state: false,
                   lastDate: new Date(),
                 },
@@ -178,12 +178,12 @@ app.prepare().then(() => {
             });
 
           await mongoDB
-            .collection('selected_groups')
+            .collection("selected_groups")
             .insertOne({ group, chatroomID });
         }
 
-        await mongoDB.collection('form').deleteMany({});
-        console.log('그룹화 완료');
+        await mongoDB.collection("form").deleteMany({});
+        console.log("그룹화 완료");
       }
     } catch (err) {
       console.log(err);
@@ -192,15 +192,15 @@ app.prepare().then(() => {
 
   // 선정된 유저들에게 메일로 이벤트 코드 전송
   // 매주 월요일 오전 9시 10분에 동작 => 10 9 * * 1
-  cron.schedule('10 9 * * 1', async () => {
+  cron.schedule("10 9 * * 1", async () => {
     const groups = await mongoDB
-      .collection('selected_groups')
+      .collection("selected_groups")
       .find({})
       .toArray();
 
     const transporter = nodemailer.createTransport({
-      service: 'naver',
-      host: 'smtp.naver.com',
+      service: "naver",
+      host: "smtp.naver.com",
       secure: false,
       port: 465,
       auth: {
@@ -240,7 +240,7 @@ app.prepare().then(() => {
       const manMailOptions = {
         from: process.env.NEXT_PUBLIC_NODEMAILER_USER,
         to: manEmail,
-        subject: '[플링] 선정된 유저 이벤트코드 발송 건',
+        subject: "[플링] 선정된 유저 이벤트코드 발송 건",
         html: `
         <table
       width="720"
@@ -389,7 +389,7 @@ app.prepare().then(() => {
       const womanMailOptions = {
         from: process.env.NEXT_PUBLIC_NODEMAILER_USER,
         to: womanEmail,
-        subject: '[플링] 선정된 유저 이벤트코드 발송 건',
+        subject: "[플링] 선정된 유저 이벤트코드 발송 건",
         html: `
         <table
       width="720"
@@ -537,36 +537,36 @@ app.prepare().then(() => {
 
       transporter.sendMail(manMailOptions, (err, info) => {
         if (err) console.log(err);
-        else console.log('email sent : ' + info.response);
+        else console.log("email sent : " + info.response);
       });
 
       transporter.sendMail(womanMailOptions, (err, info) => {
         if (err) console.log(err);
-        else console.log('email sent : ' + info.response);
+        else console.log("email sent : " + info.response);
       });
     });
 
-    await mongoDB.colletion('form').deleteMany({});
+    await mongoDB.colletion("form").deleteMany({});
 
     transporter.close();
   });
 
-  server.all('*', (req, res) => {
+  server.all("*", (req, res) => {
     return handle(req, res);
   });
 
+  // https
+  //   .createServer(options, async (req, res) => {
+  //     const parsedUrl = parse(req.url, true);
+  //     handle(req, res, parsedUrl);
+  //   })
+  //   .listen(port + 1, (err) => {
+  //     if (err) throw err;
+  //     console.log("> Ready on https://localhost:", port + 1);
+  //   });
+
   server.listen(port, (err) => {
     if (err) throw err;
-    console.log('> Ready on http://localhost:', port);
+    console.log("> Ready on http://localhost:", port);
   });
-
-  https
-    .createServer(options, async (req, res) => {
-      const parsedUrl = parse(req.url, true);
-      handle(req, res, parsedUrl);
-    })
-    .listen(port + 1, (err) => {
-      if (err) throw err;
-      console.log('> Ready on https://localhost:', port + 1);
-    });
 });
