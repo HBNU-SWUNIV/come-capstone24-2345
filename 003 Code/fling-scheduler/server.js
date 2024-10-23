@@ -18,6 +18,17 @@ admin.initializeApp({
 const firebaseDB = admin.firestore();
 const firebaseStorage = admin.storage().bucket();
 
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const randomPosition = Math.floor(Math.random() * (i + 1));
+
+    const temp = array[i];
+    array[i] = array[randomPosition];
+    array[randomPosition] = temp;
+  }
+  return array;
+}
+
 let mongoDB;
 new MongoClient(process.env.DB_URL)
   .connect()
