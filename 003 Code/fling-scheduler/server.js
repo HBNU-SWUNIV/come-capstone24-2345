@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 const admin = require("firebase-admin");
 dotenv.config();
 const app = express();
+const port = parseInt(process.env.PORT || "8080", 10);
 
 app.use(cors());
 
@@ -23,8 +24,8 @@ new MongoClient(process.env.DB_URL)
   .then((client) => {
     console.log("mongoDB 연결 성공");
     mongoDB = client.db("Fling");
-    app.listen(8080, () => {
-      console.log("http://localhost:8080 에서 서버 실행 중");
+    app.listen(port, () => {
+      console.log(`http://localhost:${port} 에서 서버 실행 중`);
     });
   })
   .catch((err) => {
@@ -107,74 +108,75 @@ const deleteAndGroupingJob = schedule.scheduleJob("*/2 * * * *", async () => {
 
     console.log("유저 데이터 삭제 완료");
 
-    // const allForm = await mongoDB.collection("form").find({}).toArray();
+    const allForm = await mongoDB.collection("form").find({}).toArray();
 
-    // if (allForm) {
-    //   const man = allForm.filter((item) => item.gender === "man");
-    //   man.forEach((item) => {
-    //     item.eventCode = Math.random()
-    //       .toString(20)
-    //       .substring(2, 8)
-    //       .toUpperCase();
-    //   });
-    //   const woman = allForm.filter((item) => item.gender === "woman");
-    //   woman.forEach((item) => {
-    //     item.eventCode = Math.random()
-    //       .toString(20)
-    //       .substring(2, 8)
-    //       .toUpperCase();
-    //   });
-    //   const minLength = Math.min(man.length, woman.length);
-    //   const randomLength = Math.floor(Math.random() * minLength) + 1;
+    if (allForm) {
+      const man = allForm.filter((item) => item.gender === "man");
+      man.forEach((item) => {
+        item.eventCode = Math.random()
+          .toString(20)
+          .substring(2, 8)
+          .toUpperCase();
+      });
+      const woman = allForm.filter((item) => item.gender === "woman");
+      woman.forEach((item) => {
+        item.eventCode = Math.random()
+          .toString(20)
+          .substring(2, 8)
+          .toUpperCase();
+      });
+      const minLength = Math.min(man.length, woman.length);
+      const randomLength = Math.floor(Math.random() * minLength) + 1;
 
-    //   const selectedMan = shuffle(man.slice(0, randomLength));
-    //   const selectedWoman = shuffle(woman.slice(0, randomLength));
+      const selectedMan = shuffle(man.slice(0, randomLength));
+      const selectedWoman = shuffle(woman.slice(0, randomLength));
 
-    //   const groups = selectedMan.map((element, idx) => {
-    //     return [element, selectedWoman[idx]];
-    //   });
+      const groups = selectedMan.map((element, idx) => {
+        return [element, selectedWoman[idx]];
+      });
 
-    //   for (const group of groups) {
-    //     const chatroomID = Math.random()
-    //       .toString(20)
-    //       .substring(2, 12)
-    //       .toUpperCase();
+      for (const group of groups) {
+        const chatroomID = Math.random()
+          .toString(20)
+          .substring(2, 12)
+          .toUpperCase();
 
-    //     const emails = group.map((item) => item.email);
+        const emails = group.map((item) => item.email);
 
-    //     await firebaseDB
-    //       .collection("chatrooms")
-    //       .doc(chatroomID)
-    //       .set({
-    //         member: emails,
-    //         active: {
-    //           [emails[0].split("@")[0]]: {
-    //             state: false,
-    //             lastDate: new Date(),
-    //           },
-    //           [emails[1].split("@")[0]]: {
-    //             state: false,
-    //             lastDate: new Date(),
-    //           },
-    //         },
-    //       });
+        await firebaseDB
+          .collection("chatrooms")
+          .doc(chatroomID)
+          .set({
+            member: emails,
+            active: {
+              [emails[0].split("@")[0]]: {
+                state: false,
+                lastDate: new Date(),
+              },
+              [emails[1].split("@")[0]]: {
+                state: false,
+                lastDate: new Date(),
+              },
+            },
+          });
 
-    //     await mongoDB
-    //       .collection("selected_groups")
-    //       .insertOne({ group, chatroomID });
-    //   }
+        await mongoDB
+          .collection("selected_groups")
+          .insertOne({ group, chatroomID });
+      }
 
-    //   await mongoDB.collection("form").deleteMany({});
-    //   console.log("그룹화 완료");
-
-    // }
+      await mongoDB.collection("form").deleteMany({});
+      console.log("그룹화 완료");
+    }
   } catch (err) {
     console.log(err);
   }
 });
 
-const sendEmailJob = schedule.scheduleJob("10 9 * * 1", async () => {
-  console.log("매주 월요일 오전 9시 10분마다 이벤트코드 전송 작업 시작");
+// 10 9 * * 1
+const sendEmailJob = schedule.scheduleJob("*/4 * * * *", async () => {
+  //   console.log("매주 월요일 오전 9시 10분마다 이벤트코드 전송 작업 시작");
+  console.log("4분마다 이벤트코드 전송 작업 시작");
   const groups = await mongoDB.collection("selected_groups").find({}).toArray();
 
   const transporter = nodemailer.createTransport({
@@ -525,7 +527,10 @@ const sendEmailJob = schedule.scheduleJob("10 9 * * 1", async () => {
     });
   });
 
+  console.log("이벤트코드 발송 완료");
+
   await mongoDB.colletion("form").deleteMany({});
+  console.log("신청정보 삭제완료");
 
   transporter.close();
 });
