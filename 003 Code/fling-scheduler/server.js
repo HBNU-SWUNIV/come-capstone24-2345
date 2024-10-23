@@ -103,8 +103,7 @@ const deleteAllChat = async () => {
   }
 };
 
-// 0 9 * * 1
-const deleteAndGroupingJob = schedule.scheduleJob("*/2 * * * *", async () => {
+const deleteAndGroupingJob = schedule.scheduleJob("0 9 * * 1", async () => {
   //   console.log(
   //     "매주 월요일 오전 9시마다 유저 데이터 삭제 및 유저 선정 작업 시작"
   //   );
@@ -184,10 +183,8 @@ const deleteAndGroupingJob = schedule.scheduleJob("*/2 * * * *", async () => {
   }
 });
 
-// 10 9 * * 1
-const sendEmailJob = schedule.scheduleJob("*/3 * * * *", async () => {
-  //   console.log("매주 월요일 오전 9시 10분마다 이벤트코드 전송 작업 시작");
-  console.log("3분마다 이벤트코드 전송 작업 시작");
+const sendEmailJob = schedule.scheduleJob("10 9 * * 1", async () => {
+  console.log("매주 월요일 오전 9시 10분마다 이벤트코드 전송 작업 시작");
   const groups = await mongoDB.collection("selected_groups").find({}).toArray();
 
   const transporter = nodemailer.createTransport({
