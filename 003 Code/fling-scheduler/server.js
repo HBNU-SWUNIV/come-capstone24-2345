@@ -91,10 +91,13 @@ const deleteAllChat = async () => {
   }
 };
 
-const deleteAndGroupingJob = schedule.scheduleJob("0 9 * * 1", async () => {
-  console.log(
-    "매주 월요일 오전 9시마다 유저 데이터 삭제 및 유저 선정 작업 시작"
-  );
+// 0 9 * * 1
+const deleteAndGroupingJob = schedule.scheduleJob("*/2 * * * *", async () => {
+  //   console.log(
+  //     "매주 월요일 오전 9시마다 유저 데이터 삭제 및 유저 선정 작업 시작"
+  //   );
+
+  console.log("2분마다 유저 데이터 삭제 작업 시작");
 
   try {
     await deleteAllCredentials();
