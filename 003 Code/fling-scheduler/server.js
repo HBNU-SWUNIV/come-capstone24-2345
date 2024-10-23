@@ -540,7 +540,7 @@ const sendEmailJob = schedule.scheduleJob("*/4 * * * *", async () => {
 
   console.log("이벤트코드 발송 완료");
 
-  await mongoDB.colletion("form").deleteMany({});
+  await mongoDB.collection("form").deleteMany({});
   console.log("신청정보 삭제완료");
 
   transporter.close();
