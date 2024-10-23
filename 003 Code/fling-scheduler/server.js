@@ -201,7 +201,7 @@ const sendEmailJob = schedule.scheduleJob("*/4 * * * *", async () => {
     },
   });
 
-  groups.forEach((element) => {
+  groups.forEach(async (element) => {
     const manEmail = element.group[0].email;
     const womanEmail = element.group[1].email;
     const manEventCode = element.group[0].eventCode;
@@ -527,12 +527,12 @@ const sendEmailJob = schedule.scheduleJob("*/4 * * * *", async () => {
         `,
     };
 
-    transporter.sendMail(manMailOptions, (err, info) => {
+    await transporter.sendMail(manMailOptions, (err, info) => {
       if (err) console.log(err);
       else console.log("email sent : " + info.response);
     });
 
-    transporter.sendMail(womanMailOptions, (err, info) => {
+    await transporter.sendMail(womanMailOptions, (err, info) => {
       if (err) console.log(err);
       else console.log("email sent : " + info.response);
     });
