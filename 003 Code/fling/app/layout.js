@@ -26,9 +26,9 @@ export const metadata = {
   title: "플링",
   description: "터치 단 한 번으로 랜덤 소개팅",
   manifest: "/manifest.json",
-  icons: {
-    icon: "/icons/icon-512x512.png",
-  },
+  // icons: {
+  //   icon: "/icons/icon-512x512.png",
+  // },
   appleWebApp: {
     statusBarStyle: "default",
     title: "플링",
