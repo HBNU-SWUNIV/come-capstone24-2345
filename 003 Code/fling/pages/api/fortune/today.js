@@ -1,28 +1,28 @@
-import OpenAI from 'openai';
-import { connectDB } from '../../../util/database';
+import OpenAI from "openai";
+import { connectDB } from "../../../util/database";
 
 const handleFortuneToday = async (req, res) => {
-  if (req.method === 'POST') {
+  if (req.method === "POST") {
     let { gender, birth, mbti, datingType, email } = req.body;
-    gender = gender === 'man' ? '남자' : '여자';
+    gender = gender === "man" ? "남자" : "여자";
     const year = birth.year;
     const month = birth.month;
     const day = birth.day;
-    mbti = mbti.type.join('');
+    mbti = mbti.type.join("");
 
     const fetchTodayFortuneData = async () => {
       const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY });
 
       const completion = await openai.chat.completions.create({
-        model: 'gpt-3.5-turbo-0125',
+        model: "gpt-3.5-turbo-0125",
         messages: [
           {
-            role: 'system',
+            role: "system",
             content: process.env.NEXT_PUBLIC_OPENAI_SYSTEM_CONTENT,
           },
           {
-            role: 'user',
-            content: `${gender}, ${year}년 ${month}월 ${day}일생, ${mbti}, ${datingType}`,
+            role: "user",
+            content: `${gender}, ${year}년 ${month}월 ${day}일생, ${mbti}, ${datingType.description}`,
           },
         ],
         temperature: 0.57,
@@ -33,16 +33,20 @@ const handleFortuneToday = async (req, res) => {
     };
 
     const client = await connectDB;
-    const db = await client.db('Fling');
+    const db = await client.db("Fling");
     // const oneDayMs = 24 * 60 * 60 * 1000;
 
     // const now = new Date();
-    const userDoc = await db.collection('user_cred').findOne({ email });
+    const userDoc = await db
+      .collection("user_cred")
+      .findOne({ email, fortune: { $exists: true } });
 
-    if (!userDoc.fortune) {
+    if (userDoc) {
+      res.status(200).send(userDoc.fortune);
+    } else {
       const fortuneData = await fetchTodayFortuneData();
       const now = new Date();
-      await db.collection('user_cred').updateOne(
+      await db.collection("user_cred").updateOne(
         { email },
         {
           $set: {
@@ -69,9 +73,6 @@ const handleFortuneToday = async (req, res) => {
           min: now.getMinutes(),
         },
       });
-    } else {
-      const userDoc = await db.collection('user_cred').findOne({ email });
-      res.status(200).send(userDoc.fortune);
     }
 
     //   if (userDoc.fortune) {
