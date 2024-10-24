@@ -184,7 +184,8 @@ const ClientComponent = ({ currUser }) => {
           if (
             reciever &&
             !activeState &&
-            newMessage.date.seconds > lastAccessTime.seconds
+            newMessage.date.seconds > lastAccessTime.seconds &&
+            Notification.permission === "granted"
           ) {
             await axios
               .post("/api/chat/notification", {

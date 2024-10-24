@@ -28,8 +28,12 @@ const SettingPage = () => {
   const [inquiryContent, setInquiryContent] = useState("");
   const [userInfo, setUserInfo] = useState();
   const [permission, setPermission] = useState(false);
-  const [isPushAllow, setIsPushAllow] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {
+    isOpen: isAlertOpen,
+    onOpen: onAlertOpen,
+    onOpenChange: onAlertOpenChange,
+  } = useDisclosure();
 
   const [isLoadingWithdraw, setIsLoadingWithdraw] = useState(false);
   const [isWithdraw, setIsWithdraw] = useState(false);
@@ -171,12 +175,49 @@ const SettingPage = () => {
         </ModalContent>
       </Modal>
 
+      {/* 알림해제 모달창 */}
+      <Modal
+        isOpen={isAlertOpen}
+        placement="center"
+        onOpenChange={onAlertOpenChange}
+      >
+        <ModalContent className="w-4/5">
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                알림 해제 방법
+              </ModalHeader>
+              <ModalBody className="text-info gap-[5px]">
+                <p>
+                  Chrome: 설정 &lt; 개인정보 및 보안 &lt; 사이트 설정 &lt; 권한
+                  &lt; 알림
+                </p>
+                <p>
+                  Firefox: 옵션 &lt; 개인정보 및 보안 &lt; 권한 &lt; 알림 설정
+                </p>
+                <p>Safari: Safari &lt; 환경설정 &lt; 웹사이트 &lt; 알림</p>
+              </ModalBody>
+              <ModalFooter>
+                <button
+                  onClick={onClose}
+                  className="full-btn px-[20px] py-[5px]"
+                >
+                  닫기
+                </button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
       <div className="flex justify-between items-center px-[20px] py-[10px] bg-white rounded-[15px] card-border">
         <div className="flex flex-col gap-[5px]">
           <span>채팅 알림</span>
           <div className="text-info">
-            <span className="text-gray-500">PUSH 알림 기능 on/off </span>
-            <span className="text-gray-400 ml-[2px]">(권한 체크 이후)</span>
+            {/* <span className="text-gray-500">PUSH 알림 기능 on/off </span> */}
+            <span className="text-gray-400 ml-[2px]">
+              하단의 알림 권한버튼을 눌러주세요
+            </span>
           </div>
         </div>
         <Switch
@@ -185,9 +226,21 @@ const SettingPage = () => {
           classNames={{
             wrapper: "m-0",
           }}
-          isDisabled={permission ? false : true}
-          isSelected={isPushAllow}
-          onValueChange={setIsPushAllow}
+          isDisabled
+          onClick={() =>
+            Notification.requestPermission().then((permission) => {
+              if (permission === "granted") {
+                alert("알림 권한이 허용되었습니다");
+                setPermission(true);
+                userInfo && getTokenHandler(userInfo.email);
+              } else {
+                alert("알림 권한이 차단되었습니다");
+                setPermission(false);
+              }
+            })
+          }
+          isSelected={permission}
+          // onValueChange={setPermission}
         />
       </div>
 
@@ -279,12 +332,12 @@ const SettingPage = () => {
             />
           </span>
         </button>
+        <button onClick={onAlertOpen} className="underline">
+          알림 해제
+        </button>
         <button className="underline" onClick={onOpen}>
           탈퇴하기
         </button>
-        {/* {userInfo && userInfo.email && (
-          <button onClick={handleTokenClick}>토큰생성</button>
-        )} */}
         {userInfo && userInfo.role === "admin" && (
           <Link className="underline" href={"/admin"}>
             관리자모드
