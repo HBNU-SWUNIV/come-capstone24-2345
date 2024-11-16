@@ -12,7 +12,7 @@
         <img src="https://img.shields.io/badge/Next.js-black?style=flate&logo=next.js&logoColor=white">
         <img src="https://img.shields.io/badge/Redux-764ABC?style=flate&logo=Redux&logoColor=white">
         <img src="https://img.shields.io/badge/Tailwind CSS-%2338B2AC.svg?style=flat&logo=tailwind-css&logoColor=white">
-        <img src="https://img.shields.io/badge/styled-components-DB7093?style=flat&logo=styled-components&logoColor=white"/>
+        <img src="https://img.shields.io/badge/styled components-DB7093?style=flat&logo=styled-components&logoColor=white"/>
         
   - 💾 Back-End : 
         <img src="https://img.shields.io/badge/Node.js-43853D?style=flate&logo=node.js&logoColor=white">
