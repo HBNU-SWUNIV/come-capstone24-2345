@@ -54,7 +54,7 @@
     ![srs-3](https://github.com/user-attachments/assets/f6e0afc4-04a9-4009-9c39-f15af2126237)
     ![srs-4](https://github.com/user-attachments/assets/fbe9d863-2577-47b6-a349-f4848cf31897)
     ![srs-5](https://github.com/user-attachments/assets/92786bb6-50d8-4b7a-b08e-295f240e5b6c)
-    ![srs-6](https://github.com/user-attachments/assets/dc99519d-f455-4ac9-98f1-27c8b0d946a3)
+    ![srs-6](https://github.com/user-attachments/assets/c9144c3c-368c-42f7-98aa-7f332a438ca2)
   - ### System Architecture
     ![sys_architecture](https://github.com/user-attachments/assets/9bfdaa8e-9fa3-4879-b592-bdae5a908da1)
   - ### DB Architecture
