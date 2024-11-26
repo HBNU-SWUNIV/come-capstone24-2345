@@ -311,10 +311,7 @@ const SettingPage = () => {
       <div className="w-full flex px-[20px] py-[10px] justify-around items-center text-info text-gray-500">
         <button
           className="underline"
-          onClick={async () => {
-            await signOut();
-            router.replace("/");
-          }}
+          onClick={() => signOut({ callbackUrl: "/" })}
         >
           로그아웃
         </button>
