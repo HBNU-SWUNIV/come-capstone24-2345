@@ -62,13 +62,6 @@
       ![mongoDB_architecture](https://github.com/user-attachments/assets/af067db5-c65f-4777-b344-15285ffb4c76)
     - Firebase
       ![firebase_architecture](https://github.com/user-attachments/assets/dc74b7b6-8e1f-4bfa-b7cc-55e3139ff920)
-
-## Case Study
-  - ### Description
   
 ## Conclusion
-  - ### OOO
-  - ### OOO
-  
-## Project Outcome
-- ### 20XX 년 OO학술대회 
+  - [플링 바로가기](https://fling-app.site/)
